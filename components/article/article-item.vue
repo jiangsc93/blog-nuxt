@@ -3,10 +3,12 @@
     <ul>
       <li class="item-li overflow">
         <h5 class="title cursor"><span class="tit">{{item.title}}</span></h5>
-        <div class="info fl">
-          <span class="time"><i class="iconfont icon-shijian"></i>{{item.date}}</span>
-          <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{item.visit || '1'}}次浏览</span>
-          <span class="tag inline-b"><i class="iconfont icon-icontag"></i>{{item.tag || '其他'}}</span>
+        <div class="info">
+          <div>
+            <span class="time"><i class="iconfont icon-shijian"></i>{{item.date}}</span>
+            <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{item.visit || '1'}}次浏览</span>
+          </div>
+          <div class="tag"><i class="iconfont icon-icontag"></i>{{item.tag || '其他'}}</div>
         </div>
         <div class="cont"><div class="inline-b _wrap" v-html="item.content"></div><span class="view-all">[<span class="all" @click="onRead(item, index)">阅读全文</span>]</span></div>
       </li>
@@ -83,6 +85,8 @@
         }
       }
       .info {
+        display: flex;
+        justify-content: space-between;
         font-size: 13px;
         color: #666;
         .visit {

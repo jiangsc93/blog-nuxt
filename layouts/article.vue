@@ -49,12 +49,21 @@
   import MyFooter from '~/components/Footer'
   import Api from '~/utils/api'
   import MyPage from '~/components/PageAction'
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState } from 'vuex'
   
   export default {
     middleware: 'checkMobile',
+    asyncData ({ params, error }) {
+      return Api.articlelist(params.id, 10)
+          .then((res) => {
+          return { articleData: res.data}
+        }).catch (err => {
+        console.log('报错了啊')
+      })
+    },
     data() {
       return {
+        tag: {},
         navList: ['全部', '前端', '数据库', '微信', '开发工具', '其他'],
         aboutList: [
           {tit: '网名：', cont:'益码凭川'},
@@ -62,7 +71,7 @@
           {tit: '邮箱：', cont:'jiangsc93@163.com'},
           {tit: '现居：', cont:'重庆'},
         ],
-        tagsList: ['javascript', 'html', 'css', 'jquery', 'vue', 'react', 'nodejs', 'nuxt', 'next', 'typescript', '正则表达式', '工具', 'git'],
+        tagsList: [],
         time: new Date(),
         articleData: {
           records: 0,
@@ -82,6 +91,7 @@
       IndexHeader,
     },
     created() {
+      this.getTagList();
       this.navList.map((item,index)=>{
         if (this.$route.params.id === item) {
           this.activeIndex = index
@@ -89,7 +99,7 @@
       })
     },
     computed: {
-      ...mapState(['isMobile'])
+      ...mapState(['isMobile', 'tagList'])
     },
     mounted() {
       // 移动端 rem 单位适配
@@ -102,6 +112,16 @@
       }
     },
     methods: {
+      getTagList() {
+        Api.getTagList()
+          .then(res => {
+            if (res.status === 200 && res.data.message === 'success' && res.data.data.list) {
+              this.tagsList = res.data.data.list
+            }
+          }, err => {
+            console.log('报错啦', err)
+          })
+      },
       onChoose(item, index) {
         if (index === this.activeIndex) return
         this.activeIndex = index

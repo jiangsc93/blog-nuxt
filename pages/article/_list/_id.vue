@@ -18,6 +18,14 @@
   import Api from '~/utils/api'
   export default {
     layout: 'article',
+    head() {
+      return {
+        title: '益码凭川',
+        meta: [
+          { hid: 'description', name: 'description', content: '蒋少川的个人博客，一名前端攻城狮' }
+        ]
+      }
+    },
     data() {
       return {
         articleData: '',
@@ -41,9 +49,7 @@
         Api.addVisit(item._id, editData, 'visit')
           .then((res) => {
             location.href = `/article/${item._id}`
-            // Util.UI.toast('文章修改成功!', 'success')
           }).then((res) => {
-            // this.$router.push('/news/list/1')
           }, err => {
               // Util.UI.toast('修改文章失败!', 'error')
           })

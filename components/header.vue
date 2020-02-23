@@ -24,14 +24,14 @@
       color: #409EFF;
     }
     .login_out{
-      display: inline-block;
       float:right;
       span, a{
         padding-left: 10px;
         font-size: 14px;
         color: #666;
         &.btn{
-           color: #999;
+          cursor: pointer;
+          color: #999;
          }
       }
     }

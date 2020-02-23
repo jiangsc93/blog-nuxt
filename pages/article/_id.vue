@@ -20,8 +20,8 @@ export default {
     return {
       title: '益码凭川',
       meta: [
-        { hid: 'description', name: 'description', content: '这是一段描述文字' }
-      ],
+        { hid: 'description', name: 'description', content: '蒋少川的个人博客，一名前端攻城狮' }
+      ]
     }
   },
   asyncData ({ params, error }) {
@@ -70,6 +70,8 @@ export default {
     }
     .cont {
       ._wrap {
+        // width: 100%;
+        // overflow: scroll;
         font-size: 15px;
       }
     }

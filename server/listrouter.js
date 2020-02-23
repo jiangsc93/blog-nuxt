@@ -1,5 +1,6 @@
 // 引入编写好的api
 const api = require('./api');
+const route = require('./routes/index');
 // 引入文件模块
 const fs = require('fs');
 // 引入处理路径的模块
@@ -14,6 +15,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(api);
+// app.use(route);
 //
 //
 // // 访问静态资源文件 这里是访问所有dist目录下的静态资源文件

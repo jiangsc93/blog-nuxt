@@ -60,6 +60,14 @@ export default class  {
   }
 
   /**
+   * 获取标签列表
+   */
+  static getTagList(data){
+
+    return Net.getJSON(Checkenv.url.api + "/getTagList/", {}, data);
+  }
+
+  /**
    * 获取单个文章
    */
   static newsOne(Id){

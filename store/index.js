@@ -7,18 +7,18 @@ export const state = () => ({
 })
 
 export const mutations = {
-  SET_USER: function (state, flag) {
-    state.isLogin = flag
+  SET_USER (state, flag) {
+    state.isLogin = flag;
   },
-  setDeviceType: function (state, val) {
-    state.isMobile = val
-  }
+  setDeviceType(state, val) {
+    state.isMobile = val;
+  },
 }
 
 export const actions = {
 
   isLoginFn(state) {
-    state.isLogin = true
+    state.isLogin = true;
   },
 
   async login({ commit }, opts) {

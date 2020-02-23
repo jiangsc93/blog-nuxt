@@ -2,9 +2,11 @@ var express = require('express');
 var router = express.Router();
 var moment = require('moment');
 var request = require('request');
+
 // 引入模型
 var listModel = require('./list_model');
 var userModel = require('./user_model');
+var { responseClient } = require('./util/util');
 
 // 极验api
 var session = require('express-session');
@@ -71,6 +73,28 @@ router.get('/api/articleone/:id', (req, res, next) => {
     }
   });
 });
+// 获取标签列表
+router.get('/api/getTagList/', (req, res, next) => {
+  listModel.distinct('tag', (error, result) => {
+    // 先把标签全部打乱成一个一个，然后单个单个装进数组
+    let tags = result.join(',').split(',');
+    let tagList = tags.map((item)=>{
+        return item.toLowerCase()
+      }
+    )
+    // Set用法
+    let noRepetTagList = [...new Set(tagList)];
+    if (error) {
+      console.error('Error:' + error);
+      // throw error;
+    } else {
+      let responseData = {};
+      responseData.count = noRepetTagList.length;
+      responseData.list = noRepetTagList;
+      responseClient(res, 200, 0, 'success', responseData);
+    }
+  });
+});
 
 // 后台：分页读取文章列表
 router.post('/api/newslist', (req, res, next) => {
@@ -96,7 +120,7 @@ router.post('/api/newslist', (req, res, next) => {
 
     if (resDatas.pageIndex > resDatas.total) resDatas.pageIndex = resDatas.total;
     var limit = resDatas.pagesize;
-    var skip = (resDatas.pageIndex - 1) * resDatas.pagesize;
+    // var skip = (resDatas.pageIndex - 1) * resDatas.pagesize;
 
     // listModel.find().sort({_id: -1}).limit(limit).skip(skip)
     listModel.find().sort({_id: -1}).limit(limit)
@@ -162,7 +186,6 @@ router.get('/api/newsdelet/:id',(req, res, next) => {
 router.post("/api/newsedit/:id", (req, res, next) => {
 
     listModel.findById(req.params.id, (err, data) => {
-      console.log(req.body.visit, 'req.body.visit');
       if (req.body.visit) {
         data.visit = req.body.visit || 0;
       } else {
@@ -215,10 +238,8 @@ router.post('/api/login', function (req, res) {
 
       if (err) {
         console.log(err, 'err');
-        // res.send(err);
       } else {
-        console.log(data, 'data+++++++++++');
-        // res.send(data);
+        console.log(data, '登录成功！');
       }
     });
     return res.json({ userName: req.body.userName })

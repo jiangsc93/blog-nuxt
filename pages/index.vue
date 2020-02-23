@@ -8,13 +8,12 @@
 import Index from '~/components/index/index.vue'
 
 export default {
-  // middleware: 'checkMobile',
   layout: 'index',
   head() {
     return {
       title: '益码凭川',
       meta: [
-        { hid: 'description', name: 'description', content: 'jsc' }
+        { hid: 'description', name: 'description', content: '蒋少川的个人博客，一名前端攻城狮' }
       ]
     }
   },
