@@ -46,19 +46,25 @@ module.exports = {
     '@nuxtjs/proxy'
   ],
   proxy: [ // 设置代理
-    ['/api', { target: 'http://39.96.10.130:3000' }]
-    // ['/api', { target: 'http://localhost:3000' }]
+    // ['/api', { target: 'http://39.96.10.130:3000' }]
+    ['/api', { target: 'http://localhost:3000' }]
   ],
   plugins: [
+    { src: '~plugins/nuxt-mavon-plugin.js', ssr: false },
     { src: '~plugins/nuxt-quill-plugin.js', ssr: false },
     { src: '~plugins/element-ui.js', ssr: true },
-    { src: '~plugins/util.js', ssr: false }
+    { src: '~plugins/util.js', ssr: false },
+    // { src: '~plugins/components.js', ssr: true },
+    { src: '~plugins/filter.js', ssr: false },
+    { src: '~plugins/lazy-load.js', ssr: false },
+    { src: '~plugins/prototype.js', ssr: false },
   ],
 
   css: [
     '~/assets/css/base.scss',
-    'element-ui/lib/theme-chalk/reset.css',
+    // 'element-ui/lib/theme-chalk/reset.css',
     'element-ui/lib/theme-chalk/index.css',
+    'mavon-editor/dist/css/index.css'
   ],
   // router: {
   //   middleware: 'chekRouter'

@@ -9,7 +9,6 @@ var Net = {
 
       axios.get(url, config)
         .then(function(res){
-          console.log(res, 'res');
           res.status == 200 ? resolve(res) : reject('错误:', res.status);
         })
         .catch(function(err){

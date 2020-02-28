@@ -14,6 +14,7 @@
   import Api from '~/utils/api'
   export default {
     middleware: 'auth',
+    layout: 'back',
     head() {
       return {
         title: this.datas.title,

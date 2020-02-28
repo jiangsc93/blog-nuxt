@@ -1,14 +1,22 @@
 <template>
   <div class="item">
+    <h3 class="tag-title">{{tagTitle}}</h3>
     <ul>
-      <li class="item-li overflow" v-for="(item, index) in articleData.rows" :key="index">
-        <h5 class="title cursor"><span @click="onRead(item, index)" class="tit">{{item.title}}</span></h5>
-        <div class="cont"><span class="inline-b _wrap">{{item.summary}}</span><span class="view-all">[<span class="all" @click="onRead(item, index)">阅读全文</span>]</span></div>
-        <div class="info fr">
-          <span class="time"><i class="iconfont icon-shijian"></i>{{item.lastDate}}</span>
-          <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{item.visit || '1'}}次浏览</span>
-          <span class="tag inline-b"><i class="iconfont icon-icontag"></i>{{item.tag || '其他'}}</span>
-        </div>
+      <li class="item-li overflow" v-for="(item, index) in articleData" :key="index">
+        <a :href="`/article/${item._id}`" target="__blank" alt>
+          <div class="__lt">
+            <h3 class="title cursor">{{item.title}}</h3>
+            <div class="cont"><span class="inline-b _wrap">{{item.summary}}</span></div>
+            <div class="info">
+              <span class="time"><i class="iconfont icon-shijian"></i>{{item.beginDate}}</span>
+              <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{item.visit || '1'}}次浏览</span>
+              <span class="tag inline-b"><i class="iconfont icon-icontag"></i>{{item.tag || '其他'}}</span>
+            </div>
+          </div>
+          <div class="__rt">
+            <img src="../../../assets/images/user_logo.png" alt="文章封面">
+          </div>
+        </a>
       </li>
     </ul>
   </div>
@@ -20,24 +28,49 @@
     layout: 'article',
     head() {
       return {
-        title: '益码凭川',
+        title: '文章',
         meta: [
+          { hid: 'keywords', name: 'keywords', content: '文章列表'},
           { hid: 'description', name: 'description', content: '蒋少川的个人博客，一名前端攻城狮' }
         ]
       }
     },
     data() {
       return {
-        articleData: '',
+        articleData: [],
+        tagTitle: '',
       }
     },
     asyncData ({ params, error }) {
-      return Api.articlelist(params.id, 10)
+      let reqParams = {
+        type: '1',
+        tag: params.id,
+        pageIndex: 1,
+        pageSize: 10
+      }
+      return Api.articlelist(reqParams)
           .then((res) => {
-          return { articleData: res.data}
+            if (res.status === 200 && res.data.message === 'success' && res.data.data.list) {
+              return { articleData: res.data.data.list, tagTitle: `${params.id} 相关的文章：`}
+            }
         }).catch (err => {
         console.log('报错了啊')
       })
+    },
+    mounted() {
+      console.log(this.articleData, 'ddddd');
+      // let reqParams = {
+      //   type: '1',
+      //   tag: '全部',
+      //   pageIndex: 1,
+      //   pageSize: 10
+      // };
+      // Api.articlelist(reqParams)
+      //     .then((res) => {
+      //     console.log(res, '返回')
+      //   }).catch (err => {
+      //   console.log('报错了啊')
+      // })
     },
     methods: {
       onRead(item, index) {
@@ -60,63 +93,78 @@
 
 <style scoped lang="scss">
   .item {
+    .tag-title {
+      font-weight: bold;
+      margin: 20px 0;
+      color: #336;
+      font-size: 20px;
+    }
+    ul, li {
+      padding: 0;
+    }
     a {
       color: inherit;
     }
     .iconfont {
-      font-size: 13px;
+      font-size: 12px;
       margin-right: 5px;
-      color: #555;
+      color: #666;
       font-weight: bold;
       &.icon-yanjing {
         font-size: 17px;
         position: relative;
-        top: 1px;
+        top: 2px;
       }
     }
     .item-li {
-      padding: 10px 20px;
-      border-radius: 4px;
+      padding: 15px 0;
       background: #fff;
-      margin-bottom: 20px;
-      .title {
-        font-size: 16px;
-        color: #000;
-        font-weight: bold;
-        line-height: 1.5;
-        margin: 10px 0;
-        border-bottom: 1px solid #ddd;
-        .tit:hover {
-          color: red;
-        }
-      }
-      .cont {
-        ._wrap {
-          font-size: 13px;
-          line-height: 1.6;
-        }
-        .view-all {
-          color: $blue1;
-          margin-left: 8px;
-          cursor: pointer;
+      position: relative;
+      border-bottom: 1px solid #f0f0f0;
+      .__lt {
+        padding-right: 150px;
+        .title {
+          font-size: 17px;
+          color: #332;
+          font-weight: bold;
+          line-height: 1.5;
+          margin: 10px 0;
           &:hover {
-            color: #5A94D0;
+            color: #409EFF;;
           }
-          .all {
+        }
+        .cont {
+          margin-bottom: 15px;
+          color: #666;
+          ._wrap {
             font-size: 13px;
+            color: #555;
+            line-height: 1.8;
+          }
+        }
+        .info {
+          font-size: 12px;
+          color: #888;
+          .visit {
+            margin: 0 13px;
+          }
+          .tag {
+            .icon-tag {
+              margin-right: 6px;
+            }
           }
         }
       }
-      .info {
-        font-size: 13px;
-        color: #666;
-        .visit {
-          margin: 0 13px;
-        }
-        .tag {
-          .icon-tag {
-            margin-right: 6px;
-          }
+      .__rt {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        margin-top: -50px;
+        width: 120px;
+        height: 100px;
+        img {
+          width: 100%;
+          height: 100%;
         }
       }
     }

@@ -4,7 +4,7 @@ let { responseClient } = util;
 
 //获取全部标签
 exports.getTagList = (req, res) => {
-  responseClient(res, 200, 0, 'success', {ss: 'ddd'});
+  // responseClient(res, 200, 0, 'success', {ss: 'ddd'});
   // let keyword = req.query.keyword || null;
   // let pageNum = parseInt(req.query.pageNum) || 1;
   // let pageSize = parseInt(req.query.pageSize) || 10;

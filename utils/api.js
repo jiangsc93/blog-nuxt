@@ -10,9 +10,22 @@ export default class  {
 
   /**
    * 文章类型列表  按照类型，页数查找文章列表
+   * params类型：{
+   *   type: '1',     1 文章 2 归档 
+   *   tag: '全部',   各种标签
+   *   pageIndex: '1',
+   *   pageSize: 10,
+   * }
    */
-  static articlelist(type='全部', pageIndex, pagesize){
-    return Net.postJSON(Checkenv.url.api + "/articlelist/", {}, {type: type, pageIndex: pageIndex, pagesize: pagesize});
+  static articlelist(params){
+    return Net.postJSON(Checkenv.url.api + "/articlelist/", {}, params);
+  }
+
+  /**
+   * 获取单个文章
+   */
+  static submitMessage(params){
+    return Net.postJSON(Checkenv.url.api + "/submitMessage/", {}, params);
   }
 
   /**
@@ -25,8 +38,8 @@ export default class  {
   /**
    * 文章列表
    */
-  static newslist(pageIndex,pagesize){
-    return Net.postJSON(Checkenv.url.api + "/newslist/", {}, {pageIndex: pageIndex, pagesize: pagesize});
+  static newslist(pageIndex,pageSize){
+    return Net.postJSON(Checkenv.url.api + "/newslist/", {}, {pageIndex: pageIndex, pageSize: pageSize});
   }
 
   /**

@@ -26,6 +26,7 @@
 
   export default {
     middleware: 'auth',
+    layout: 'back',
     head() {
       return {
         title: '后台-列表页',
@@ -45,7 +46,7 @@
     asyncData ({ params, error }) {
       return Api.newslist(params.id, 10)
           .then((res) => {
-          return { datas: res.data, records: res.data.records, pageSize: res.data.pagesize, currentPage: res.data.pageIndex}
+          return { datas: res.data, records: res.data.records, pageSize: res.data.pageSize, currentPage: res.data.pageIndex}
         }).catch (err => {
         console.log('报错了啊')
       })

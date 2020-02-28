@@ -2,75 +2,54 @@
   <div class="main">
     <index-header></index-header>
     <div class="page-article" :class="isMobile ? 'mobile': ''">
-      <div class="__lt">
-        <!-- 导航标签 -->
-        <nav v-if="!isMobile">
-          <i class="iconfont icon-tag"></i>
-          <ul class="nav-ul">
-            <li class="nav-li cursor"
-              :class="activeIndex===index?'active':''"
-              v-for="(item, index) in navList"
-              :key="index"
-              @click="onChoose(item, index)">{{item}}
-            </li>
-          </ul>
-        </nav>
-        <nuxt/>
-      </div>
-      <div v-if="!isMobile" class="__rt">
-        <div class="user">
-          <img class="user-logo"
-               src="../assets/images/user_logo.png"
-               alt="yimapingchuan logo" />
-          <p class="text">益码凭川</p>
+      <div class="wrap">
+        <div class="__lt">
+          <nuxt/>
         </div>
-        <!-- <div class="item">
-          <h2 class="title">关于我</h2>
-          <ul>
-            <li v-for="(item, index) in aboutList" :key="index">
-              <span>{{item.tit}}</span>
-              <span>{{item.cont}}</span>
-            </li>
-          </ul>
-        </div> -->
-        <div class="item">
-          <h2 class="title">标签云</h2>
-          <div class="cont">
-            <span class="tag" v-for="(item, index) in tagsList" :key="index">{{item}}</span>
+        <div v-if="!isArticleDetail && !isMobile" class="__rt">
+          <div class="user">
+            <img class="user-logo"
+                src="../assets/images/user_logo.png"
+                alt="yimapingchuan logo" />
+            <p class="text">益码凭川</p>
+          </div>
+          <div class="item">
+            <h2 class="title">标签云</h2>
+            <div class="cont">
+              <span class="tag" v-for="(item, index) in tagsList" :key="index">
+                <a :href="`/article/list/${item}`" :alt="item" :title="`查看${item}相关文章`">{{item}}</a>
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <my-footer></my-footer>
+    <index-footer></index-footer>
   </div>
 </template>
 <script>
   import IndexHeader from '~/components/header/indexHeader'
-  import MyFooter from '~/components/Footer'
+  import IndexFooter from '~/components/footer/footer'
   import Api from '~/utils/api'
   import MyPage from '~/components/PageAction'
   import { mapState } from 'vuex'
   
   export default {
     middleware: 'checkMobile',
-    asyncData ({ params, error }) {
-      return Api.articlelist(params.id, 10)
+    asyncData ({ params, router, error, req }) {
+      return Api.articlelist(params.id, 1, 10)
           .then((res) => {
-          return { articleData: res.data}
-        }).catch (err => {
+            return { articleData: res.data, tagTitle: `${params.id} 相关的文章`}
+          }).catch (err => {
         console.log('报错了啊')
       })
     },
     data() {
       return {
+        tagTitle: '',
+        showTagTitle: true,
+        isArticleDetail: false,
         tag: {},
-        navList: ['全部', '前端', '数据库', '微信', '开发工具', '其他'],
-        aboutList: [
-          {tit: '网名：', cont:'益码凭川'},
-          {tit: '职业：', cont:'前端工程师'},
-          {tit: '邮箱：', cont:'jiangsc93@163.com'},
-          {tit: '现居：', cont:'重庆'},
-        ],
         tagsList: [],
         time: new Date(),
         articleData: {
@@ -83,25 +62,23 @@
         records: 0, // 总数据条数
         pageSize: 0, // 分页数
         currentPage: 0, // 当前页
-        articleItemData: {}
+        articleItemData: {},
+        params: {}
       }
     },
     components: {
-      MyFooter,
       IndexHeader,
-    },
-    created() {
-      this.getTagList();
-      this.navList.map((item,index)=>{
-        if (this.$route.params.id === item) {
-          this.activeIndex = index
-        }
-      })
+      IndexFooter,
     },
     computed: {
       ...mapState(['isMobile', 'tagList'])
     },
-    mounted() {
+    mounted() { 
+      this.getTagList();
+      
+      if (this.$route.path.indexOf('article') > -1 && this.$route.path.indexOf('list') === -1) {
+        this.isArticleDetail = true;
+      }
       // 移动端 rem 单位适配
       if (this.isMobile) {
         // width * 100 / 750 = width / 7.5
@@ -122,15 +99,10 @@
             console.log('报错啦', err)
           })
       },
-      onChoose(item, index) {
-        if (index === this.activeIndex) return
-        this.activeIndex = index
-        location.href = `/article/list/${item}`
-      },
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 html {
   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
@@ -147,122 +119,72 @@ html {
   margin: 0;
 }
 
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
-}
-.main {
-  background-color: #f4f4f4;
-}
-
 .page-article {
   max-width: 1200px;
-  margin: 80px auto 30px;
-  min-height: 100vh;
+  margin: 60px auto 0;
+  // min-height: 100vh;
+  position: relative;
   display: flex;
-  justify-content: center;
   &.mobile {
     margin: 60px auto 20px;
   }
-  a {
-    color: inherit;
-  }
-  .__lt {
-    // width: 860px;
-    min-width: 70%;
-    max-width: 95%;
-    flex-direction: column;
-    nav {
-      margin-bottom: 20px;
-      padding: 20px;
-      background: #fff;
-      .icon-tag {
-        position: relative;
-        top: 3px;
-        font-size: 25px;
-        color: red;
-      }
-      .nav-ul, .nav-li {
-        display: inline-block;
-      }
-      .nav-li {
-        padding: 0 20px;
-        font-size: 17px;
-        &.active {
-          color: $themeColor;
-          font-weight: bold;
-        }
-        &:hover {
-          color: $themeColor;
-          font-weight: bold;
-        }
-      }
+  .wrap {
+    width: 100%;
+    a {
+      color: inherit;
     }
-  }
-  .__rt {
-    // width: 330px;
-    min-width: 28%;
-    margin-left: 10px;
-    flex-direction: column;
-    border-radius: 4px;
-    .item {
-      background: #fff;
-      padding: 10px 15px 20px;
-      margin-bottom: 10px;
+    .__lt {
+      float: left;
+      width: 65%;
+    }
+    .__rt {
+      display: block;
+      float: right;
+      width: 25%;
+      position: sticky;
+      top: 100px;
+      right: 0;
+      width: 350px;
+      margin-left: 30px;
       border-radius: 4px;
-      .title {
-        font-size: 20px;
-        font-weight: bold;
-        line-height: 22px;
-        text-align: center;
-        padding: 15px 0;
-        border-bottom: 1px solid #eaeaea;
-      }
-      ul {
-        margin: 10px 0;
-        font-size: 13px;
-        li {
+      .item {
+        background: #fff;
+        padding: 10px 15px 20px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        .title {
+          font-size: 20px;
+          font-weight: bold;
           line-height: 22px;
+          text-align: center;
+          padding: 15px 0;
+          border-bottom: 1px solid #eaeaea;
         }
-      }
-      .cont {
-        .tag {
-          display: inline-block;
-          padding: 4px 10px;
-          margin: 10px 10px 0 0;
-          border-radius: 4px;
-          border: 1px solid #ccc;
+        ul {
+          margin: 10px 0;
           font-size: 13px;
-          color: #666;
-          cursor: pointer;
-          &:hover {
-            color: #fff;
-            background: #000;
-            border-color: #000;
+          li {
+            line-height: 22px;
+          }
+        }
+        .cont {
+          .tag {
+            display: inline-block;
+            margin: 10px 10px 0 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            &:hover {
+              color: #fff;
+              background: #000;
+              border-color: #000;
+            }
+            a {
+              display: inline-block;
+              padding: 4px 10px 4px;
+            }
           }
         }
       }

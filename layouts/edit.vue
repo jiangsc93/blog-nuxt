@@ -1,17 +1,20 @@
 <template>
   <div>
-    <my-header></my-header>
+    <back-header></back-header>
     <div class="edit container">
       <nuxt/>
       <el-form :model="editData" :rules="rules" ref="editForm" label-width="100px" class="form-edit">
         <el-form-item label="文章标题" prop="title">
           <el-input v-model="editData.title"></el-input>
         </el-form-item>
-        <el-form-item label="作者" prop="author">
+        <el-form-item class="author" label="作者" prop="author">
           <el-input v-model="editData.author"></el-input>
         </el-form-item>
-        <el-form-item label="文章类型" prop="type">
-          <el-select v-model.trim="editData.type" @change="onChange()" placeholder="请选择文章类型">
+        <el-form-item label="简短概要" prop="summary">
+          <el-input type="textarea" v-model="editData.summary"></el-input>
+        </el-form-item>
+        <el-form-item class="type" label="文章类型" prop="type">
+          <el-select v-model.trim="editData.type" placeholder="文章类型">
           <el-option
             v-for="item in optionsTypes"
             :key="item.value"
@@ -23,7 +26,6 @@
         <el-form-item label="所属标签" prop="tag">
           <el-select
             v-model.trim="editData.tag"
-            @change="onChange()"
             multiple
             filterable
             allow-create
@@ -38,47 +40,43 @@
           </el-select>
         </el-form-item>
         <el-form-item label="文章内容" prop="content">
-          <div class="quill-editor"
-               :content="editData.content"
-               @change="onEditorChange($event)"
-               @blur="onEditorBlur($event)"
-               @focus="onEditorFocus($event)"
-               @ready="onEditorReady($event)"
-               v-quill:myQuillEditor="editorOption">
-          </div>
+          <my-editor :content="editData.content" @saveContent="onSave"></my-editor>
         </el-form-item>
-        <!-- <textarea id="editor" style={{ marginBottom: 20, width: 800 }} size="large" rows={6} /> -->
-
+        <p class="tips">编辑完内容请点击保存(或Ctrl + S)</p>
         <el-form-item>
-          <el-button type="primary" @click="submitNews('editForm')">立即发表</el-button>
+          <el-button type="primary" @click="submitArticle('editForm')">立即发布</el-button>
           <el-button @click="resetForm('editForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <my-footer></my-footer>
+    <index-footer></index-footer>
   </div>
 </template>
 
 <script>
   import Api from '~/utils/api'
-  import 'quill/dist/quill.snow.css'
-  import 'quill/dist/quill.bubble.css'
-  import 'quill/dist/quill.core.css'
-  import MyHeader from '~/components/header'
-  import MyFooter from '~/components/Footer'
+  import BackHeader from '~/components/header/backHeader'
+  import IndexFooter from '~/components/footer/footer'
+  import myEditor from '~/components/editor/mavonEditor'
   import Cookie from 'js-cookie'
   import { DropdownMenu, DropdownItem, Dropdown } from 'element-ui'
-  // import 'simplemde/dist/simplemde.min.css';
-  // import SimpleMDE from 'npm install simplemde --save';
-  // import marked from 'marked';
-  // import highlight from 'highlight.js';
+  
   const moment = require('moment');
 
   let authUser =  eval('(' + Cookie.get('authUser') + ')');
   export default {
+    // asyncData ({ params }) {
+    //   // if (!params.id) return;
+    //   return Api.newsOne(params.id)
+    //       .then(res => {
+    //         res.data.tag = res.data.tag.split(','); // 字符串切换成数组
+    //         return {editData: Object.assign({}, res.data)};
+    //       }, err => {
+    //         console.log('报错啦', err)
+    //       })
+    // },
     data(){
       return {
-        // smde: null,
         optionsTags: [{
           value: 'HTML',
           label: 'HTML'
@@ -117,7 +115,9 @@
           lastDate: '',
           type: '',
           tag: '',
-          content: ''
+          content: '',
+          summary: '',
+          wordage: ''
         },
         rules: {
           title: [
@@ -127,92 +127,48 @@
           author: [
             { required: true, message: '请输入文章作者', trigger: 'blur' }
           ],
+          summary: [
+            { required: true, message: '请输入一句对文章简要的概括', trigger: 'blur' }
+          ],
           type: [
             { required: true, message: '请输入文章类型', trigger: 'blur' }
           ],
           tag: [
             { required: true, message: '请输入文章所属标签', trigger: 'blur' }
-          ],
-          content: [
-            { required: true, message: '请输入文章内容', trigger: 'blur' }
           ]
         },
-        editorOption: {
-          // some quill options
-          modules: {
-            toolbar: [
-              ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-              ['blockquote', 'code-block'],
-              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-              [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-              [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-              [{ 'direction': 'rtl' }],                         // text direction
-              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-              [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-              [{ 'font': [] }],
-              [{ 'align': [] }],
-              ['clean']
-            ]
-          }
-        }
-
       }
     },
-    beforeMount () {
+    mounted () {
       if (!this.$route.params.id) return;
-      Api.newsOne(this.$route.params.id)
-        .then(res => {
-          this.editData.title = res.data.title;
-          this.editData.author = res.data.author;
-          this.editData.lastDate = res.data.lastDate;
-          this.editData.type = res.data.type;
-          this.editData.tag = res.data.tag.split(','); // 字符串切换成数组
-          this.editData.content = res.data.content;
-        }, err => {
-          console.log('报错啦', err)
-        })
-    },
-    mounted() {
-      // this.smde = new SimpleMDE({
-      //   element: document.getElementById('editor').childElementCount,
-      //   autofocus: true,
-      //   autosave: true,
-      //   previewRender(plainText) {
-      //     return marked(plainText, {
-      //       renderer: new marked.Renderer(),
-      //       gfm: true,
-      //       pedantic: false,
-      //       sanitize: false,
-      //       tables: true,
-      //       breaks: true,
-      //       smartLists: true,
-      //       smartypants: true,
-      //       highlight(code) {
-      //         return highlight.highlightAuto(code).value;
-      //       },
-      //     });
-      //   },
-      // });
-      // console.log(this.smde, 'ddd');
+      setTimeout(() => {
+        Api.newsOne(this.$route.params.id)
+          .then(res => {
+            res.data.tag = res.data.tag.split(','); // 字符串切换成数组
+            this.editData = Object.assign({}, res.data);
+            console.log(this.editData, '555');
+          }, err => {
+            console.log('报错啦', err)
+          })
+      }, 0)
     },
     methods: {
-      onChange(val) {
-
-        console.log(this.editData.type, 'cal');
-        console.log(this.editData.tag, 'tag');
+      // 保存markdown内容
+      onSave(val) {
+        this.editData.content = val;
+        this.editData.wordage = val.length;
       },
-      handleClick() {
-        alert('button click');
-      },
+      // 重置表单内容
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      submitNews(formName) {
-
+      submitArticle(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.editData.author = this.editData.author ? this.editData.author : '佚名';
-            this.editData.tag = this.editData.tag.join(',');
+            // 将数组 标签 转化成字符串存进去
+            this.editData.tag = this.editData.tag.join(',').toLowerCase();
+
             if (this.$route.params.id) { // 修改,编辑
               this.editData.lastDate = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
               Api.reEdit(this.$route.params.id, this.editData)
@@ -223,7 +179,7 @@
               }, err => {
                  Util.UI.toast('修改文章失败!', 'error')
               })
-            } else{// 新建
+            } else { // 新建
 
               Api.newsEdit(this.editData)
               .then((res) => {
@@ -239,50 +195,46 @@
             return false;
           }
         });
-
       },
-
-      onEditorBlur(editor) {
-        console.log('editor blur!', editor.root)
-      },
-      onEditorFocus(editor) {
-        console.log('editor focus!', editor)
-      },
-      onEditorReady(editor) {
-        console.log('editor ready!', editor)
-      },
-      onEditorChange({ editor, html, text }) {
-        this.editData.summary = text.substr(0,200)
-        this.editData.content = html
-      }
-
     },
     components: {
-      MyFooter,
-      MyHeader,
+      BackHeader,
+      IndexFooter,
       DropdownMenu,
       DropdownItem,
-      Dropdown
+      Dropdown,
+      myEditor
     },
   }
 </script>
 
+<style lang="scss">
+.form-edit .author .el-form-item__content .el-input .el-input__inner {
+  max-width: 100px!important;
+}
+.form-edit .type .el-form-item__content .el-input .el-input__inner {
+  max-width: 115px!important;
+}
+</style>
+
 <style scoped lang="scss">
-  .el-dropdown {
-    vertical-align: top;
-  }
-  .el-dropdown + .el-dropdown {
-    margin-left: 15px;
-  }
-  .el-icon-arrow-down {
-    font-size: 12px;
-  }
-  .form-edit{
-    max-width: 72%;
-  }
-  .quill-editor {
-    min-height: 200px;
-    max-height: 400px;
-    overflow-y: auto;
-  }
+.el-dropdown {
+  vertical-align: top;
+}
+.el-dropdown + .el-dropdown {
+  margin-left: 15px;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+
+.form-edit{
+  max-width: 100%;
+}
+.tips {
+  padding: 0 0 10px 100px;
+  font-size: 13px;
+  color: orange;
+  margin: 0;
+}
 </style>

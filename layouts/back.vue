@@ -1,18 +1,18 @@
 <template>
   <div>
-    <index-header></index-header>
+    <back-header></back-header>
     <nuxt/>
     <index-footer></index-footer>
   </div>
 </template>
 <script>
-  import IndexHeader from '~/components/header/indexHeader'
+  import BackHeader from '~/components/header/backHeader'
   import IndexFooter from '~/components/footer/footer'
   export default {
     components: {
-      IndexHeader,
+      BackHeader,
       IndexFooter,
-    } 
+    }
   }
 </script>
 <style>

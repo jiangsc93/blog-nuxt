@@ -5,11 +5,15 @@
           <img :style="backgColor" src="./images/ympc.png" alt="">
         </div>
         <div class="__rt">
-          <ul class="nav">
-            <li class="list-item"
-              v-for="(item, index) in navList" :key="index">
-              <a :class="activeIndex === index ? 'active' : ''" :href="item.link">{{item.title}}</a></li>
-          </ul>
+          <!-- <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"> -->
+          <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+            <el-menu-item :index="item.activeIndex"
+              v-for="(item, index) in navList"
+              :key="index">
+              <a :href="item.link">{{item.title}}</a>
+              <!-- {{item.title}} -->
+              </el-menu-item>
+          </el-menu>
           <nuxt-link to="/login" class="login">登录</nuxt-link>
         </div>
       </div>
@@ -23,14 +27,17 @@
       <div v-show="isShowSide" class="side">
         <ul class="nav">
           <li class="list-item"
-            v-for="(item, index) in navList" :key="index">
-            <a :class="activeIndex === index ? 'active' : ''" :href="item.link" @click="goLink(item.title)">{{item.title}}</a></li>
+            v-for="(item, index) in navList"
+            :key="index"
+            :class="activeIndex === index ? 'active' : ''">
+            <a :href="item.link" @click="goLink(item.title)">{{item.title}}</a></li>
         </ul>
       </div>
   </header>
 </template>
 
 <script>
+  import { Menu, MenuItem } from 'element-ui' 
   import { mapState } from 'vuex'
   import _ from 'lodash'
   export default {
@@ -43,21 +50,45 @@
           {
             title: '首页',
             link: '/',
-            activeIndex: 0
+            activeIndex: '0'
           },
           {
             title: '文章',
             link: '/article/list/全部',
-            activeIndex: 1
+            activeIndex: '1'
+          },
+          {
+            title: '归档',
+            link: '/archive',
+            activeIndex: '2'
+          },
+          {
+            title: '项目',
+            link: '/project',
+            activeIndex: '3'
+          },
+          {
+            title: '历程',
+            link: '/experience',
+            activeIndex: '4'
+          },
+          {
+            title: '留言',
+            link: '/message',
+            activeIndex: '5'
           },
           {
             title: '关于',
             link: '/about',
-            activeIndex: 2
+            activeIndex: '6'
           },
         ],
         activeIndex: 0
       }
+    },
+    components: {
+      Menu,
+      MenuItem
     },
     created() {
       _.filter(this.navList, (item)=>{
@@ -81,6 +112,9 @@
       }
     },
     methods: {
+      // handleSelect(key, keyPath) {
+      //   console.log(key, keyPath, 'ddd');
+      // },
       randomColor() { // rgb颜色随机
         let r = Math.floor(Math.random()*256);
         let g = Math.floor(Math.random()*256);
@@ -97,25 +131,38 @@
 </script>
 
 <style scoped lang="scss">
+  .el-menu.el-menu--horizontal {
+    border-bottom: none;
+  }
+  .el-menu--horizontal>.el-menu-item.is-active {
+    color: #409EFF;
+  }
+  .el-menu--horizontal>.el-menu-item {
+    color: #303133;
+  }
+  .el-menu-item {
+    font-size: 16px;
+    padding: 0 24px;
+  }
   header {
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
-    background: #222;
+    background: #fff;
+    color: #000;
+    // padding-top: 10px;
+    border-bottom: 1px solid #eee;
     .pc-header {
-      height: 80px;
-      line-height: 80px;
-      padding: 0 25px;
+      height: 60px;
+      line-height: 60px;
       max-width: 1200px;
       margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
       .logo {
+        display: inline-block;
         width: 130px;
         height: 60px;
-        margin-top: 10px;
         img {
           width: 100%;
           height: 100%;
@@ -123,30 +170,10 @@
         }
       }
       .__rt {
-        .nav {
-          display: inline-block;
-          .list-item {
-            display: inline-block;
-            cursor: pointer;
-            a {
-              display: inline-block;
-              width: 100px;
-              height: 40px;
-              line-height: 40px;
-              margin-left: 10px;
-              border-radius: 4px;
-              text-align: center;
-              color: #fff;
-              font-size: 16px;
-              &.active {
-                background: #404040;
-              }
-              &:hover {
-                background: #404040;
-              }
-            }
-          }
-        }
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 30px;
+        font-size: 18px!important;
         .login {
           display: inline-block;
           color: #fff!important;

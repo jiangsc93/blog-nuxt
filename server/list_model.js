@@ -20,6 +20,7 @@ var testSchema = new mongoose.Schema({
   },
   summary: String,
   content: String,
+  wordage: String,
 });
 
 // 列表
