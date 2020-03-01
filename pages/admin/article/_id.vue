@@ -30,9 +30,9 @@
       }
     },
     asyncData ({ params, error }) {
-      return Api.newsOne(params.id)
-          .then((res) => {
-          return { datas: res.data }
+      return Api.getArticleOneAdmin(params.id)
+          .then(res => {
+          return { datas: res.data.data }
         }).catch (err => {
           console.log('报错了啊')
       })

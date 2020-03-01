@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import moment from 'moment';
 import { Toast, MessageBox } from 'mint-ui';
+import { Message } from 'element-ui';
+
 /**
  * @param phone 手机号码
  * @returns {boolean}
@@ -166,6 +168,8 @@ Vue.prototype.$toast = Toast;
 Vue.prototype.$alert = MessageBox.alert;
 
 Vue.prototype.$confirm = MessageBox.confirm;
+
+Vue.prototype.$message = Message;
 
 Vue.prototype.$prompt = MessageBox.prompt;
 

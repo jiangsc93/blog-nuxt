@@ -1,12 +1,14 @@
 <template>
   <div class="main">
     <index-header></index-header>
-    <div class="page-article" :class="isMobile ? 'mobile': ''">
+    <!-- <div class="page-article" :class="isMobile ? 'mobile': ''"> -->
+    <div class="page-article">
       <div class="wrap">
         <div class="__lt">
           <nuxt/>
         </div>
-        <div v-if="!isArticleDetail && !isMobile" class="__rt">
+        <!-- <div v-if="!isArticleDetail && !isMobile" class="__rt"> -->
+        <div class="__rt">
           <div class="user">
             <img class="user-logo"
                 src="../assets/images/user_logo.png"
@@ -14,10 +16,15 @@
             <p class="text">益码凭川</p>
           </div>
           <div class="item">
-            <h2 class="title">标签云</h2>
+            <div class="cloud">
+              <span class="_one"></span>
+              <span class="_two"></span>
+              <span class="_three"></span>
+            </div>
+            <h2 class="title"><span style="color:red;">标</span><span style="color: #06c;">签</span>云</h2>
             <div class="cont">
               <span class="tag" v-for="(item, index) in tagsList" :key="index">
-                <a :href="`/article/list/${item}`" :alt="item" :title="`查看${item}相关文章`">{{item}}</a>
+                <a :href="item.tag === '关于博主' ? '/about' : `/article/list/${item.tag}`" :alt="item.tag" :title="`查看${item.tag}相关文章`">{{item.tag}}</a>
               </span>
             </div>
           </div>
@@ -32,31 +39,23 @@
   import IndexFooter from '~/components/footer/footer'
   import Api from '~/utils/api'
   import MyPage from '~/components/PageAction'
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   
   export default {
-    middleware: 'checkMobile',
-    asyncData ({ params, router, error, req }) {
-      return Api.articlelist(params.id, 1, 10)
-          .then((res) => {
-            return { articleData: res.data, tagTitle: `${params.id} 相关的文章`}
-          }).catch (err => {
-        console.log('报错了啊')
-      })
-    },
+    middleware: 'getTagList',
     data() {
       return {
-        tagTitle: '',
+        // tagTitle: '',
         showTagTitle: true,
         isArticleDetail: false,
-        tag: {},
-        tagsList: [],
+        // tag: {},
+        // tagsList: [],
         time: new Date(),
-        articleData: {
-          records: 0,
-          pageSize: 0,
-          currentPage: 0,
-        },
+        // articleData: {
+        //   records: 0,
+        //   pageSize: 0,
+        //   currentPage: 0,
+        // },
         loading: false,
         activeIndex: -1,
         records: 0, // 总数据条数
@@ -71,34 +70,38 @@
       IndexFooter,
     },
     computed: {
-      ...mapState(['isMobile', 'tagList'])
+      ...mapState(['isMobile', 'tagsList']),
+      ...mapGetters(['getTagsList']),
     },
     mounted() { 
-      this.getTagList();
+      // this.tagsList = this.getTagsList
+      // console.log(this.tagsList, '5555555555');
+      // this.getTagList();
       
-      if (this.$route.path.indexOf('article') > -1 && this.$route.path.indexOf('list') === -1) {
-        this.isArticleDetail = true;
-      }
-      // 移动端 rem 单位适配
-      if (this.isMobile) {
-        // width * 100 / 750 = width / 7.5
-        // 1rem = 100px
-        let width = window.screen.width;
-        window.document.getElementsByTagName("html")[0].style.fontSize =
-          width / 7.5 + "px";
-      }
+      // if (this.$route.path.indexOf('article') > -1 && this.$route.path.indexOf('list') === -1) {
+      //   this.isArticleDetail = true;
+      // }
+      // // 移动端 rem 单位适配
+      // if (this.isMobile) {
+      //   // width * 100 / 750 = width / 7.5
+      //   // 1rem = 100px
+      //   let width = window.screen.width;
+      //   window.document.getElementsByTagName("html")[0].style.fontSize =
+      //     width / 7.5 + "px";
+      // }
     },
     methods: {
-      getTagList() {
-        Api.getTagList()
-          .then(res => {
-            if (res.status === 200 && res.data.message === 'success' && res.data.data.list) {
-              this.tagsList = res.data.data.list
-            }
-          }, err => {
-            console.log('报错啦', err)
-          })
-      },
+      
+      // getTagList() {
+      //   Api.getTagList()
+      //     .then(res => {
+      //       if (res.status === 200 && res.data.data && res.data.data.list) {
+      //         this.tagsList = res.data.data.list
+      //       }
+      //     }, err => {
+      //       console.log('报错啦', err)
+      //     })
+      // },
     }
   }
 </script>
@@ -152,6 +155,43 @@ html {
         padding: 10px 15px 20px;
         margin-bottom: 10px;
         border-radius: 4px;
+        position: relative;
+        .cloud {
+          position: absolute;
+          top: 18px;
+          left: 50%;
+          transform: translateX(-60px);
+          span {
+            display: inline-block;
+          }
+          ._one {
+            width: 60px;
+            height: 1px;
+            padding-top: 60px;
+            border: 1px solid red;
+            border-radius: 30px;
+          }
+          ._two {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #409EFF;
+            border-block-start-width: 0;
+            border-bottom-width: 0;
+            border-bottom-width: 0;
+            border-radius: 50%;
+            position: absolute;
+            left: 30px;
+            top: -30px;
+          }
+          ._three {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #2c3e52;;
+            border-block-start-width: 0;
+            border-bottom-width: 0;
+            border-radius: 50%;
+          }
+        }
         .title {
           font-size: 20px;
           font-weight: bold;

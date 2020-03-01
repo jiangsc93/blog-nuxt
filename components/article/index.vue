@@ -86,7 +86,7 @@ export default {
     onChoose(item, index) {
       if (index === this.activeIndex) return
       this.activeIndex = index
-      Api.articlelist(item, 5, 5)
+      Api.getArticleList(item, 5, 5)
         .then((res) => {
           this.articleData = res.data
         }).catch (err => {

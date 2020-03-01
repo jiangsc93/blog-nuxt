@@ -6,15 +6,14 @@
         </div>
         <div class="__rt">
           <!-- <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"> -->
-          <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+          <el-menu :default-active="activeIndex" :router="true" class="el-menu-demo" mode="horizontal">
             <el-menu-item :index="item.activeIndex"
               v-for="(item, index) in navList"
-              :key="index">
-              <a :href="item.link">{{item.title}}</a>
-              <!-- {{item.title}} -->
+              :key="index"
+              :route="item.link">{{item.title}}
               </el-menu-item>
           </el-menu>
-          <nuxt-link to="/login" class="login">登录</nuxt-link>
+          <!-- <nuxt-link to="/login" class="login">登录</nuxt-link> -->
         </div>
       </div>
       <div v-else class="mobile-header">

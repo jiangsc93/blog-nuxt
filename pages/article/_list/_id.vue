@@ -3,7 +3,7 @@
     <h3 class="tag-title">{{tagTitle}}</h3>
     <ul>
       <li class="item-li overflow" v-for="(item, index) in articleData" :key="index">
-        <a :href="`/article/${item._id}`" target="__blank" alt>
+        <a :href="`/article/${item._id}`" target="" alt>
           <div class="__lt">
             <h3 class="title cursor">{{item.title}}</h3>
             <div class="cont"><span class="inline-b _wrap">{{item.summary}}</span></div>
@@ -48,46 +48,15 @@
         pageIndex: 1,
         pageSize: 10
       }
-      return Api.articlelist(reqParams)
-          .then((res) => {
-            if (res.status === 200 && res.data.message === 'success' && res.data.data.list) {
+      return Api.getArticleList(reqParams)
+          .then(res => {
+            if (res.status === 200 && res.data.data && res.data.data.list) {
               return { articleData: res.data.data.list, tagTitle: `${params.id} 相关的文章：`}
             }
         }).catch (err => {
         console.log('报错了啊')
       })
     },
-    mounted() {
-      console.log(this.articleData, 'ddddd');
-      // let reqParams = {
-      //   type: '1',
-      //   tag: '全部',
-      //   pageIndex: 1,
-      //   pageSize: 10
-      // };
-      // Api.articlelist(reqParams)
-      //     .then((res) => {
-      //     console.log(res, '返回')
-      //   }).catch (err => {
-      //   console.log('报错了啊')
-      // })
-    },
-    methods: {
-      onRead(item, index) {
-        let editData = {}
-        Object.assign(editData, this.articleData.rows[index])
-        let visit = this.articleData.rows[index].visit || 0
-        visit += 1
-        editData.visit = visit
-        Api.addVisit(item._id, editData, 'visit')
-          .then((res) => {
-            location.href = `/article/${item._id}`
-          }).then((res) => {
-          }, err => {
-              // Util.UI.toast('修改文章失败!', 'error')
-          })
-      },
-    }
   } 
 </script>
 
@@ -159,10 +128,11 @@
         position: absolute;
         top: 50%;
         right: 0;
-        margin-top: -50px;
-        width: 120px;
-        height: 100px;
+        margin-top: -47px;
+        width: 130px;
+        height: 94px;
         img {
+        border-radius: 1px;
           width: 100%;
           height: 100%;
         }

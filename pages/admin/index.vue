@@ -3,14 +3,14 @@
     <div>
       <app-logo/>
       <h1 class="title">
-        简单文章增删改查系统
+        文章增删改查系统
       </h1>
       <div class="links">
         <a
-          href="/edit"
+          href="/admin/edit"
           class="button--green">发表文章</a>
         <a
-          href="/news/list/1"
+          href="/admin/article/list/1"
           class="button--grey">查看文章</a>
       </div>
     </div>
@@ -22,6 +22,7 @@ import AppLogo from '~/components/AppLogo.vue'
 
 export default {
   middleware: 'auth',
+  layout: 'back',
   head() {
     return {
       title: '这是一个测试Title',

@@ -1,9 +1,10 @@
 <template>
   <div>
-    <no-ssr><mavon-editor :toolbars="markdownOption" @save="onSave" v-model="content"/></no-ssr>
+    <no-ssr><mavon-editor ref="md" :toolbars="markdownOption" @save="onSave" @imgAdd="$imgAdd" v-model="content"/></no-ssr>
   </div>
 </template>
 <script>
+import axios from 'axios';
 import  'mavon-editor/dist/css/index.css'
 export default {
   props: ['content'],
@@ -41,16 +42,34 @@ export default {
         preview: true, // 预览
       },
       handbook:"",
+      mdStr: '### demo \n ![image](0)'
     }
   },
   mounted() {
     console.log(this.content, 'ttttt');
     this.handbook = this.content;
+    // 如果原始md字符串中存在曾上传的图片， 则需要将对应<img>中的src替换为base64
+    // this.$nextTick(() => {
+    //     // $vm.$imgUpdateByUrl 详情见本页末尾
+    //     $vm.$imgUpdateByUrl(0, 'base64内容');
+    // })
   },
   methods: {
     onSave() {
       console.log(this.handbook, 'handddddddd');
       this.$emit('saveContent', this.content);
+    },
+    $imgAdd(pos, $file){
+      // 将图片上传到服务器.
+      var formdata = new FormData();
+      formdata.append('image', $file);
+      axios({
+          url: 'server url',
+          method: 'post',
+          data: formdata,
+          headers: { 'Content-Type': 'multipart/form-data' },
+      }).then((flag) => {
+      })
     }
   }
 }

@@ -1,28 +1,28 @@
 <template>
   <div class="item">
     <div class="__lt">
-      <h2 class="title">{{item.title}}</h2>
+      <h2 class="title">{{responseData.title}}</h2>
       <div class="author">
         <div class="lt">
           <img class="avatar" src="../../assets/images/user_logo.png" alt="">
           <div class="info">
-            <div class="name">益码凭川</div>
+            <div class="name">{{responseData.author}}</div>
             <div>
-              <span class="time"><i class="iconfont icon-shijian"></i>{{item.lastDate}}</span>
-              <span class="wordage">字数 {{item.wordage || 2333}}</span>
-              <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{item.visit || '1'}}次浏览</span>
+              <span class="time"><i class="iconfont icon-shijian"></i>{{responseData.beginDate}}</span>
+              <span class="wordage">字数 {{responseData.wordage || 2333}}</span>
+              <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{responseData.visit || '1'}}次浏览</span>
             </div>
           </div>
         </div>
         <div class="tag inline-b">
-          <el-tag v-for="(x, y) in handleTag(item.tag)" :key="y">{{x}}</el-tag>
+          <el-tag v-for="(x, y) in handleTag(responseData.tag)" :key="y">{{x}}</el-tag>
         </div>
       </div>
-      <div class="cont"><div class="inline-b _wrap article-detail" v-html="item.content"></div></div>
+      <div class="cont"><div class="inline-b _wrap article-detail" v-html="responseData.content"></div></div>
     </div>
     <div
       class="__rt fr anchor"
-      v-html="item.toc"></div>
+      v-html="responseData.toc"></div>
   </div>
 </template>
 
@@ -41,17 +41,19 @@ export default {
       ]
     }
   },
-  asyncData ({ params, error }) {
-    return Api.articleone(params.id)
-        .then((res) => {
-          // markdown 处理
-          const article = markdown.marked(res.data.content);
-          article.then((r) => {
-            res.data.content = r.content;
-            res.data.toc = r.toc;
-            return { item: res.data}
-          });
-        return { item: res.data}
+  asyncData ({ error }) {
+    return Api.getArticleOne('introduce')
+        .then(res => {
+          let responseData = res.data.data;
+          if (res.status === 200 && res.data && res.data.data.content) {
+            // markdown 处理
+            const article = markdown.marked(res.data.data.content);
+            article.then((r) => {
+              responseData.content = r.content;
+              responseData.toc = r.toc;
+            });
+            return { responseData }
+          }
       }).catch (err => {
       console.log('报错了啊')
     })
@@ -62,6 +64,7 @@ export default {
   },
   data () {
     return {
+      responseData: {},
       content: '',
       toc: ''
     }
@@ -70,14 +73,12 @@ export default {
     
   },
   mounted() {
-    document.title = this.item.title;
-    document.querySelector("#keywords").setAttribute("content", this.item.tag);
-    document.querySelector("#description").setAttribute("content", this.item.summary);
+    console.log(this.item,'ttttt');
+    // document.title = this.item.title;
+    // document.querySelector("#keywords").setAttribute("content", this.item.tag);
+    // document.querySelector("#description").setAttribute("content", this.item.summary);
   },
   methods: {
-    handleArticle() {
-
-    },
     handleTag(tag) {
       if (tag) return tag.split(',')
     }

@@ -17,74 +17,96 @@ export default class  {
    *   pageSize: 10,
    * }
    */
-  static articlelist(params){
-    return Net.postJSON(Checkenv.url.api + "/articlelist/", {}, params);
+  static getArticleList(params){
+    return Net.postJSON(Checkenv.url.api + "/getArticleList/", {}, params);
   }
+  // static articlelist(params){
+  //   return Net.postJSON(Checkenv.url.api + "/articlelist/", {}, params);
+  // }
 
   /**
-   * 获取单个文章
+   * 提交留言
    */
   static submitMessage(params){
     return Net.postJSON(Checkenv.url.api + "/submitMessage/", {}, params);
   }
+  /**
+   * 添加项目
+   */
+  static addProject(params){
+    return Net.postJSON(Checkenv.url.api + "/addProject/", {}, params);
+  }
+
+    /**
+   * 获取项目列表
+   */
+  static getProjectList(data){
+    return Net.getJSON(Checkenv.url.api + "/getProjectList/", {}, data);
+  }
+  /**
+   * 添加历程
+   */
+  static addExperience(params){
+    return Net.postJSON(Checkenv.url.api + "/addExperience/", {}, params);
+  }
+
+    /**
+   * 获取项目列表
+   */
+  static getExperienceList(data){
+
+    return Net.getJSON(Checkenv.url.api + "/getExperienceList/", {}, data);
+  }
 
   /**
    * 获取单个文章
    */
-  static articleone(Id){
-    return Net.getJSON(Checkenv.url.api + "/articleone/" + Id);
+  static getArticleOne(Id){
+    return Net.postJSON(Checkenv.url.api + "/getArticleOne/" + Id);
   }
   
   /**
    * 文章列表
    */
-  static newslist(pageIndex,pageSize){
-    return Net.postJSON(Checkenv.url.api + "/newslist/", {}, {pageIndex: pageIndex, pageSize: pageSize});
+  static getArticleListAdmin(pageIndex, pageSize){
+    return Net.postJSON(Checkenv.url.api + "/getArticleListAdmin/", {}, {pageIndex, pageSize});
   }
 
   /**
    * 删除文章
    */
-  static newsDelet(Id){
-    return Net.getJSON(Checkenv.url.api + "/newsdelet/" + Id);
+  static deleteArticleAdmin(Id){
+    return Net.postJSON(Checkenv.url.api + "/deleteArticleAdmin/" + Id);
   }
 
   /**
    * 创建文章
    */
-  static newsEdit(data){
-    return Net.postJSON(Checkenv.url.api + "/newsedit/", {}, data);
+  static editNewArticleAdmin(data){
+    return Net.postJSON(Checkenv.url.api + "/editNewArticleAdmin/", {}, data);
   }
 
   /**
    * 修改文章
    */
-  static reEdit(Id, data){
+  static ModifyArticleAdmin(Id, data){
 
-    return Net.postJSON(Checkenv.url.api + "/newsedit/" + Id, {}, data);
-  }
-
-  /**
-   * 增加浏览量
-   */
-  static addVisit(Id, data){
-
-    return Net.postJSON(Checkenv.url.api + "/addvisit/" + Id, {}, data);
+    return Net.postJSON(Checkenv.url.api + "/ModifyArticleAdmin/" + Id, {}, data);
   }
 
   /**
    * 获取标签列表
    */
-  static getTagList(data){
+  static getTagList(){
 
-    return Net.getJSON(Checkenv.url.api + "/getTagList/", {}, data);
+    return Net.getJSON(Checkenv.url.api + "/getTagList/");
   }
 
   /**
    * 获取单个文章
    */
-  static newsOne(Id){
-    return Net.getJSON(Checkenv.url.api + "/newsone/" + Id);
+  static getArticleOneAdmin(Id){
+    return Net.postJSON(Checkenv.url.api + "/getArticleOneAdmin/" + Id);
   }
 
   /**

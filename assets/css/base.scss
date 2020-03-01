@@ -36,6 +36,15 @@ ul{
   cursor: pointer;
 }
 
+// 超出省略号
+.ellipsis-line3 {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box; 
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; 
+}
+
 /*对 markdown 样式的补充*/
 pre {
 	display: block;

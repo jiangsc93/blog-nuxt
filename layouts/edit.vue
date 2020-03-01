@@ -39,6 +39,14 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="文章发布时间" prop="beginDate">
+          <el-date-picker
+            v-model="editData.beginDate"
+            type="datetime"
+            @change="changeTime"
+            placeholder="选择发布时间">
+          </el-date-picker>
+        </el-form-item>
         <el-form-item label="文章内容" prop="content">
           <my-editor :content="editData.content" @saveContent="onSave"></my-editor>
         </el-form-item>
@@ -77,6 +85,7 @@
     // },
     data(){
       return {
+        beginTime: '',
         optionsTags: [{
           value: 'HTML',
           label: 'HTML'
@@ -111,7 +120,7 @@
         editData: {
           title: '',
           author: authUser ? authUser.userName : '',
-          beginDate: '',
+          beginDate: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
           lastDate: '',
           type: '',
           tag: '',
@@ -122,7 +131,7 @@
         rules: {
           title: [
             { required: true, message: '请输入文章标题', trigger: 'blur' },
-            { min: 5, message: '长度在不得少于5个字符', trigger: 'blur' }
+            { min: 2, message: '长度在不得少于2个字符', trigger: 'blur' }
           ],
           author: [
             { required: true, message: '请输入文章作者', trigger: 'blur' }
@@ -140,12 +149,14 @@
       }
     },
     mounted () {
+      console.log(this.beginTime, 'time');
       if (!this.$route.params.id) return;
       setTimeout(() => {
-        Api.newsOne(this.$route.params.id)
+        Api.getArticleOneAdmin(this.$route.params.id)
           .then(res => {
-            res.data.tag = res.data.tag.split(','); // 字符串切换成数组
-            this.editData = Object.assign({}, res.data);
+            let resData = res.data.data;
+            resData.tag = res.data.data.tag.split(','); // 字符串切换成数组
+            this.editData = Object.assign({}, resData);
             console.log(this.editData, '555');
           }, err => {
             console.log('报错啦', err)
@@ -153,6 +164,9 @@
       }, 0)
     },
     methods: {
+      changeTime(val) {
+        console.log(moment(val).format('YYYY-MM-DD HH:mm:ss'), 'ssss');
+      },
       // 保存markdown内容
       onSave(val) {
         this.editData.content = val;
@@ -170,22 +184,25 @@
             this.editData.tag = this.editData.tag.join(',').toLowerCase();
 
             if (this.$route.params.id) { // 修改,编辑
-              this.editData.lastDate = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
-              Api.reEdit(this.$route.params.id, this.editData)
+              this.editData.beginDate = moment(this.editData.beginDate).format('YYYY-MM-DD HH:mm:ss');
+              this.editData.lastDate = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+              Api.ModifyArticleAdmin(this.$route.params.id, this.editData)
               .then((res) => {
                 Util.UI.toast('文章修改成功!', 'success')
               }).then((res) => {
-                this.$router.push('/news/list/1')
+                this.$router.push('/admin/article/list/1')
               }, err => {
                  Util.UI.toast('修改文章失败!', 'error')
               })
             } else { // 新建
-
-              Api.newsEdit(this.editData)
-              .then((res) => {
+            if (this.editData.beginDate) {
+              this.editData.beginDate = moment(this.editData.beginDate).format('YYYY-MM-DD HH:mm:ss');
+            }
+              Api.editNewArticleAdmin(this.editData)
+              .then(res => {
                 Util.UI.toast('发表文章成功!', 'success')
               }).then((res) => {
-                this.$router.push('/news/list/1')
+                this.$router.push('/admin/article/list/1')
               }, err => {
                 Util.UI.toast('发表文章失败!', 'error')
               })

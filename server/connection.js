@@ -1,11 +1,11 @@
 //引用mongoose模块
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const consola = require('consola');
 mongoose.Promise = global.Promise;
+
 //连接数据库
 mongoose.connect('mongodb://localhost/blogdata', {useMongoClient: true})
-var db = mongoose.connection;
-db.once('error',() => console.log('Mongo 连接失败!'));
-db.once('open',() => console.log('mongodb 连接成功!'));
-
-
+const db = mongoose.connection;
+db.once('error',() => consola.warn('Mongo 连接失败!'));
+db.once('open',() => consola.ready('mongodb 连接成功!'));
 module.exports = db;

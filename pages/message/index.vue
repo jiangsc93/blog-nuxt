@@ -32,6 +32,7 @@
 import Api from '~/utils/api'
 import markdown from '~/utils/markdown'
 export default {
+  middleware: 'getTagList',
   layout: 'article',
   head() {
     return {

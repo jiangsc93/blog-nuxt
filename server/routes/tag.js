@@ -1,52 +1,46 @@
+const _ = require('lodash');
 let util = require('../util/util');
-let Tag = require('../model/tag');
+let ArticleModel = require('../model/article');
+let TagModel = require('../model/tag');
 let { responseClient } = util;
 
 //获取全部标签
-exports.getTagList = (req, res) => {
-  // responseClient(res, 200, 0, 'success', {ss: 'ddd'});
-  // let keyword = req.query.keyword || null;
-  // let pageNum = parseInt(req.query.pageNum) || 1;
-  // let pageSize = parseInt(req.query.pageSize) || 10;
-  // let conditions = {};
-  // if (keyword) {
-  //   const reg = new RegExp(keyword, 'i');
-  //   conditions = {
-  //     $or: [{ name: { $regex: reg } }, { desc: { $regex: reg } }],
-  //   };
-  // }
-  // let skip = pageNum - 1 < 0 ? 0 : (pageNum - 1) * pageSize;
-  // let responseData = {
-  //   count: 0,
-  //   list: [],
-  // };
-  // Tag.countDocuments(conditions, (err, count) => {
-  //   if (err) {
-  //     console.error('Error:' + err);
-  //   } else {
-  //     responseData.count = count;
-  //     let fields = {
-	// 			_id: 1,
-  //       name: 1,
-  //       // desc: 1,
-  //       // icon: 1,
-  //       // create_time: 1,
-  //       // update_time: 1,
-  //     }; // 待返回的字段
-  //     let options = {
-  //       skip: skip,
-  //       limit: pageSize,
-  //       sort: { create_time: -1 },
-  //     };
-  //     Tag.find(conditions, fields, options, (error, result) => {
-  //       if (err) {
-  //         console.error('Error:' + error);
-  //         // throw error;
-  //       } else {
-  //         responseData.list = result;
-  //         responseClient(res, 200, 0, 'success', responseData);
-  //       }
-  //     });
-  //   }
-  // });
+exports.getTagList = ({ res }) => {
+  TagModel.find().then(result => {
+    let responseData = {};
+    responseData.count = result.length;
+    responseData.list = result;
+    responseClient(res, 200, 'success', responseData);
+  }).catch( err => {
+    responseClient(res, 404, '获取标签失败', err);
+  })
+};
+
+// 添加标签
+exports.addTag = (params) => {
+  
+  tagList = params.toLowerCase().split(',');
+  // 先获取tag列表
+  let conditions = {tag: { $exists: true }};
+  let fields = {
+    tag: 1,
+  }
+  TagModel.find(conditions, fields).then(result => {
+    // 首先获取数据库中的tag列表，先组装成数组
+    let arr = [];
+    for (let i = 0; i < result.length; i++) {
+      if (result[i]._doc && result[i]._doc.tag) arr.push(result[i]._doc.tag)
+    }
+    // 遍历我们要添加的tag数组
+    _.forEach(tagList, item => {
+      // 用数组库的tag列表arr  检测 要添加的tag(即tagList的每一项)  没有检测到，则保存到库
+      if (arr.indexOf(item) === -1) {
+        let Tag = new TagModel({
+          tag: item,
+        });
+        Tag.save();
+      } 
+    })
+  })
+  tagList.indexOf()
 };

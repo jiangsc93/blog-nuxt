@@ -30,6 +30,7 @@
   import Api from '~/utils/api'
   import Cookie from 'js-cookie'
   export default {
+    layout: 'back',
     head() {
       return {
         title: '登录页面',
@@ -98,7 +99,7 @@
                   if (res.data.status === 'success') {
                     Cookie.set('authUser', info.data)
                     Util.UI.toast('登录成功!', 'success')
-                    _this.$router.push(`/back`)
+                    _this.$router.push(`/admin/`)
                   } else if (res.data.status === 'fail') {
                     Util.UI.toast('登录失败，请完成验证!', 'error')
                     captchaObj.reset();
@@ -117,7 +118,7 @@
        try {
          await this.$store.dispatch('login', this.ruleForm2)
          Util.UI.toast('登录成功!', 'success')
-         this.$router.push(`/back`)
+         this.$router.push(`/admin/`)
        } catch (e) {
          Util.UI.toast('账号或密码错误!', 'error')
        }

@@ -2,7 +2,7 @@
   <div class="page-archive">
     <el-timeline>
       <el-timeline-item
-        v-for="it in articleList"
+        v-for="it in archiveList"
         :key="it.year"
         type="success "
         placement="top"
@@ -10,16 +10,18 @@
         <h3 class="year">{{it.year}}</h3>
 
         <el-timeline-item
-          v-for="item in it.list"
-          :key="item._id"
-          :color="item.state === 1 ? 'green' : item.state === 3 ? 'red' : ''"
+          v-for="(m, index) in it.list"
+          :key="index"
           type="warning "
-          placement="top"
-          hide-timestamp>
-          <a :href="`/article/${item._id}`">
-            <h3 class="title">{{item.title}}</h3>
-            </a>
-          <p class="time">{{item.beginDate}}</p>
+          placement="top">
+          <router-link :to="`/article/${m._id}`"
+                       target="_blank">
+            <h3 class="title">{{m.title}}</h3>
+          </router-link>
+          <!-- <div @click="goArticle(m._id)">
+            <h3 class="title">{{m.title}}</h3>
+          </div> -->
+          <p class="time">{{m.beginDate}}</p>
         </el-timeline-item>
       </el-timeline-item>
     </el-timeline>
@@ -40,18 +42,26 @@ export default {
       ]
     }
   },
-  // asyncData ({ params, router, error, req }) {
-  //   return Api.articlelist(params.id, 1, 10)
-  //       .then((res) => {
-  //         return { articleData: res.data}
-  //       }).catch (err => {
-  //     console.log('报错了啊')
-  //   })
-  // },
   data() {
     return {
-      articleList: []
+      archiveList: [],
     }
+  },
+  asyncData ({ params, error }) {
+    let reqParams = {
+      type: '2',
+      pageIndex: 1,
+      pageSize: 10
+    };
+    return Api.getArticleList(reqParams)
+      .then(result => {
+        if (result.status === 200 && result.data && result.data.data && result.data.data.archive) {
+          let archiveList = result.data.data.archive;
+          return { archiveList }
+        }
+      }).catch (err => {
+        console.log('报错了啊')
+    })
   },
   components: {
     Timeline,
@@ -60,20 +70,12 @@ export default {
   computed: {
   },
   mounted() {
-    let reqParams = {
-        type: '2',
-        pageIndex: 1,
-        pageSize: 10
-      };
-    Api.articlelist(reqParams)
-      .then((res) => {
-        console.log(res.data.data.archive, 'ress');
-        this.articleList = res.data.data.archive;
-        // return { articleData: res.data}
-      }).catch (err => {
-      console.log('报错了啊')
-    })
-
+    console.log(this.archiveList, 'rrrrr')
+  },
+  methods: {
+    goArticle(id) {
+      window.location.href = `/article/${id}`;
+    }
   }
 }
 </script>

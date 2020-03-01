@@ -58,7 +58,7 @@
      },
     methods: {
       goCreateFile() {
-        this.$router.push(`/edit`)
+        this.$router.push(`/admin/edit`)
       },
       async logout() {
         try {
