@@ -24,7 +24,7 @@
             <h2 class="title"><span style="color:red;">标</span><span style="color: #06c;">签</span>云</h2>
             <div class="cont">
               <span class="tag" v-for="(item, index) in tagsList" :key="index">
-                <a :href="item.tag === '关于博主' ? '/about' : `/article/list/${item.tag}`" :alt="item.tag" :title="`查看${item.tag}相关文章`">{{item.tag}}</a>
+                <a :href="`/article/list/${item.tag}`" :alt="item.tag" :title="`查看${item.tag}相关文章`">{{item.tag}}</a>
               </span>
             </div>
           </div>
@@ -49,7 +49,7 @@
         showTagTitle: true,
         isArticleDetail: false,
         // tag: {},
-        // tagsList: [],
+        tagsList: [],
         time: new Date(),
         // articleData: {
         //   records: 0,
@@ -70,13 +70,11 @@
       IndexFooter,
     },
     computed: {
-      ...mapState(['isMobile', 'tagsList']),
+      ...mapState(['isMobile']),
       ...mapGetters(['getTagsList']),
     },
     mounted() { 
-      // this.tagsList = this.getTagsList
-      // console.log(this.tagsList, '5555555555');
-      // this.getTagList();
+      this.getTagList();
       
       // if (this.$route.path.indexOf('article') > -1 && this.$route.path.indexOf('list') === -1) {
       //   this.isArticleDetail = true;
@@ -91,17 +89,16 @@
       // }
     },
     methods: {
-      
-      // getTagList() {
-      //   Api.getTagList()
-      //     .then(res => {
-      //       if (res.status === 200 && res.data.data && res.data.data.list) {
-      //         this.tagsList = res.data.data.list
-      //       }
-      //     }, err => {
-      //       console.log('报错啦', err)
-      //     })
-      // },
+      getTagList() {
+        Api.getTagList()
+          .then(res => {
+            if (res.status === 200 && res.data.data && res.data.data.list) {
+              this.tagsList = res.data.data.list
+            }
+          }, err => {
+            console.log('报错啦', err)
+          })
+      },
     }
   }
 </script>

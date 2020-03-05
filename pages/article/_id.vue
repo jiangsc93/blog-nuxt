@@ -4,7 +4,8 @@
       <h2 class="title">{{responseData.title}}</h2>
       <div class="author">
         <div class="lt">
-          <img class="avatar" src="../../assets/images/user_logo.png" alt="">
+          <img class="avatar" v-if="responseData.author==='益码凭川'" src="../../assets/images/user_logo.png" alt="">
+          <el-avatar class="avatar" v-else icon="el-icon-user-solid"></el-avatar>
           <div class="info">
             <div class="name">{{responseData.author}}</div>
             <div>
@@ -29,7 +30,7 @@
 <script>
 import Api from '~/utils/api'
 import markdown from '~/utils/markdown'
-import { Tag, Loading } from 'element-ui'
+import { Tag, Loading, Avatar } from 'element-ui'
 export default {
   layout: 'front',
   head() {
@@ -41,26 +42,10 @@ export default {
       ]
     }
   },
-  asyncData ({ params, error }) {
-    return Api.getArticleOne(params.id)
-        .then((res) => {
-          let responseData = res.data.data;
-          if (res.status === 200 && res.data && res.data.data.content) {
-            // markdown 处理
-            const article = markdown.marked(res.data.data.content);
-            article.then((r) => {
-              responseData.content = r.content;
-              responseData.toc = r.toc;
-            });
-            return { responseData }
-          }
-      }).catch (err => {
-      console.log('报错了啊')
-    })
-  },
   components: {
     Tag,
-    Loading
+    Loading,
+    Avatar
   },
   data () {
     return {
@@ -69,21 +54,35 @@ export default {
       toc: ''
     }
   },
-  beforeMount() {
-    
-  },
   mounted() {
-    console.log(this.responseData, 'title')
+    this.getArticleOne();
     document.title = this.responseData.title;
     document.querySelector("#keywords").setAttribute("content", this.responseData.tag);
     document.querySelector("#description").setAttribute("content", this.responseData.summary);
   },
   methods: {
-    handleArticle() {
-
-    },
     handleTag(tag) {
       if (tag) return tag.split(',')
+    },
+    getArticleOne() {
+      let postParams = {
+        id: this.$route.params.id
+      }
+      Api.getArticleOne(postParams)
+        .then((res) => {
+          let responseData = res.data.data;
+          if (res.status === 200 && res.data && res.data.data.content) {
+            // markdown 处理
+            const article = markdown.marked(res.data.data.content);
+            article.then(result => {
+              responseData.content = result.content;
+              responseData.toc = result.toc;
+            });
+            this.responseData = responseData;
+          }
+      }).catch (err => {
+        console.log('报错了啊')
+      })
     }
   }
 }

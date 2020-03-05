@@ -2,6 +2,8 @@ import  UI from "./ui";
 import axios from 'axios'
 import qs from 'qs';
 
+// axios.defaults.headers.common['Authorization'] = '11111token';
+
 var Net = {
 
   getJSON: function (url, params, config) {
@@ -19,7 +21,6 @@ var Net = {
   },
 
   postJSON: function (url, params, data, config) {
-
     var i = 0;
     var isHasPraram;
 
@@ -37,13 +38,20 @@ var Net = {
       }
       else {
         url += "&" + o + "=" + params[o];
-      }
+      } 
       i++;
     }
 
+    // "Authorization":'token123'
     return new Promise(function(resolve, reject){
-
-      axios.post(url, qs.stringify(data), config)
+      axios({
+        method:"post",
+        url:url,
+        data:qs.stringify(data),
+        headers:{
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      })
         .then(function(res){
           res.status == 200 ? resolve(res) : reject('错误:', res.status);
         })

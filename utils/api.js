@@ -17,12 +17,9 @@ export default class  {
    *   pageSize: 10,
    * }
    */
-  static getArticleList(params){
-    return Net.postJSON(Checkenv.url.api + "/getArticleList/", {}, params);
+  static getArticleList(data){
+    return Net.postJSON(Checkenv.url.api + "/getArticleList/", {}, data);
   }
-  // static articlelist(params){
-  //   return Net.postJSON(Checkenv.url.api + "/articlelist/", {}, params);
-  // }
 
   /**
    * 提交留言
@@ -31,10 +28,22 @@ export default class  {
     return Net.postJSON(Checkenv.url.api + "/submitMessage/", {}, params);
   }
   /**
+   * 获取留言列表
+   */
+  static getMessageListAdmin(){
+    return Net.getJSON(Checkenv.url.api + "/getMessageListAdmin/");
+  }
+  /**
    * 添加项目
    */
   static addProject(params){
     return Net.postJSON(Checkenv.url.api + "/addProject/", {}, params);
+  }
+  /**
+   * 删除项目
+   */
+  static deleteProject(params){
+    return Net.postJSON(Checkenv.url.api + "/deleteProject/", {}, params);
   }
 
     /**
@@ -49,9 +58,15 @@ export default class  {
   static addExperience(params){
     return Net.postJSON(Checkenv.url.api + "/addExperience/", {}, params);
   }
+  /**
+   * 添加历程
+   */
+  static deleteExperience(params){
+    return Net.postJSON(Checkenv.url.api + "/deleteExperience/", {}, params);
+  }
 
     /**
-   * 获取项目列表
+   * 获取历程列表
    */
   static getExperienceList(data){
 
@@ -61,8 +76,8 @@ export default class  {
   /**
    * 获取单个文章
    */
-  static getArticleOne(Id){
-    return Net.postJSON(Checkenv.url.api + "/getArticleOne/" + Id);
+  static getArticleOne(data){
+    return Net.postJSON(Checkenv.url.api + "/getArticleOne/", {}, data);
   }
   
   /**
@@ -75,8 +90,8 @@ export default class  {
   /**
    * 删除文章
    */
-  static deleteArticleAdmin(Id){
-    return Net.postJSON(Checkenv.url.api + "/deleteArticleAdmin/" + Id);
+  static deleteArticleAdmin(data){
+    return Net.postJSON(Checkenv.url.api + "/deleteArticleAdmin/", {}, data);
   }
 
   /**
@@ -89,9 +104,9 @@ export default class  {
   /**
    * 修改文章
    */
-  static ModifyArticleAdmin(Id, data){
+  static ModifyArticleAdmin(data){
 
-    return Net.postJSON(Checkenv.url.api + "/ModifyArticleAdmin/" + Id, {}, data);
+    return Net.postJSON(Checkenv.url.api + "/ModifyArticleAdmin/", {}, data);
   }
 
   /**
@@ -105,12 +120,19 @@ export default class  {
   /**
    * 获取单个文章
    */
-  static getArticleOneAdmin(Id){
-    return Net.postJSON(Checkenv.url.api + "/getArticleOneAdmin/" + Id);
+  static getArticleOneAdmin(data){
+    return Net.postJSON(Checkenv.url.api + "/getArticleOneAdmin/", {}, data);
   }
 
   /**
-   * 登录页面
+   * 注册
+   */
+  static register(data){
+    return Net.postJSON(Checkenv.url.api + "/register", {}, data);
+  }
+
+  /**
+   * 登录
    */
   static login(data){
     return Net.postJSON(Checkenv.url.api + "/login", {}, data);

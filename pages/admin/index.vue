@@ -2,7 +2,10 @@
   <section class="container">
     <div>
       <app-logo/>
-      <h1 class="title">
+      <h3>
+        欢迎使用'益码凭川'博客后台系统!
+      </h3>
+      <!-- <h1 class="title">
         文章增删改查系统
       </h1>
       <div class="links">
@@ -12,7 +15,8 @@
         <a
           href="/admin/article/list/1"
           class="button--grey">查看文章</a>
-      </div>
+      </div> -->
+      
     </div>
   </section>
 </template>
@@ -22,7 +26,7 @@ import AppLogo from '~/components/AppLogo.vue'
 
 export default {
   middleware: 'auth',
-  layout: 'back',
+  layout: 'admin',
   head() {
     return {
       title: '这是一个测试Title',
@@ -37,12 +41,13 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container {
-  min-height: 100vh;
+  min-height: 78vh!important;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 0!important;
   text-align: center;
 }
 

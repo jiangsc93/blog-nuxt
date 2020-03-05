@@ -34,16 +34,6 @@ export default {
       ]
     }
   },
-  asyncData ({ error }) {
-    return Api.getProjectList()
-        .then(res => {
-          if (res.status === 200 && res.data && res.data.data && res.data.data.list) {
-            return { projectList: res.data.data.list }
-          }
-      }).catch (err => {
-      console.log('报错了啊')
-    })
-  },
   data () {
     return {
       projectList: []
@@ -55,7 +45,7 @@ export default {
     Card
   },
   mounted() {
-
+      this.getProjectList();
     // document.title = this.item.title;
     // document.querySelector("#keywords").setAttribute("content", this.item.tag);
     // document.querySelector("#description").setAttribute("content", this.item.summary);
@@ -63,6 +53,16 @@ export default {
   methods: {
     handleTag(tag) {
       if (tag) return tag.split(',')
+    },
+    getProjectList() {
+      Api.getProjectList()
+        .then(res => {
+          if (res.status === 200 && res.data && res.data.data && res.data.data.list) {
+            this.projectList = res.data.data.list;
+          }
+      }).catch (err => {
+        console.log('报错了啊')
+      })
     }
   }
 }

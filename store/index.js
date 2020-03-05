@@ -34,7 +34,8 @@ export const actions = {
   async login({ commit }, opts) {
     try {
       const { data } = await Api.login(opts)
-      Cookie.set('authUser', data)
+      console.log(data.userInfo.userName, '55555555555555555555555555');
+      Cookie.set('authUser', data.userInfo.userName)
     } catch (error) {
       console.log(error, 'error');
       if (error.response && error.response.status === 401) {

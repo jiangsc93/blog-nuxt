@@ -23,3 +23,15 @@ exports.submitMessage = ({ res, body }) => {
     }
   });
 };
+
+// 获取留言列表
+exports.getMessageListAdmin = ({ res, body }) => {
+  MessageModel.find().sort({createTime: -1}).then(result => {
+    let responseData = {};
+    responseData.count = result.length;
+    responseData.list = result;
+    responseClient(res, 200, 'success', responseData);
+  }).catch(err => {
+    responseClient(res, 404, '失败', err);
+  })
+};

@@ -2,7 +2,7 @@ const _ = require('lodash');
 let moment = require('moment');
 let util = require('../util/util');
 let articleModel = require('../model/article');
-let tag = require('./tag');
+let tagInterface = require('./tag');
 let { responseClient } = util;
 
 //获取文章列表
@@ -60,6 +60,7 @@ exports.getArticleList = ({ res, body }) => {
       
       if (body.tag === '全部') {
         options.limit = 1000;
+        options.sort = { visit: -1};
         conditions = {title: { $exists: true }};
       } else {
         let reg = new RegExp(body.tag, "i"); // 不区分大小写
@@ -67,7 +68,7 @@ exports.getArticleList = ({ res, body }) => {
       }
       // 只需查找tag标签存在就行 {tag: {$exists: true}, 以浏览量最大的靠前
       // articleModel.find(conditions, fields, options)
-    } else if (body.type === '2') {
+    } else if (body.type === '2') { // 归档
       fields = {
         title: 1,
         beginDate: 1
@@ -122,8 +123,8 @@ exports.getArticleList = ({ res, body }) => {
 }
 
 // 前台获取单个文章
-exports.getArticleOne = ({ params, res }) => {
-  if (params.id === 'introduce') {
+exports.getArticleOne = ({body, res}) => {
+  if (body.id === 'introduce') {
     let reg = new RegExp('关于博主', "g"); // 不区分大小写
     let conditions = { tag: { $regex: reg } };
     articleModel.findOne(conditions).then(result => {
@@ -133,10 +134,10 @@ exports.getArticleOne = ({ params, res }) => {
       result.save();
       responseClient(res, 200, 'success', result);
     }).catch(err => {
-      responseClient(res, 404, '没有找到');
+      responseClient(res, 404, '没有找到', err);
     })
   } else {
-    articleModel.findOne({ _id: params.id }).then( result => {
+    articleModel.findOne({ _id: body.id }).then( result => {
       // 保存浏览次数，每请求一次加一次
       result.visit += 1;
       result.save(function(err, data) {
@@ -153,16 +154,16 @@ exports.getArticleOne = ({ params, res }) => {
 };
 
 // admin编辑新文章
-exports.editNewArticleAdmin = (res) => {
-
-  console.log(res, 'object');
-  let { title, author, type, tag, summary, content, wordage } = params;
+exports.editNewArticleAdmin = ({res, body}) => {
+  let { title, author, type, tag, summary, beginDate, content, wordage } = body;
+  wordage = content.length;
+  
   let article = new articleModel({
     title,
     author,
     type,
     tag,
-    visit: params.visit || 12,
+    visit: 12,
     beginDate,
     lastDate: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
     summary,
@@ -170,7 +171,7 @@ exports.editNewArticleAdmin = (res) => {
     wordage
   });
   // 调用tag的addTag接口
-  tag.addTag(body.tag);
+  tagInterface.addTag(tag);
   article.save((err, data) => {
     if (err) {
       responseClient(res, 404, 'error', err);
@@ -181,8 +182,8 @@ exports.editNewArticleAdmin = (res) => {
 };
 
 // admin删除单个文章
-exports.deleteArticleAdmin = ({ params, res }) => {
-  articleModel.findById(params.id, (err, data) => {
+exports.deleteArticleAdmin = ({ body, res }) => {
+  articleModel.findById(body.id, (err, data) => {
     if (err) {
       responseClient(res, 404, '没有查找这篇文章', err);
     } else {
@@ -192,8 +193,7 @@ exports.deleteArticleAdmin = ({ params, res }) => {
         } else {
           responseClient(res, 200, '你很叼哦,删除成功了!', result);
           // 调用tag的deleteTag接口
-          tag.deleteTag(result.tag);
-          res.end();
+          // tagInterface.deleteTag(result.tag);
         }
       });
     }
@@ -201,9 +201,10 @@ exports.deleteArticleAdmin = ({ params, res }) => {
 };
 
 // admin修改单个文章
-exports.modifyArticleAdmin = ({ params, res, body }) => {
-  articleModel.findById(params.id, (err, data) => {
-    data.wordage = body.wordage;
+exports.modifyArticleAdmin = ({ res, body }) => {
+  
+  articleModel.findById(body.id, (err, data) => {
+    data.wordage = body.content.length;
     data.content = body.content;
     data.summary = body.summary;
     data.beginDate = body.beginDate;
@@ -213,7 +214,7 @@ exports.modifyArticleAdmin = ({ params, res, body }) => {
     data.tag = body.tag;
     data.title = body.title;
     // 调用tag的addTag接口
-    tag.addTag(body.tag);
+    tagInterface.addTag(body.tag);
     data.save(function(err, data) {
       if (err) {
         responseClient(res, 404, '文章修改失败', err);
@@ -225,8 +226,8 @@ exports.modifyArticleAdmin = ({ params, res, body }) => {
 };
 
 // admin获取单个文章
-exports.getArticleOneAdmin = ({ res, params}) => {
-  articleModel.findById(params.id, (err, data) => {
+exports.getArticleOneAdmin = ({ res, body}) => {
+  articleModel.findById(body.id, (err, data) => {
     if (err) {
       responseClient(res, 404, '获取文章失败', err);
     } else {

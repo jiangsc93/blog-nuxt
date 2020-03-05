@@ -43,7 +43,7 @@
     asyncData ({ params, error }) {
       return Api.getArticleListAdmin(params.id, 10)
           .then(res => {
-            let { records, pageSize, pageIndex } = res.data.data;
+            let { records, pageSize, pageIndex } = res.data.data.list;
             return { articleList: res.data.data.list, records, pageSize, pageIndex }
         }).catch (err => {
         console.log('报错了啊')
@@ -54,7 +54,7 @@
     },
     methods: {
       deletFn(id) {
-        Util.UI.confirm('确定删除这篇文章吗?', '提示').then(() => {
+        Util.UI.confirm('确定删除这篇文章吗?').then(() => {
           Api.deleteArticleAdmin({id})
           .then(res => {
             Util.UI.toast('文章删除成功!', 'success')

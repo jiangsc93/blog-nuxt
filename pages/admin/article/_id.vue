@@ -14,7 +14,7 @@
   import Api from '~/utils/api'
   export default {
     middleware: 'auth',
-    layout: 'back',
+    layout: 'admin',
     head() {
       return {
         title: this.datas.title,
@@ -30,7 +30,7 @@
       }
     },
     asyncData ({ params, error }) {
-      return Api.getArticleOneAdmin(params.id)
+      return Api.getArticleOneAdmin({id: params.id})
           .then(res => {
           return { datas: res.data.data }
         }).catch (err => {
@@ -44,5 +44,8 @@
   h1,.about {
     text-align: center;
     margin-bottom: 15px;
+  }
+  .container {
+    min-height: 60vh;
   }
 </style>

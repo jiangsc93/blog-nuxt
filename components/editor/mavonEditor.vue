@@ -1,6 +1,6 @@
 <template>
   <div>
-    <no-ssr><mavon-editor ref="md" :toolbars="markdownOption" @save="onSave" @imgAdd="$imgAdd" v-model="content"/></no-ssr>
+    <no-ssr><mavon-editor ref="md" :toolbars="markdownOption" @save="onSave" @imgAdd="$imgAdd" v-model="handbook"/></no-ssr>
   </div>
 </template>
 <script>
@@ -41,23 +41,19 @@ export default {
         subfield: true, // 单双栏模式
         preview: true, // 预览
       },
-      handbook:"",
+      handbook: '',
       mdStr: '### demo \n ![image](0)'
     }
   },
-  mounted() {
-    console.log(this.content, 'ttttt');
-    this.handbook = this.content;
-    // 如果原始md字符串中存在曾上传的图片， 则需要将对应<img>中的src替换为base64
-    // this.$nextTick(() => {
-    //     // $vm.$imgUpdateByUrl 详情见本页末尾
-    //     $vm.$imgUpdateByUrl(0, 'base64内容');
-    // })
+  watch: {
+    content(val) {
+      this.handbook = val;
+    }
   },
   methods: {
     onSave() {
       console.log(this.handbook, 'handddddddd');
-      this.$emit('saveContent', this.content);
+      this.$emit('saveContent', this.handbook);
     },
     $imgAdd(pos, $file){
       // 将图片上传到服务器.

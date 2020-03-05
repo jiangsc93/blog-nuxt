@@ -1,14 +1,14 @@
 <template>
   <section class="container">
     <div class="login_logout">
-      <h1>Login</h1>
+      <h1 class="title">{{title}}</h1>
       <div class="list">
-        <el-form :model="ruleForm2" status-icon ref="ruleForm2" label-width="60px" class="demo-ruleForm">
-          <el-form-item label="用户名" prop="userName">
-            <el-input type="text" v-model="ruleForm2.userName" auto-complete="off"></el-input>
+        <el-form :model="ruleForm2" status-icon ref="ruleForm2" :rules="rules" label-width="90px" class="demo-ruleForm">
+          <el-form-item label="邮箱" prop="email">
+            <el-input type="text" v-model="ruleForm2.email" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="passWord">
-            <el-input type="password" v-model="ruleForm2.passWord" auto-complete="off"></el-input>
+          <el-form-item label="密码" prop="password">
+            <el-input type="password" v-model="ruleForm2.password" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="验证">
             <div id="captcha">
@@ -16,10 +16,10 @@
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" id="btn" @click="login">提交</el-button>
+            <el-button type="primary" id="btn" @click="login">登录</el-button>
             <el-button @click="resetForm('ruleForm2')">重置</el-button>
+            <el-button @click="register()">去注册</el-button>
           </el-form-item>
-          <p class="username_pass">测试账号: 任意非空字符 密码: 123456</p>
         </el-form>
       </div>
     </div>
@@ -45,22 +45,28 @@
     },
     data(){
       return {
+        title: "登录",
         ruleForm2: {
-          userName: '',
-          passWord: ''
+          password: '',
+          email: ''
         },
         jiyanData: {
           geetest_challenge: '',
           geetest_validate: '',
           geetest_seccode: ''
         },
-        showJiyan: false
+        showJiyan: false,
+        rules: {
+          email: [
+            { type: 'array', required: true, message: '请输入邮箱', trigger: 'change' }
+          ],
+          password: [
+            { type: 'string', required: true, message: '请输入密码', trigger: 'change' }
+          ]
+        }
       }
     },
     mounted() {
-      
-      
-      
       Api.JiyanSlide()
       .then(res => {
           // 参数1：配置参数
@@ -114,24 +120,38 @@
       })
     },
     methods: {
-     async login() {
-       try {
-         await this.$store.dispatch('login', this.ruleForm2)
-         Util.UI.toast('登录成功!', 'success')
-         this.$router.push(`/admin/`)
-       } catch (e) {
-         Util.UI.toast('账号或密码错误!', 'error')
+      login() {
+       if (this.ruleForm2.userName !== '' && this.ruleForm2.password !== '') {
+         Api.login(this.ruleForm2).then(result => {
+           Cookie.set('authUser', result.data.data.userInfo)
+           Util.UI.toast('登录成功!', 'success')
+           setTimeout(() => {
+             window.location.href = '/admin/'
+           }, 1000)
+         }).catch(err => {
+           Util.UI.toast('账号或密码错误!', 'error')
+         })
+       } else {
+         Util.UI.toast('请输入账号和密码!', 'error')
        }
      },
       resetForm(formName) {
         this.$refs[formName].resetFields();
+      },
+      register() {
+        window.location.href = '/admin/register';
       }
     }
   }
 </script>
 
 <style scoped lang="scss">
+  .el-form.demo-ruleForm .el-form-item {
+    margin-bottom: 30px!important;
+  }
   .container{
+    height: 60vh;
+    margin: 0 auto;
     -webkit-box-shadow: none;
     box-shadow: none;
     .el-form-item {
@@ -150,11 +170,9 @@
       left: 50%;
       top:50%;
       min-height: 300px;
-    }
-    .username_pass{
-      font-size: 12px;
-      color: #999;
-      text-align: center;
+      .title {
+        text-align: center;
+      }
     }
     #wait{
       line-height: 40px;

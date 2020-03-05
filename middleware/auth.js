@@ -19,7 +19,7 @@ export default function ({ route, req, res, redirect, error, store }) {
 
   let isClient = process.client;
   let isServer = process.server;
-  let redirectURL = '/login';
+  let redirectURL = '/admin/login';
   var authUser, path
 
   //在服务端
@@ -38,7 +38,7 @@ export default function ({ route, req, res, redirect, error, store }) {
   }
 
   if (path) {
-    redirectURL = '/login'
+    redirectURL = '/admin/login'
   }
 
   //需要进行权限判断的页面开头

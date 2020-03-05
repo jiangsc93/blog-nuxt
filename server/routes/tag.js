@@ -1,10 +1,9 @@
 const _ = require('lodash');
 let util = require('../util/util');
-let ArticleModel = require('../model/article');
 let TagModel = require('../model/tag');
 let { responseClient } = util;
 
-//获取全部标签
+// 获取全部标签
 exports.getTagList = ({ res }) => {
   TagModel.find().then(result => {
     let responseData = {};

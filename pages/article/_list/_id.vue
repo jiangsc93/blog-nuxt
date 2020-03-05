@@ -3,7 +3,7 @@
     <h3 class="tag-title">{{tagTitle}}</h3>
     <ul>
       <li class="item-li overflow" v-for="(item, index) in articleData" :key="index">
-        <a :href="`/article/${item._id}`" target="" alt>
+        <a :href="`/article/${item._id}`">
           <div class="__lt">
             <h3 class="title cursor">{{item.title}}</h3>
             <div class="cont"><span class="inline-b _wrap">{{item.summary}}</span></div>
@@ -41,21 +41,27 @@
         tagTitle: '',
       }
     },
-    asyncData ({ params, error }) {
-      let reqParams = {
-        type: '1',
-        tag: params.id,
-        pageIndex: 1,
-        pageSize: 10
-      }
-      return Api.getArticleList(reqParams)
+    mounted() {
+      console.log(this.$route.params.id, 'rpute');
+
+      this.getArticleList();
+    },
+    methods: {
+      getArticleList() {
+        let reqParams = {
+          type: '1',
+          tag: this.$route.params.id
+        }
+        Api.getArticleList(reqParams)
           .then(res => {
             if (res.status === 200 && res.data.data && res.data.data.list) {
-              return { articleData: res.data.data.list, tagTitle: `${params.id} 相关的文章：`}
+              this.articleData = res.data.data.list;
+              this.tagTitle = `${this.$route.params.id} 相关的文章：`;
             }
         }).catch (err => {
-        console.log('报错了啊')
-      })
+          console.log('报错了啊')
+        })
+      }
     },
   } 
 </script>
@@ -93,6 +99,7 @@
       .__lt {
         padding-right: 150px;
         .title {
+          text-align: left;
           font-size: 17px;
           color: #332;
           font-weight: bold;

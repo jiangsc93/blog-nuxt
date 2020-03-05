@@ -47,22 +47,6 @@ export default {
       archiveList: [],
     }
   },
-  asyncData ({ params, error }) {
-    let reqParams = {
-      type: '2',
-      pageIndex: 1,
-      pageSize: 10
-    };
-    return Api.getArticleList(reqParams)
-      .then(result => {
-        if (result.status === 200 && result.data && result.data.data && result.data.data.archive) {
-          let archiveList = result.data.data.archive;
-          return { archiveList }
-        }
-      }).catch (err => {
-        console.log('报错了啊')
-    })
-  },
   components: {
     Timeline,
     TimelineItem
@@ -70,11 +54,26 @@ export default {
   computed: {
   },
   mounted() {
-    console.log(this.archiveList, 'rrrrr')
+    this.getArchiveList();
   },
   methods: {
     goArticle(id) {
       window.location.href = `/article/${id}`;
+    },
+    getArchiveList() {
+      let reqParams = {
+        type: '2',
+        pageIndex: 1,
+        pageSize: 10
+      };
+      Api.getArticleList(reqParams)
+        .then(result => {
+          if (result.status === 200 && result.data && result.data.data && result.data.data.archive) {
+            this.archiveList = result.data.data.archive;
+          }
+        }).catch (err => {
+          console.log('报错了啊')
+      })
     }
   }
 }

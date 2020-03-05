@@ -41,23 +41,6 @@ export default {
       ]
     }
   },
-  asyncData ({ error }) {
-    return Api.getArticleOne('introduce')
-        .then(res => {
-          let responseData = res.data.data;
-          if (res.status === 200 && res.data && res.data.data.content) {
-            // markdown 处理
-            const article = markdown.marked(res.data.data.content);
-            article.then((r) => {
-              responseData.content = r.content;
-              responseData.toc = r.toc;
-            });
-            return { responseData }
-          }
-      }).catch (err => {
-      console.log('报错了啊')
-    })
-  },
   components: {
     Tag,
     Loading
@@ -69,18 +52,28 @@ export default {
       toc: ''
     }
   },
-  beforeMount() {
-    
-  },
-  mounted() {
-    console.log(this.item,'ttttt');
-    // document.title = this.item.title;
-    // document.querySelector("#keywords").setAttribute("content", this.item.tag);
-    // document.querySelector("#description").setAttribute("content", this.item.summary);
-  },
   methods: {
     handleTag(tag) {
       if (tag) return tag.split(',')
+    },
+    getArticleOne() {
+      let postParams = {
+        id: 'introduce'
+      }
+      Api.getArticleOne(postParams)
+        .then(res => {
+          let responseData = res.data.data;
+          if (res.status === 200 && res.data && res.data.data.content) {
+            let article = markdown.marked(res.data.data.content);
+            article.then((r) => {
+              responseData.content = r.content;
+              responseData.toc = r.toc;
+            });
+            this.responseData = responseData;
+          }
+        }).catch (err => {
+          console.log('报错了啊')
+        })
     }
   }
 }
@@ -97,9 +90,6 @@ export default {
   border-left: 1px solid #eee;
   a {
     text-decoration: none;
-    // &.active {
-    //   color: red;
-    // }
   }
   ul {
     display: block;
@@ -175,7 +165,6 @@ export default {
       line-height: 1.5;
       margin: 20px 0;
       text-align: center;
-      // border-bottom: 1px solid #ddd;
     }
     .cont {
       ._wrap {

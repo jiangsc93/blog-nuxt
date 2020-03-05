@@ -34,17 +34,6 @@ export default {
       ]
     }
   },
-  asyncData ({ params, error }) {
-    return Api.getExperienceList()
-        .then(res => {
-          if (res.status === 200 && res.data && res.data.data.list) {
-            let experienceList = res.data.data.list;
-            return { experienceList }
-          }
-      }).catch (err => {
-      console.log('报错了啊')
-    })
-  },
   data() {
     return {
       experienceList: [],
@@ -87,9 +76,20 @@ export default {
     TimelineItem
   },
   mounted() {
-    console.log(this.experienceList, '1111111111');
+    this.getExperienceList();
   },
   methods: {
+    getExperienceList() {
+      Api.getExperienceList()
+        .then(res => {
+          if (res.status === 200 && res.data && res.data.data.list) {
+            let experienceList = res.data.data.list;
+            this.experienceList = experienceList;
+          }
+      }).catch (err => {
+        console.log('报错了啊')
+      })
+    }
   }
 }
 </script>

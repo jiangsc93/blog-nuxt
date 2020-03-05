@@ -1,16 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var moment = require('moment');
-// var request = require('request');
 const _ = require('lodash');
 // 引入模型
-// var listModel = require('./list_model');
-var userModel = require('./user_model');
 var project = require('./routes/project');
 var article = require('./routes/article');
 var message = require('./routes/message');
 var tag = require('./routes/tag');
 var experience = require('./routes/experience');
+var user = require('./routes/user');
 var { responseClient } = require('./util/util');
 
 // 极验api
@@ -35,22 +33,24 @@ router.all('*', (req, res, next) => {
 // 前台：按类型-分页读取文章列表
 router.post('/api/getArticleList/', article.getArticleList);
 // 前台：读取单个文章详情
-router.post('/api/getArticleOne/:id', article.getArticleOne);
+router.post('/api/getArticleOne/', article.getArticleOne);
 // admin 删除文章
-router.post('/api/deleteArticle/:id', article.deleteArticleAdmin);
+router.post('/api/deleteArticleAdmin/', article.deleteArticleAdmin);
 // admin 编辑新文章
-router.post('/api/editNewArticleAdmin/:id', article.editNewArticleAdmin);
+router.post('/api/editNewArticleAdmin/', article.editNewArticleAdmin);
 // admin 修改原文章
-router.post('/api/modifyArticleAdmin/:id', article.modifyArticleAdmin);
+router.post('/api/modifyArticleAdmin/', article.modifyArticleAdmin);
 // admin 分页获取文章列表
 router.post('/api/getArticleListAdmin/', article.getArticleListAdmin);
 // admin 获取单个文章
-router.post('/api/getArticleOneAdmin/:id', article.getArticleOneAdmin);
+router.post('/api/getArticleOneAdmin/', article.getArticleOneAdmin);
 
 // 获取项目列表
 router.get('/api/getProjectList/', project.getProjectList);
 // 添加项目
 router.post('/api/addProject/', project.addProject);
+// 删除项目
+router.post('/api/deleteProject/', project.deleteProject);
 
 // 获取标签列表
 router.get('/api/getTagList/', tag.getTagList);
@@ -58,33 +58,43 @@ router.get('/api/getTagList/', tag.getTagList);
 
 // 提交留言
 router.post('/api/submitMessage', message.submitMessage);
+// 获取留言列表
+router.get('/api/getMessageListAdmin', message.getMessageListAdmin);
 
 // 添加历程
 router.post('/api/addExperience', experience.addExperience);
+// 添加历程
+router.post('/api/deleteExperience', experience.deleteExperience);
 // 获取历程列表
 router.get('/api/getExperienceList', experience.getExperienceList);
 
 
-// 登录操作
-router.post('/api/login', function (req, res) {
-  if (req.body.userName !== '' && req.body.passWord === '123456') {
-    let addUser = new userModel({
-      userName: req.body.userName,
-      password: req.body.passWord,
-      date: req.body.date ? req.body.date : moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
-    });
-    addUser.save((err, data) => {
+// 注册
+router.post('/api/register', user.register);
+// 登录
+router.post('/api/login', user.login);
 
-      if (err) {
-        console.log(err, 'err');
-      } else {
-        console.log(data, '登录成功！');
-      }
-    });
-    return res.json({ userName: req.body.userName })
-  }
-  res.status(401).json({ error: '账号或密码不正确!' })
-})
+
+// // 登录操作
+// router.post('/api/login', function (req, res) {
+//   if (req.body.userName !== '' && req.body.passWord === '123456') {
+//     let addUser = new userModel({
+//       userName: req.body.userName,
+//       password: req.body.passWord,
+//       date: req.body.date ? req.body.date : moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+//     });
+//     addUser.save((err, data) => {
+
+//       if (err) {
+//         console.log(err, 'err');
+//       } else {
+//         console.log(data, '登录成功！');
+//       }
+//     });
+//     return res.json({ userName: req.body.userName })
+//   }
+//   res.status(401).json({ error: '账号或密码不正确!' })
+// })
 
 
 // 极验接口

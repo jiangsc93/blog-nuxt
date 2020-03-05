@@ -1,22 +1,23 @@
 <template>
   <header>
-      <div v-if="!isMobile" class="pc-header">
+      <div class="pc-header">
         <div class="logo">
           <img :style="backgColor" src="./images/ympc.png" alt="">
         </div>
         <div class="__rt">
           <!-- <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"> -->
-          <el-menu :default-active="activeIndex" :router="true" class="el-menu-demo" mode="horizontal">
-            <el-menu-item :index="item.activeIndex"
+          <el-menu :default-active="activeIndex" router class="el-menu-demo" mode="horizontal">
+            <el-menu-item :index="item.link"
               v-for="(item, index) in navList"
-              :key="index"
-              :route="item.link">{{item.title}}
+              :key="index">
+              {{item.title}}
+              <!-- <a :href="item.link" target="_blank">{{item.title}}</a> -->
               </el-menu-item>
           </el-menu>
           <!-- <nuxt-link to="/login" class="login">登录</nuxt-link> -->
         </div>
       </div>
-      <div v-else class="mobile-header">
+      <!-- <div v-else class="mobile-header">
         <div class="logo">
           <img :style="backgColor" src="./images/ympc.png" alt="">
         </div>
@@ -31,7 +32,7 @@
             :class="activeIndex === index ? 'active' : ''">
             <a :href="item.link" @click="goLink(item.title)">{{item.title}}</a></li>
         </ul>
-      </div>
+      </div> -->
   </header>
 </template>
 
@@ -76,11 +77,11 @@
             link: '/message',
             activeIndex: '5'
           },
-          {
-            title: '关于',
-            link: '/about',
-            activeIndex: '6'
-          },
+          // {
+          //   title: '关于',
+          //   link: '/about',
+          //   activeIndex: '6'
+          // },
         ],
         activeIndex: 0
       }
@@ -102,13 +103,13 @@
       }
     },
     mounted() {
-      if (this.isMobile) {
+      // if (this.isMobile) {
         // width * 100 / 750 = width / 7.5
         // 1rem = 100px
-        let width = window.screen.width;
-        window.document.getElementsByTagName("html")[0].style.fontSize =
-          width / 7.5 + "px";
-      }
+      //   let width = window.screen.width;
+      //   window.document.getElementsByTagName("html")[0].style.fontSize =
+      //     width / 7.5 + "px";
+      // }
     },
     methods: {
       // handleSelect(key, keyPath) {
