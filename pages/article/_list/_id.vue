@@ -42,8 +42,6 @@
       }
     },
     mounted() {
-      console.log(this.$route.params.id, 'rpute');
-
       this.getArticleList();
     },
     methods: {

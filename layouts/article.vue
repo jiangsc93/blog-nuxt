@@ -16,11 +16,6 @@
             <p class="text">益码凭川</p>
           </div>
           <div class="item">
-            <div class="cloud">
-              <span class="_one"></span>
-              <span class="_two"></span>
-              <span class="_three"></span>
-            </div>
             <h2 class="title"><span style="color:red;">标</span><span style="color: #06c;">签</span>云</h2>
             <div class="cont">
               <span class="tag" v-for="(item, index) in tagsList" :key="index">
@@ -153,42 +148,6 @@ html {
         margin-bottom: 10px;
         border-radius: 4px;
         position: relative;
-        .cloud {
-          position: absolute;
-          top: 18px;
-          left: 50%;
-          transform: translateX(-60px);
-          span {
-            display: inline-block;
-          }
-          ._one {
-            width: 60px;
-            height: 1px;
-            padding-top: 60px;
-            border: 1px solid red;
-            border-radius: 30px;
-          }
-          ._two {
-            width: 60px;
-            height: 60px;
-            border: 1px solid #409EFF;
-            border-block-start-width: 0;
-            border-bottom-width: 0;
-            border-bottom-width: 0;
-            border-radius: 50%;
-            position: absolute;
-            left: 30px;
-            top: -30px;
-          }
-          ._three {
-            width: 60px;
-            height: 60px;
-            border: 1px solid #2c3e52;;
-            border-block-start-width: 0;
-            border-bottom-width: 0;
-            border-radius: 50%;
-          }
-        }
         .title {
           font-size: 20px;
           font-weight: bold;

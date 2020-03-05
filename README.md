@@ -78,7 +78,7 @@
 
 ## 阿里云部署
 
-> 具体部署步骤不在此详解，具体可看[详细教程](https://itcnz.github.io/20180418/%E9%98%BF%E9%87%8C%E4%BA%91%E9%83%A8%E7%BD%B2nuxt%E9%A1%B9%E7%9B%AE.html)
+> 具体部署步骤不在此详解，具体可看大神的教程[详细教程](https://itcnz.github.io/20180418/%E9%98%BF%E9%87%8C%E4%BA%91%E9%83%A8%E7%BD%B2nuxt%E9%A1%B9%E7%9B%AE.html)
 
 上线配置：
 nuxt.config.js 的proxy更改上线配置
@@ -103,3 +103,18 @@ $ npm run generate
 ```
 
 For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
+
+
+**版本迭代：**
+v1.0
+blog-nuxt博客网站全新上线
+前台：“文章”和“关于”，
+后台管理系统：登录，文章编辑和查看，文章列表，
+后端：相关接口。
+
+v2.0
+前台：增加 “归档”，“项目”，“历程”，“留言”模块
+后台管理系统：更换UI，添加左侧导航栏，菜单有：文章（文章列表、创建新文章）、项目、历程、留言模块，增加用户注册模块
+后台：细化各类接口，增加token验证（暂未完全完成）
+
+上线bug：文章详情页的title显示undefiend，无后台管理系统登录入口。

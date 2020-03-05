@@ -56,9 +56,6 @@ export default {
   },
   mounted() {
     this.getArticleOne();
-    document.title = this.responseData.title;
-    document.querySelector("#keywords").setAttribute("content", this.responseData.tag);
-    document.querySelector("#description").setAttribute("content", this.responseData.summary);
   },
   methods: {
     handleTag(tag) {
@@ -79,10 +76,16 @@ export default {
               responseData.toc = result.toc;
             });
             this.responseData = responseData;
+            this.seoHandle();
           }
       }).catch (err => {
         console.log('报错了啊')
       })
+    },
+    seoHandle() {
+      document.title = this.responseData.title;
+      document.querySelector("#keywords").setAttribute("content", this.responseData.tag);
+      document.querySelector("#description").setAttribute("content", this.responseData.summary);
     }
   }
 }

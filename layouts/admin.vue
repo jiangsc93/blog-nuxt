@@ -84,11 +84,6 @@
         <div class="menu-fold"><i class="el-icon-s-fold" @click="isCollapse =!isCollapse"></i></div>
         <div class="header-rt"><span class="user-name">欢迎您，{{userName}}</span><span class="logout" @click="logout">退出登录</span></div>
       </header>
-      <!-- <el-breadcrumb class="breadcrumb" separator="/">
-        <el-breadcrumb-item :to="{ path: '/admin/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/admin/article/list/1' }">文章</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/admin/article/list/1' }">文章列表</el-breadcrumb-item>
-      </el-breadcrumb> -->
       <nuxt/>
       <admin-footer class="foot"></admin-footer>
     </div>
