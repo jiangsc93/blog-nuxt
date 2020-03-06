@@ -14,7 +14,7 @@
             </div>
           </div>
           <div class="__rt">
-            <img src="../../../assets/images/user_logo.png" alt="文章封面">
+            <img :src="item.imgSrc || coverImg" alt="文章封面">
           </div>
         </a>
       </li>
@@ -23,8 +23,10 @@
 </template>
 
 <script>
-  import Api from '~/utils/api'
+  import Api from '~/utils/api';
+  import _ from 'lodash';
   export default {
+    middleware: 'configInit',
     layout: 'article',
     head() {
       return {
@@ -41,7 +43,20 @@
         tagTitle: '',
       }
     },
+    computed: {
+      coverImg() {
+        let arr = this.$store.state.configList;
+        let value = '';
+        _.forEach(arr, (item) =>  { 
+          if (item.title === '文章列表封面') {
+            value = item.imgSrc;
+          }
+        });
+        return value;
+      }
+    },
     mounted() {
+      this.$store.dispatch("getConfigList");
       this.getArticleList();
     },
     methods: {

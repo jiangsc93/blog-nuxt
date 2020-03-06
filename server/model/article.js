@@ -9,6 +9,7 @@ const listSchema = new mongoose.Schema({
   author: { type: String, required: true, validate: /\S+/ },
   type: String,
   tag: String,
+  imgSrc: String,
   visit: { type: Number, required: true, default: 0 },
   beginDate: {
     type: String,

@@ -55,7 +55,6 @@
     data(){
       return {
         messageList: [],
-       
       }
     },
     asyncData ({ params, error }) {

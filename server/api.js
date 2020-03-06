@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var moment = require('moment');
 const _ = require('lodash');
 // 引入模型
 var project = require('./routes/project');
@@ -9,7 +8,8 @@ var message = require('./routes/message');
 var tag = require('./routes/tag');
 var experience = require('./routes/experience');
 var user = require('./routes/user');
-var { responseClient } = require('./util/util');
+var customer = require('./routes/customer');
+var config = require('./routes/config');
 
 // 极验api
 var session = require('express-session');
@@ -63,38 +63,28 @@ router.get('/api/getMessageListAdmin', message.getMessageListAdmin);
 
 // 添加历程
 router.post('/api/addExperience', experience.addExperience);
-// 添加历程
+// 删除历程
 router.post('/api/deleteExperience', experience.deleteExperience);
 // 获取历程列表
 router.get('/api/getExperienceList', experience.getExperienceList);
 
+// 添加配置
+router.post('/api/addConfig', config.addConfig);
+// 删除配置
+router.post('/api/deleteConfig', config.deleteConfig);
+// 获取配置列表
+router.get('/api/getConfigList', config.getConfigList);
 
-// 注册
+
+// 管理员注册
 router.post('/api/register', user.register);
-// 登录
+// 管理员登录
 router.post('/api/login', user.login);
 
-
-// // 登录操作
-// router.post('/api/login', function (req, res) {
-//   if (req.body.userName !== '' && req.body.passWord === '123456') {
-//     let addUser = new userModel({
-//       userName: req.body.userName,
-//       password: req.body.passWord,
-//       date: req.body.date ? req.body.date : moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
-//     });
-//     addUser.save((err, data) => {
-
-//       if (err) {
-//         console.log(err, 'err');
-//       } else {
-//         console.log(data, '登录成功！');
-//       }
-//     });
-//     return res.json({ userName: req.body.userName })
-//   }
-//   res.status(401).json({ error: '账号或密码不正确!' })
-// })
+// 游客注册
+router.post('/api/customerRegister', customer.register);
+// 游客登录
+router.post('/api/customerLogin', customer.login);
 
 
 // 极验接口

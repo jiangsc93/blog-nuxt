@@ -16,10 +16,10 @@
             <p class="text">益码凭川</p>
           </div>
           <div class="item">
-            <h2 class="title"><span style="color:red;">标</span><span style="color: #06c;">签</span>云</h2>
+            <h2 class="title"><span>标</span><span style="color: #06c;">签</span>云</h2>
             <div class="cont">
               <span class="tag" v-for="(item, index) in tagsList" :key="index">
-                <a :href="`/article/list/${item.tag}`" :alt="item.tag" :title="`查看${item.tag}相关文章`">{{item.tag}}</a>
+                <a :href="item.tag === '关于博主' ? '/about' : `/article/list/${item.tag}`" :alt="item.tag" :title="`查看${item.tag}相关文章`">{{item.tag}}</a>
               </span>
             </div>
           </div>
@@ -197,7 +197,7 @@ html {
     font-weight: bold;
   }
   .user-logo {
-    width: 180px;
+    width: 150px;
     border-radius: 50%;
     animation: mylogo 3s;
     -moz-animation: mylogo 3s; /* Firefox */

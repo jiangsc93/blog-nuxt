@@ -1,16 +1,34 @@
 <template>
   <section class="container">
     <div class="list">
-      <ul class="list-ul">
-        <li v-for="(item, index) in articleList" :key="index">
-          <nuxt-link :to="`/admin/article/${item._id}`">{{item.title}}</nuxt-link>
-          <span class="handle">
-            <el-button size="mini" type="primary" @click="goFn(item._id)">查看</el-button>
-            <el-button size="mini" type="success" @click="editFn(item._id)">修改</el-button>
-            <el-button size="mini" type="danger" @click="deletFn(item._id)">删除</el-button>
-          </span>
-        </li>
-      </ul>
+      <el-table
+        :data="articleList"
+        stripe
+        style="width: 100%">
+        <el-table-column
+          type="index"
+          fixed
+          label="序号"
+          width="50">
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          label="文章标题">
+          <template slot-scope="scope">
+            <nuxt-link :to="`/admin/article/${scope.row._id}`">{{scope.row.title}}</nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="260">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="goFn(scope.row._id)">查看</el-button>
+            <el-button size="mini" type="success" @click="editFn(scope.row._id)">修改</el-button>
+            <el-button size="mini" type="danger" @click="deletFn(scope.row._id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <my-page v-on:page-change="onPageChange" :pageSize="pageSize" :total="records" :currentPage="pageIndex"></my-page>
     </div>
 
@@ -102,8 +120,12 @@
         display: flex;
         justify-content: space-between;
         overflow: hidden;
+        .serial {
+          display: inline-block;
+          margin-right: 10px;
+        }
         a {
-          width: 80%;
+          width: 70%;
           overflow: hidden;
           white-space: wrap;
         }

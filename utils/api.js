@@ -59,7 +59,7 @@ export default class  {
     return Net.postJSON(Checkenv.url.api + "/addExperience/", {}, params);
   }
   /**
-   * 添加历程
+   * 删除历程
    */
   static deleteExperience(params){
     return Net.postJSON(Checkenv.url.api + "/deleteExperience/", {}, params);
@@ -72,6 +72,29 @@ export default class  {
 
     return Net.getJSON(Checkenv.url.api + "/getExperienceList/", {}, data);
   }
+
+
+  /**
+   * 添加配置
+   */
+  static addConfig(params){
+    return Net.postJSON(Checkenv.url.api + "/addConfig/", {}, params);
+  }
+  /**
+   * 删除配置
+   */
+  static deleteConfig(params){
+    return Net.postJSON(Checkenv.url.api + "/deleteConfig/", {}, params);
+  }
+
+    /**
+   * 获取配置列表
+   */
+  static getConfigList(data){
+
+    return Net.getJSON(Checkenv.url.api + "/getConfigList/", {}, data);
+  }
+
 
   /**
    * 获取单个文章
@@ -125,17 +148,32 @@ export default class  {
   }
 
   /**
-   * 注册
+   * 管理员注册
    */
   static register(data){
     return Net.postJSON(Checkenv.url.api + "/register", {}, data);
   }
 
   /**
-   * 登录
+   * 管理员登录
    */
   static login(data){
     return Net.postJSON(Checkenv.url.api + "/login", {}, data);
+  }
+
+
+  /**
+   * 游客注册
+   */
+  static customerRegister(data){
+    return Net.postJSON(Checkenv.url.api + "/customerRegister", {}, data);
+  }
+
+  /**
+   * 游客登录
+   */
+  static customerLogin(data){
+    return Net.postJSON(Checkenv.url.api + "/customerLogin", {}, data);
   }
 
   /**

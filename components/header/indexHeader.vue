@@ -1,20 +1,33 @@
 <template>
   <header>
       <div class="pc-header">
-        <div class="logo">
-          <img :style="backgColor" src="./images/ympc.png" alt="">
-        </div>
-        <div class="__rt">
-          <!-- <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"> -->
-          <el-menu :default-active="activeIndex" router class="el-menu-demo" mode="horizontal">
-            <el-menu-item :index="item.link"
+        <div class="__lt">
+          <div class="logo">
+            <img :style="backgColor" src="./images/ympc.png" alt="">
+          </div>
+          <el-menu :default-active="activeIndex" :router="true" class="el-menu-demo" mode="horizontal">
+            <el-menu-item
+              :route="item.link"
+              :index="index.toString()"
               v-for="(item, index) in navList"
               :key="index">
               {{item.title}}
-              <!-- <a :href="item.link" target="_blank">{{item.title}}</a> -->
               </el-menu-item>
           </el-menu>
-          <!-- <nuxt-link to="/login" class="login">登录</nuxt-link> -->
+        </div>
+        <div class="__rt">
+          <!-- <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"> -->
+          <el-dropdown @command="handleCommand" trigger="click">
+            <span class="el-dropdown-link">
+              <div class="img" v-if="avatorSrc"><img :src="avatorSrc"></div>
+              {{ loginTitle }}<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="avatorSrc?'customerLogout':'customerLogin'">{{avatorSrc? '游客退出' : '游客登录'}}</el-dropdown-item>
+              <el-dropdown-item command="customerRegister">游客注册</el-dropdown-item>
+              <el-dropdown-item command="administratorLogin">管理员登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
       </div>
       <!-- <div v-else class="mobile-header">
@@ -33,13 +46,20 @@
             <a :href="item.link" @click="goLink(item.title)">{{item.title}}</a></li>
         </ul>
       </div> -->
+      <LoginRegister
+        :visible="visible"
+        :handleFlag="handleFlag"
+        :isMobile="isMobile"
+        @feedback="feedback"></LoginRegister>
   </header>
 </template>
 
 <script>
   import { Menu, MenuItem } from 'element-ui' 
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import _ from 'lodash'
+  import LoginRegister from '../common/loginRegister'
+  import Cookie from 'js-cookie'
   export default {
 
     data(){
@@ -77,32 +97,58 @@
             link: '/message',
             activeIndex: '5'
           },
-          // {
-          //   title: '关于',
-          //   link: '/about',
-          //   activeIndex: '6'
-          // },
+          {
+            title: '关于',
+            link: '/about',
+            activeIndex: '6'
+          }
         ],
-        activeIndex: 0
+        activeIndex: '',
+        loginTitle: '登录',
+        visible: false,
+        handleFlag: 'login',
+        avatorSrc: ''
       }
     },
     components: {
       Menu,
-      MenuItem
+      MenuItem,
+      LoginRegister
     },
-    created() {
-      _.filter(this.navList, (item)=>{
-        this.activeIndex = this.$route.path.includes(item.link.substr(0, 8)) ? item.activeIndex : this.activeIndex;
-        this.title = this.$route.path.includes(item.link.substr(0, 8)) ? item.title : this.title;
-      })
+    // created() {
+    //   _.filter(this.navList, (item)=>{
+    //     this.activeIndex = this.$route.path.includes(item.link.substr(0, 8)) ? item.activeIndex : this.activeIndex;
+    //     this.title = this.$route.path.includes(item.link.substr(0, 8)) ? item.title : this.title;
+    //   })
+    // },
+    watch: {
+      // '$route' (to, from){
+      //   _.forEach(this.navList, item => {
+      //     if(to.path.includes(item.link.substr(0, 8))) {
+      //       this.activeIndex = item.activeIndex;
+      //     }
+      //   })
+        // _.filter(this.navList, (item)=>{
+        // this.activeIndex = this.$route.path.includes(item.link.substr(0, 8)) ? item.activeIndex : this.activeIndex;
+        // this.title = this.$route.path.includes(item.link.substr(0, 8)) ? item.title : this.title;
+      // })
+      // }
     },
     computed: {
       ...mapState(['isMobile']),
+      ...mapGetters(['getCustomerInfo']),
       backgColor() {
         return `background:${this.randomColor()};`
       }
     },
     mounted() {
+      _.filter(this.navList, (item)=>{
+        this.activeIndex = this.$route.path.includes(item.link.substr(0, 8)) ? item.activeIndex : this.activeIndex;
+        this.title = this.$route.path.includes(item.link.substr(0, 8)) ? item.title : this.title;
+      })
+      this.loginTitle = this.getCustomerInfo.customerName || '登录';
+      this.avatorSrc = this.getCustomerInfo.avatorSrc;
+      // this.avatorSrc = this.getCustomerInfo()
       // if (this.isMobile) {
         // width * 100 / 750 = width / 7.5
         // 1rem = 100px
@@ -112,9 +158,30 @@
       // }
     },
     methods: {
-      // handleSelect(key, keyPath) {
-      //   console.log(key, keyPath, 'ddd');
-      // },
+      feedback(val) {
+        this.visible = val;
+      },
+      handleCommand(command) {
+        switch(command){
+          case 'customerLogin':
+            this.visible = true;
+            this.handleFlag = 'login';
+            return;
+          case 'customerLogout':
+            Cookie.remove('avatorSrc');
+            Cookie.remove('customerName');
+            this.loginTitle = '登录';
+            this.avatorSrc = '';
+            return;
+          case 'customerRegister':
+            this.visible = true;
+            this.handleFlag = 'register';
+            return;
+          case 'administratorLogin':
+            window.location.href = '/admin/login/'
+            return;
+        }
+      },
       randomColor() { // rgb颜色随机
         let r = Math.floor(Math.random()*256);
         let g = Math.floor(Math.random()*256);
@@ -155,29 +222,44 @@
     // padding-top: 10px;
     border-bottom: 1px solid #eee;
     .pc-header {
+      display: flex;
+      justify-content: space-between;
       height: 60px;
       line-height: 60px;
       max-width: 1200px;
       margin: 0 auto;
-      .logo {
-        display: inline-block;
-        width: 130px;
-        height: 60px;
-        img {
-          width: 100%;
-          height: 100%;
-          border-radius: 2px;
+      .__lt {
+        .el-menu-demo {
+          display: inline-block;
+        }
+        .logo {
+          display: inline-block;
+          width: 130px;
+          height: 60px;
+          img {
+            width: 100%;
+            height: 100%;
+            border-radius: 2px;
+          }
         }
       }
       .__rt {
-        display: inline-block;
         vertical-align: top;
         margin-left: 30px;
         font-size: 18px!important;
-        .login {
+        .img {
           display: inline-block;
-          color: #fff!important;
-          margin-left: 100px;
+          width: 30px;
+          height: 30px;
+          position: relative;
+          top: 9px;
+          right: 3px;;
+          img {
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            width: 100%;
+            height: 100%;
+          }
         }
       }
     }

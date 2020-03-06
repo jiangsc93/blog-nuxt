@@ -3,7 +3,7 @@
     <div class="login_logout">
       <h1 class="title">{{title}}</h1>
       <div class="list">
-        <el-form :model="ruleForm2" status-icon ref="ruleForm2" :rules="rules" label-width="90px" class="demo-ruleForm">
+        <el-form :model="ruleForm2" status-icon ref="ruleForm2" :rules="rules" label-width="70px" class="demo-ruleForm">
           <el-form-item label="用户名" prop="userName">
             <el-input type="text" v-model="ruleForm2.userName" auto-complete="off"></el-input>
           </el-form-item>
@@ -39,7 +39,7 @@
     },
     data(){
       return {
-        title: "注册",
+        title: "管理员注册",
         ruleForm2: {
           userName: '',
           password: '',
@@ -87,6 +87,9 @@
 </script>
 
 <style scoped lang="scss">
+  .container .el-form-item {
+    margin-bottom: 18px!important;
+  }
   .container{
     height: 60vh;
     margin: 0 auto;
@@ -101,15 +104,14 @@
       -webkit-box-shadow: 0 0 6px rgba(99, 99, 99, .4);
       box-shadow: 0 0 6px rgba(99, 99, 99, .4);
       width: 360px !important;
-      /*height: 300px !important;*/
       margin-left: -180px;
       margin-top: -150px;
-      position: absolute;
-      left: 50%;
-      top:50%;
+      margin: auto;
       min-height: 300px;
       .title {
         text-align: center;
+        font-size: 20px;
+        color: #555;
       }
     }
     .username_pass{

@@ -6,11 +6,11 @@
         <el-form-item label="文章标题" prop="title">
           <el-input v-model="editData.title"></el-input>
         </el-form-item>
-        <el-form-item class="author" label="作者" prop="author">
-          <el-input v-model="editData.author"></el-input>
-        </el-form-item>
         <el-form-item label="简短概要" prop="summary">
           <el-input type="textarea" v-model="editData.summary"></el-input>
+        </el-form-item>
+        <el-form-item class="img" label="文章图片" prop="imgSrc">
+          <el-input v-model="editData.imgSrc" placeholder="请输入图片的网络链接，不填则配置默认图片"></el-input>
         </el-form-item>
         <el-form-item class="type" label="文章类型" prop="type">
           <el-select v-model.trim="editData.type" placeholder="文章类型">
@@ -37,6 +37,9 @@
               :value="item.value">
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item class="author" label="作者" prop="author">
+          <el-input v-model="editData.author"></el-input>
         </el-form-item>
         <el-form-item label="文章发布时间" prop="beginDate">
           <el-date-picker
@@ -72,16 +75,6 @@
   export default {
     middleware: 'auth',
     layout: 'admin',
-    // asyncData ({ params }) {
-    //   // if (!params.id) return;
-    //   return Api.newsOne(params.id)
-    //       .then(res => {
-    //         res.data.tag = res.data.tag.split(','); // 字符串切换成数组
-    //         return {editData: Object.assign({}, res.data)};
-    //       }, err => {
-    //         console.log('报错啦', err)
-    //       })
-    // },
     data(){
       return {
         beginTime: '',

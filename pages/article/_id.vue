@@ -180,7 +180,6 @@ export default {
       line-height: 1.5;
       margin: 20px 0;
       text-align: center;
-      // border-bottom: 1px solid #ddd;
     }
     .cont {
       ._wrap {

@@ -4,7 +4,7 @@
       {{datas.title}}
     </h1>
     <div class="about">
-      作者: {{datas.author}}   第一次发表时间：{{datas.beginDate}}    最后修改时间:{{datas.lastDate}}
+      作者: {{datas.author}}   第一次发布时间：{{datas.beginDate}}    最后修改时间:{{datas.lastDate}}
     </div>
     <div class="art-body" v-html="datas.content"></div>
   </section>

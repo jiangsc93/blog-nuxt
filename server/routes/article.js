@@ -55,7 +55,8 @@ exports.getArticleList = ({ res, body }) => {
         tag: 1,
         visit: 1,
         summary: 1,
-        beginDate: 1
+        imgSrc: 1,
+        beginDate: 1,
       };
       
       if (body.tag === '全部') {
@@ -155,7 +156,7 @@ exports.getArticleOne = ({body, res}) => {
 
 // admin编辑新文章
 exports.editNewArticleAdmin = ({res, body}) => {
-  let { title, author, type, tag, summary, beginDate, content, wordage } = body;
+  let { title, author, type, tag, summary, beginDate, content, wordage, imgSrc } = body;
   wordage = content.length;
   
   let article = new articleModel({
@@ -168,6 +169,7 @@ exports.editNewArticleAdmin = ({res, body}) => {
     lastDate: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
     summary,
     content,
+    imgSrc,
     wordage
   });
   // 调用tag的addTag接口
@@ -213,6 +215,7 @@ exports.modifyArticleAdmin = ({ res, body }) => {
     data.type = body.type;
     data.tag = body.tag;
     data.title = body.title;
+    data.imgSrc = body.imgSrc;
     // 调用tag的addTag接口
     tagInterface.addTag(body.tag);
     data.save(function(err, data) {

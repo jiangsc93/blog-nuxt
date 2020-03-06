@@ -29,7 +29,7 @@
 <script>
 import Api from '~/utils/api'
 import markdown from '~/utils/markdown'
-import { Tag, Loading } from 'element-ui'
+import { Tag } from 'element-ui'
 export default {
   layout: 'front',
   head() {
@@ -42,8 +42,7 @@ export default {
     }
   },
   components: {
-    Tag,
-    Loading
+    Tag
   },
   data () {
     return {
@@ -51,6 +50,9 @@ export default {
       content: '',
       toc: ''
     }
+  },
+  mounted() {
+    this.getArticleOne();
   },
   methods: {
     handleTag(tag) {
@@ -60,8 +62,7 @@ export default {
       let postParams = {
         id: 'introduce'
       }
-      Api.getArticleOne(postParams)
-        .then(res => {
+      Api.getArticleOne(postParams).then(res => {
           let responseData = res.data.data;
           if (res.status === 200 && res.data && res.data.data.content) {
             let article = markdown.marked(res.data.data.content);
@@ -79,7 +80,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .el-tag {
   height: 24px;
   line-height: 22px;
@@ -128,109 +129,109 @@ export default {
   }
 }
 .item {
-    width: 100%;
-    padding: 10px 0 40px;
-    border-radius: 4px;
-    background: #fff;
-    .__lt {
-      width: 66%;
-      float: left;
-      padding-right: 20px;
-    }
-    .__rt {
-      width: 28%;
-      float: right;
-      display: block;
-      position: sticky;
-      top: 213px;
-      right: 70px;
-    }
-    a {
-      color: inherit;
-    }
-    .iconfont {
-      font-size: 13px;
-      margin-right: 5px;
-      color: #969696;
-      font-weight: bold;
-      &.icon-yanjing {
-        font-size: 17px;
-        position: relative;
-        top: 1px;
-      }
-    }
-    .title {
-      font-size: 32px;
-      color: #2c3e52;
-      line-height: 1.5;
-      margin: 20px 0;
-      text-align: center;
-    }
-    .cont {
-      ._wrap {
-        width: 100%;
-        font-size: 15px;
-        color: #2c3e50;
-        pre {
-          overflow: auto;
-          code {
-            word-break: break-all;
-            word-wrap: break-word;
-          }
-        }
-        
-        code {
-          overflow: hidden;
-        }
-      }
-    }
-    .author {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      height: 50px;
-      color: #969696;
-      margin-bottom: 30px;
+  width: 100%;
+  padding: 10px 0 40px;
+  border-radius: 4px;
+  background: #fff;
+  .__lt {
+    width: 66%;
+    float: left;
+    padding-right: 20px;
+  }
+  .__rt {
+    width: 28%;
+    float: right;
+    display: block;
+    position: sticky;
+    top: 213px;
+    right: 70px;
+  }
+  a {
+    color: inherit;
+  }
+  .iconfont {
+    font-size: 13px;
+    margin-right: 5px;
+    color: #969696;
+    font-weight: bold;
+    &.icon-yanjing {
+      font-size: 17px;
       position: relative;
-      .lt {
-        overflow: hidden;
-        position: relative;
-        .avatar {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 45px;
-          height: 45px;
-          border-radius: 50%;
-        }
-        .info {
-          float: left;
-          padding-left: 55px;
-          line-height: 1;
-          .time {
-            .iconfont {
-              font-size: 12px;
-            }
-          }
-          .name {
-            margin: 5px 0 6px 0;
-            color: #555;
-            font-size: 13px;
-          }
-          .visit {
-            margin: 0 13px;
-          }
-          .wordage {
-            margin-left: 10px;
-          }
+      top: 1px;
+    }
+  }
+  .title {
+    font-size: 32px;
+    color: #2c3e52;
+    line-height: 1.5;
+    margin: 20px 0;
+    text-align: center;
+  }
+  .cont {
+    ._wrap {
+      width: 100%;
+      font-size: 15px;
+      color: #2c3e50;
+      pre {
+        overflow: auto;
+        code {
+          word-break: break-all;
+          word-wrap: break-word;
         }
       }
-      .tag {
-        position: absolute;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%);
+      
+      code {
+        overflow: hidden;
       }
     }
   }
+  .author {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    height: 50px;
+    color: #969696;
+    margin-bottom: 30px;
+    position: relative;
+    .lt {
+      overflow: hidden;
+      position: relative;
+      .avatar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+      }
+      .info {
+        float: left;
+        padding-left: 55px;
+        line-height: 1;
+        .time {
+          .iconfont {
+            font-size: 12px;
+          }
+        }
+        .name {
+          margin: 5px 0 6px 0;
+          color: #555;
+          font-size: 13px;
+        }
+        .visit {
+          margin: 0 13px;
+        }
+        .wordage {
+          margin-left: 10px;
+        }
+      }
+    }
+    .tag {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+    }
+  }
+}
 </style>

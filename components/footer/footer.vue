@@ -30,13 +30,13 @@ export default {
     font-weight: bold;
     text-align: center;
     .copyright {
-      font-size: 18px;
+      font-size: 15px;
     }
     .certificate {
       padding-top: 5px;
       color: #409EFF;
       font-weight: 500;
-      font-size: 15px;
+      font-size: 13px;
     }
   }
 </style>

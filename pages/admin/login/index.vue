@@ -3,7 +3,7 @@
     <div class="login_logout">
       <h1 class="title">{{title}}</h1>
       <div class="list">
-        <el-form :model="ruleForm2" status-icon ref="ruleForm2" :rules="rules" label-width="90px" class="demo-ruleForm">
+        <el-form :model="ruleForm2" status-icon ref="ruleForm2" :rules="rules" label-width="70px" class="demo-ruleForm">
           <el-form-item label="邮箱" prop="email">
             <el-input type="text" v-model="ruleForm2.email" auto-complete="off"></el-input>
           </el-form-item>
@@ -38,14 +38,14 @@
           { hid: 'description', name: 'description', content: 'login页面....' }
         ],
         script: [
-         { src: 'gt.js', type: 'text/javascript' } // 本地静态资源可用次,线上无法读取改地址,建议换成下面
-          // { src: 'http://static.geetest.com/static/tools/gt.js', type: 'text/javascript' }
+        //  { src: 'gt.js', type: 'text/javascript' } // 本地静态资源可用次,线上无法读取改地址,建议换成下面
+          { src: 'http://static.geetest.com/static/tools/gt.js', type: 'text/javascript' }
         ]
       }
     },
     data(){
       return {
-        title: "登录",
+        title: "管理员登录",
         ruleForm2: {
           password: '',
           email: ''
@@ -122,12 +122,16 @@
     methods: {
       login() {
        if (this.ruleForm2.userName !== '' && this.ruleForm2.password !== '') {
-         Api.login(this.ruleForm2).then(result => {
-           Cookie.set('authUser', result.data.data.userInfo)
-           Util.UI.toast('登录成功!', 'success')
-           setTimeout(() => {
-             window.location.href = '/admin/'
-           }, 1000)
+         Api.login(this.ruleForm2).then(res => {
+           if (res.status === 200 && res.data.data.userInfo.userName) {
+             Cookie.set('authUser', res.data.data.userInfo);
+             Util.UI.toast('登录成功!', 'success');
+             setTimeout(() => {
+               window.location.href = '/admin/'
+             }, 1000)
+           } else {
+             Util.UI.toast(res.data.message, 'success');
+           }
          }).catch(err => {
            Util.UI.toast('账号或密码错误!', 'error')
          })
@@ -146,9 +150,6 @@
 </script>
 
 <style scoped lang="scss">
-  .el-form.demo-ruleForm .el-form-item {
-    margin-bottom: 30px!important;
-  }
   .container{
     height: 60vh;
     margin: 0 auto;
@@ -163,15 +164,14 @@
       -webkit-box-shadow: 0 0 6px rgba(99, 99, 99, .4);
       box-shadow: 0 0 6px rgba(99, 99, 99, .4);
       width: 360px !important;
-      /*height: 300px !important;*/
       margin-left: -180px;
       margin-top: -150px;
-      position: absolute;
-      left: 50%;
-      top:50%;
+      margin: auto;
       min-height: 300px;
       .title {
         text-align: center;
+        font-size: 20px;
+        color: #555;
       }
     }
     #wait{

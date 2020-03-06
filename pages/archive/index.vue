@@ -14,13 +14,9 @@
           :key="index"
           type="warning "
           placement="top">
-          <router-link :to="`/article/${m._id}`"
-                       target="_blank">
+          <nuxt-link :to="`/article/${m._id}`">
             <h3 class="title">{{m.title}}</h3>
-          </router-link>
-          <!-- <div @click="goArticle(m._id)">
-            <h3 class="title">{{m.title}}</h3>
-          </div> -->
+          </nuxt-link>
           <p class="time">{{m.beginDate}}</p>
         </el-timeline-item>
       </el-timeline-item>
@@ -80,6 +76,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-timeline .el-timeline-item:last-child .el-timeline-item__tail {
+  display: block!important;
+}
 .page-archive {
   padding: 40px 0;
   .year {

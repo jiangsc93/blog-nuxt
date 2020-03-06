@@ -6,11 +6,11 @@
         <el-form-item label="文章标题" prop="title">
           <el-input v-model="editData.title"></el-input>
         </el-form-item>
-        <el-form-item class="author" label="作者" prop="author">
-          <el-input v-model="editData.author"></el-input>
-        </el-form-item>
         <el-form-item label="简短概要" prop="summary">
           <el-input type="textarea" v-model="editData.summary"></el-input>
+        </el-form-item>
+        <el-form-item class="img" label="文章图片" prop="imgSrc">
+          <el-input v-model="editData.imgSrc" placeholder="请输入图片的网络链接，不填则配置默认图片"></el-input>
         </el-form-item>
         <el-form-item class="type" label="文章类型" prop="type">
           <el-select v-model.trim="editData.type" placeholder="文章类型">
@@ -37,6 +37,9 @@
               :value="item.value">
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item class="author" label="作者" prop="author">
+          <el-input v-model="editData.author"></el-input>
         </el-form-item>
         <el-form-item label="文章发布时间" prop="beginDate">
           <el-date-picker
@@ -76,16 +79,32 @@
     data(){
       return {
         beginTime: '',
-        optionsTags: [{
-          value: 'HTML',
-          label: 'HTML'
-        }, {
-          value: 'CSS',
-          label: 'CSS'
-        }, {
-          value: 'JavaScript',
-          label: 'JavaScript'
-        }],
+        optionsTags: [
+          {
+            value: 'css',
+            label: 'css'
+          },
+          {
+            value: 'javascript',
+            label: 'javascript'
+          },
+          {
+            value: 'node',
+            label: 'node'
+          },
+          {
+            value: 'vue',
+            label: 'vue'
+          },
+          {
+            value: 'react',
+            label: 'react'
+          },
+          {
+            value: '小程序',
+            label: '小程序'
+          }
+        ],
         optionsTypes: [
           {
             value: '前端',
@@ -116,6 +135,7 @@
           tag: '',
           content: '',
           summary: '',
+          imgSrc: ''
         },
         rules: {
           title: [

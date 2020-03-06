@@ -73,9 +73,13 @@
           <i class="el-icon-collection"></i>
           <span slot="title">历程</span>
         </el-menu-item>
-        <el-menu-item index="/admin/message/list/">
+        <el-menu-item index="/admin/message/">
           <i class="el-icon-message"></i>
           <span slot="title">留言</span>
+        </el-menu-item>
+        <el-menu-item index="/admin/config/">
+          <i class="el-icon-setting"></i>
+          <span slot="title">配置中心</span>
         </el-menu-item>
       </el-menu>
     </div>
@@ -191,7 +195,6 @@
         //  to.path == '/admin/login' ? this.isLogin = true : this.isLogin = false;
         //  let authUser = Cookie.get('authUser') ? JSON.parse(Cookie.get('authUser')) : '';
         //  this.userName = authUser.userName;
-      console.log(this.userName, 'usrname');
 
        }
      },
@@ -199,7 +202,6 @@
       this.changeActive()
     },
     mounted() {
-      console.log(this.userName, 'usrname');
     },
     methods: {
       async logout() {
