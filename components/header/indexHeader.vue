@@ -97,11 +97,11 @@
             link: '/message',
             activeIndex: '5'
           },
-          {
-            title: '关于',
-            link: '/about',
-            activeIndex: '6'
-          }
+          // {
+          //   title: '关于',
+          //   link: '/about',
+          //   activeIndex: '6'
+          // }
         ],
         activeIndex: '',
         loginTitle: '登录',
@@ -115,12 +115,6 @@
       MenuItem,
       LoginRegister
     },
-    // created() {
-    //   _.filter(this.navList, (item)=>{
-    //     this.activeIndex = this.$route.path.includes(item.link.substr(0, 8)) ? item.activeIndex : this.activeIndex;
-    //     this.title = this.$route.path.includes(item.link.substr(0, 8)) ? item.title : this.title;
-    //   })
-    // },
     watch: {
       // '$route' (to, from){
       //   _.forEach(this.navList, item => {
@@ -142,6 +136,7 @@
       }
     },
     mounted() {
+      // 路由识别菜单状态
       _.filter(this.navList, (item)=>{
         this.activeIndex = this.$route.path.includes(item.link.substr(0, 8)) ? item.activeIndex : this.activeIndex;
         this.title = this.$route.path.includes(item.link.substr(0, 8)) ? item.title : this.title;
@@ -198,6 +193,11 @@
 </script>
 
 <style scoped lang="scss">
+    
+  .el-dropdown-link {
+    outline: none;
+    cursor: pointer;
+  }
   .el-menu.el-menu--horizontal {
     border-bottom: none;
   }

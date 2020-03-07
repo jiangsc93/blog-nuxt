@@ -1,15 +1,18 @@
 <template>
   <div class="item">
     <h3 class="tag-title">{{tagTitle}}</h3>
-    <ul>
+    <div v-if="articleData.length === 0" class="no-data">该类型的文章已删除！</div>
+    <ul v-else>
       <li class="item-li overflow" v-for="(item, index) in articleData" :key="index">
         <a :href="`/article/${item._id}`">
           <div class="__lt">
             <h3 class="title cursor">{{item.title}}</h3>
             <div class="cont"><span class="inline-b _wrap">{{item.summary}}</span></div>
-            <div class="info">
+            <div class="info" v-if="articleData.length !== 0">
               <span class="time"><i class="iconfont icon-shijian"></i>{{item.beginDate}}</span>
               <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{item.visit || '1'}}次浏览</span>
+              <span class="like inline-b"><i class="iconfont icon-xin"></i>{{item.like || '1'}}</span>
+              <span class="comment inline-b"><i class="iconfont icon-icon_huifu-mian"></i>{{ item.comments ? item.comments.length : 0 }}</span>
               <span class="tag inline-b"><i class="iconfont icon-icontag"></i>{{item.tag || '其他'}}</span>
             </div>
           </div>
@@ -37,10 +40,26 @@
         ]
       }
     },
+    asyncData({params}) {
+      let reqParams = {
+        type: '1',
+        tag: params.id
+      }
+      return Api.getArticleList(reqParams)
+        .then(res => {
+          if (res.status === 200 && res.data.data && res.data.data.list) {
+            let articleData = res.data.data.list;
+            let tagTitle = params.id === '全部' ? '热门文章：' : `${params.id} 相关的文章：`;
+            return { articleData, tagTitle}
+          }
+      }).catch (err => {
+        console.log('报错了啊')
+      })
+    },
     data() {
       return {
-        articleData: [],
-        tagTitle: '',
+        articleData: [1],
+        tagTitle: ''
       }
     },
     computed: {
@@ -57,7 +76,7 @@
     },
     mounted() {
       this.$store.dispatch("getConfigList");
-      this.getArticleList();
+      // this.getArticleList();
     },
     methods: {
       getArticleList() {
@@ -87,6 +106,11 @@
       color: #336;
       font-size: 20px;
     }
+    .no-data {
+      color: goldenrod;
+      padding-top: 50px;
+      text-align: center;
+    }
     ul, li {
       padding: 0;
     }
@@ -96,7 +120,7 @@
     .iconfont {
       font-size: 12px;
       margin-right: 5px;
-      color: #666;
+      color: #b4b4b4;
       font-weight: bold;
       &.icon-yanjing {
         font-size: 17px;
@@ -136,6 +160,16 @@
           color: #888;
           .visit {
             margin: 0 13px;
+          }
+          .like {
+            margin-right: 13px;
+            .icon-xin {
+              font-size: 14px;
+            }
+          }
+          .comment {
+            margin-right: 16px;
+
           }
           .tag {
             .icon-tag {

@@ -9,6 +9,7 @@ var tag = require('./routes/tag');
 var experience = require('./routes/experience');
 var user = require('./routes/user');
 var customer = require('./routes/customer');
+var comment = require('./routes/comment');
 var config = require('./routes/config');
 
 // 极验api
@@ -85,6 +86,12 @@ router.post('/api/login', user.login);
 router.post('/api/customerRegister', customer.register);
 // 游客登录
 router.post('/api/customerLogin', customer.login);
+
+
+// 文章评论
+router.post('/api/commentOne', comment.commentOne);
+// 对一级评论点赞
+router.post('/api/commentLike', comment.commentLike);
 
 
 // 极验接口

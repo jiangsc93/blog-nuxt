@@ -10,6 +10,7 @@ const listSchema = new mongoose.Schema({
   type: String,
   tag: String,
   imgSrc: String,
+  like: String,
   visit: { type: Number, required: true, default: 0 },
   beginDate: {
     type: String,
@@ -21,8 +22,12 @@ const listSchema = new mongoose.Schema({
   },
   summary: { type: String, required: true, validate: /\S+/ },
   content: { type: String, required: true, validate: /\S+/ },
-  wordage: { type: String, default: 0 }
-});
+  wordage: { type: String, default: 0 },
+  comments: {
+    type: Array,
+    default: []
+  }
+}, {usePushEach: true});
 
 // 列表
 module.exports = connection.model('Article', listSchema);

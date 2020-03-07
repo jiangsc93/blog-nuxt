@@ -19,7 +19,7 @@
             <h2 class="title"><span>标</span><span style="color: #06c;">签</span>云</h2>
             <div class="cont">
               <span class="tag" v-for="(item, index) in tagsList" :key="index">
-                <a :href="item.tag === '关于博主' ? '/about' : `/article/list/${item.tag}`" :alt="item.tag" :title="`查看${item.tag}相关文章`">{{item.tag}}</a>
+                <a :href="`/article/list/${item.tag}`" :alt="item.tag" :title="`查看${item.tag}相关文章`">{{item.tag}}</a>
               </span>
             </div>
           </div>

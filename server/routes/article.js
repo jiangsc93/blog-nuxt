@@ -36,6 +36,8 @@ exports.getArticleList = ({ res, body }) => {
       visit: 1,
       summary: 1,
       content: 1,
+      comments: [],
+      like: 1,
       wordage: 1,
       lastDate: 1,
       beginDate: 1,
@@ -55,6 +57,8 @@ exports.getArticleList = ({ res, body }) => {
         tag: 1,
         visit: 1,
         summary: 1,
+        comments: [],
+        like: 1,
         imgSrc: 1,
         beginDate: 1,
       };

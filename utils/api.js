@@ -176,6 +176,21 @@ export default class  {
     return Net.postJSON(Checkenv.url.api + "/customerLogin", {}, data);
   }
 
+
+  /**
+   * 添加文章评论
+   */
+  static commentOne(data){
+    return Net.postJSON(Checkenv.url.api + "/commentOne", {}, data);
+  }
+  /**
+   * 对一级评论点赞
+   */
+  static commentLike(data){
+    return Net.postJSON(Checkenv.url.api + "/commentLike", {}, data);
+  }
+
+
   /**
    * 登出页面
    */

@@ -20,6 +20,76 @@
         </div>
       </div>
       <div class="cont"><div class="inline-b _wrap article-detail" v-html="responseData.content"></div></div>
+      <!-- <div class="like">
+        如果您觉得这篇文章不错或者对你有所帮助，请给个赞或者星呗，你的点赞就是我继续创作的最大动力。
+      </div> -->
+      <div class="like"><el-button type="danger" @click="like">{{likeText}}</el-button></div>
+      <!-- 编辑一级评论 -->
+      <div class="comment">
+        <div class="edit">
+          <div class="textarea-warp">
+            <i class="iconfont icon-comment"></i>
+            <el-input class="textarea" type="textarea" @focus="commentFocus" :autosize="{ minRows: 4}" placeholder="写下评论" v-model="textareaOne"></el-input>
+          </div>
+          <div class="button" v-show="showButton">
+            <el-button class="btn" type="danger" round size="small" @click="submitComment('one', responseData.author)">发布</el-button>
+            <el-button class="btn" round plain size="small" @click="showButton = false">取消</el-button>
+          </div>
+        </div>
+        <div class="list">
+          <div class="head">全部评论 {{commentTotal}}</div>
+          <div class="no-data" v-if="commentTotal === 0">~赶紧来抢占第一个沙发吧~</div>
+          <div class="content" v-for="(item, index) in responseData.comments" :key="index">
+            <div class="avator">
+              <img :src="item.avatar" alt="">
+            </div>
+            <div class="info">
+              <div class="name">{{item.userName}}</div>
+              <div class="time">{{item.floor || 1}}楼 {{item.create_time}}</div>
+              <div class="cont">{{item.content}}</div>
+              <div class="handle">
+                <span class="like" @click="onThumb(responseData._id, index)" :class="likeActiveIndex === index ? 'like-active' : ''"><i class="iconfont icon-dianzan1"></i>{{(item.like === 0 || !item.like) ? '赞' : item.like}}</span>
+                <span class="reply" @click="showItemInput(index)"><i class="iconfont icon-icon_huifu-mian"></i>回复</span>
+              </div>
+              <div class="reply-textarea edit" v-show="showItemId === index">
+                <div class="textarea-warp">
+                  <i class="iconfont icon-comment"></i>
+                  <el-input class="textarea" type="textarea" :autosize="{ minRows: 3}" placeholder="写下评论" v-model="textareaTwo"></el-input>
+                </div>
+                <div class="button">
+                  <el-button class="btn" type="danger" round size="small" @click="submitComment('two', item.userName, item.floor, index)">发布</el-button>
+                  <el-button class="btn" round plain size="small" @click="cancel">取消</el-button>
+                </div>
+              </div>
+              <template v-if="item.children">
+                <div class="reply-list" v-for="(m, n) in item.children" :key="n">
+                  <div class="avator">
+                    <img :src="m.avatar" alt="">
+                  </div>
+                  <div class="info">
+                    <div class="name">{{m.userName}}</div>
+                    <div class="time">{{m.create_time}}</div>
+                    <div class="cont"><span>回复 <span class="replay-color">{{m.owner}}：</span></span> {{m.content}}</div>
+                    <div class="handle">
+                      <span class="reply" @click="showItemTwoInput(n)"><i class="iconfont icon-icon_huifu-mian"></i>回复</span>
+                    </div>
+                    <div class="edit" v-show="showItemTwoId === n">
+                      <div class="textarea-warp">
+                        <i class="iconfont icon-comment"></i>
+                        <el-input class="textarea" type="textarea" :autosize="{ minRows: 3}" placeholder="写下评论" v-model="textareaThree"></el-input>
+                      </div>
+                      <div class="button">
+                        <el-button class="btn" type="danger" round size="small" @click="submitComment('three', m.userName, item.floor, index)">发布</el-button>
+                        <el-button class="btn" round plain size="small" @click="cancelTwo">取消</el-button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div
       class="__rt fr anchor"
@@ -31,6 +101,7 @@
 import Api from '~/utils/api'
 import markdown from '~/utils/markdown'
 import { Tag, Loading, Avatar } from 'element-ui'
+import { mapGetters } from 'vuex'
 export default {
   layout: 'front',
   head() {
@@ -49,15 +120,154 @@ export default {
   },
   data () {
     return {
+      textareaOne: '',
+      textareaTwo: '',
+      textareaThree: '',
+      commentTotal: '',
       responseData: {},
       content: '',
-      toc: ''
+      toc: '',
+      showButton: false,
+      showReplay: false,
+      showThreeReplay: false,
+      likeText: '点赞',
+      showItemId: '',
+      showItemTwoId: '',
+      likeActiveIndex: ''
     }
+  },
+  computed: {
+    ...mapGetters(['getCustomerInfo']),
   },
   mounted() {
     this.getArticleOne();
   },
   methods: {
+    // 对一级评论点赞
+    onThumb(id, index) {
+      if (this.likeActiveIndex === index) {
+        this.$message({
+          message: "你已点过赞了，悠着点吧！",
+          type: "warning"
+        })
+        return;
+      }
+      this.likeActiveIndex = index;
+      let params = {
+        id,
+        index
+      }
+      Api.commentLike(params).then(res => {
+        if (res.status === 200 && res.data.data) {
+          this.$message({
+            message: "评论点赞成功！",
+            type: "success"
+          })
+          this.getArticleOne();
+        }
+      }).catch(err => {
+        console.log('error:', err);
+        this.$message({
+          message: "点赞失败",
+          type: "error"
+        })
+      })
+    },
+    showItemInput(index) {
+      this.showItemId = index;
+    },
+    showItemTwoInput(index) {
+      this.showItemTwoId = index;
+    },
+    cancel() {
+      this.showItemId = '';
+    },
+    cancelTwo() {
+      this.showItemTwoId = '';
+    },
+    submitComment(val, userName, floor, index) {
+      // 判断是否登录
+      if (!this.getCustomerInfo.customerName) {
+        this.$message({
+          message: "登录才能评论哦，请先登录",
+          type: "warning"
+        })
+        return;
+      }
+      let params = {
+        type: '1', // 1 为一级评论 直接评论文章作者  2 为二级评论
+        id: this.responseData._id,
+        userName: this.getCustomerInfo.customerName,
+        avatar: this.getCustomerInfo.avatorSrc,
+        content: this.textareaOne,
+        owner: userName,
+        floor: 0,
+        index: index
+      }
+
+      // 判断是否输入内容
+      let text = '';
+      if (val === 'one') {
+        params.content = this.textareaOne;
+        params.floor = this.responseData.comments.length + 1;
+        text = this.textareaOne;
+      } else if (val === 'two') {
+        params.content = this.textareaTwo;
+        params.floor = floor;
+        text = this.textareaTwo;
+        params.type = '2';
+      } else if (val === 'three') {
+        params.content = this.textareaThree;
+        params.floor = floor;
+        text = this.textareaThree;
+        params.type = '2';
+      }
+      if (!text) {
+        this.$message({
+          message: "你还没有写评论呢",
+          type: "warning"
+        })
+        return
+      }
+
+      Api.commentOne(params).then(res => {
+        this.$message({
+          message: "评论成功",
+          type: "success"
+        })
+        this.textareaOne = '';
+        this.textareaTwo = '';
+        this.textareaThree = '';
+        this.getArticleOne();
+        this.cancel();
+        this.cancelTwo();
+      }).catch(err => {
+        console.log('error:', err);
+        this.$message({
+          message: "请求失败",
+          type: "error"
+        })
+      })
+    },
+    like() {
+      if (!this.getCustomerInfo.customerName) {
+        this.$message({
+          message: "登录才能点赞哦，请先登录",
+          type: "warning"
+        })
+        return;
+      } else if (this.likeText === '已赞') {
+        this.$message({
+          message: "已经点过赞啦，悠着点吧",
+          type: "warning"
+        })
+      }
+      this.likeText = '已赞';
+
+    },
+    commentFocus() {
+      this.showButton = true;
+    },
     handleTag(tag) {
       if (tag) return tag.split(',')
     },
@@ -76,6 +286,7 @@ export default {
               responseData.toc = result.toc;
             });
             this.responseData = responseData;
+            this.commentTotal = responseData.comments.length;
             this.seoHandle();
           }
       }).catch (err => {
@@ -92,6 +303,9 @@ export default {
 </script>
 
 <style lang="scss">
+.el-textarea__inner:focus {
+  border: 1px solid #DCDFE6;
+}
 .el-tag {
   height: 24px;
   line-height: 22px;
@@ -102,9 +316,6 @@ export default {
   border-left: 1px solid #eee;
   a {
     text-decoration: none;
-    // &.active {
-    //   color: red;
-    // }
   }
   ul {
     display: block;
@@ -196,6 +407,147 @@ export default {
         
         code {
           overflow: hidden;
+        }
+      }
+    }
+    .like {
+      margin: 50px 0 80px;
+      text-align: center;
+    }
+    .comment {
+      .textarea-warp {
+        position: relative;
+        .icon-comment {
+          font-size: 13px;
+          color: #ccc;
+          position: absolute;
+          top: 2px;
+          left: 6px;
+          z-index: 1000;
+        }
+        .textarea {
+          textarea {
+            padding-left: 23px;
+            background: #fafafa;
+          }
+        }
+      }
+      .reply-textarea .textarea-warp .icon-comment, .reply-list .textarea-warp .icon-comment {
+        top: 6px;
+      }
+      .edit {
+        .btn {
+          margin: 20px 0 20px 12px;
+        }
+        .button {
+          text-align: right;
+        }
+      }
+      .list {
+        margin: 30px 0;
+        .head {
+          margin: 20px 0;
+          font-size: 18px;
+          &:before {
+            display: inline-block;
+            content: '';
+            width: 4px;
+            height: 20px;
+            margin-right: 8px;
+            background:#ec7259;
+            border-radius: 5px;
+            position: relative;
+            top: 3px;
+          }
+        }
+        .no-data {
+          margin-top: 20px;
+          color: #ec7259;
+          text-align: center;
+        }
+        .content {
+          display: flex;
+          justify-content: start;
+          .avator {
+            width: 40px;
+            height: 40px;
+            img {
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+            }
+          }
+          .info {
+            width: 100%;
+            margin-left: 10px;
+            * {
+              line-height: 1.5;
+            }
+            .name {
+              color: #333;
+              font-size: 15px;
+              line-height: 1.2;
+            }
+            .time {
+              padding-top: 5px;
+              font-size: 12px;
+              color: #aaa;
+            }
+            .cont {
+              color: #2c3e50;
+              font-size: 13px;
+              line-height: 1.7;
+              margin: 10px 0;
+              .replay-color {
+                color: #406599;
+              }
+            }
+            .handle {
+              padding-bottom: 20px;
+              border-bottom: 1px solid #eee;
+              margin-bottom: 10px;
+              font-size: 13px;
+              .like {
+                cursor: pointer;
+                margin-right: 20px;
+                color: #aaa;
+                &.like-active {
+                  color: #ec7259!important;
+                  .icon-dianzan1 {
+                    color: #ec7259;
+                  }
+                }
+                .icon-dianzan1 {
+                  font-size: 15px;
+                }
+                &:hover {
+                  color: #ec7259;
+                  .icon-dianzan1 {
+                    color: #ec7259;
+                  }
+                }
+              }
+              .reply {
+                position: relative;
+                top: 1px;
+                cursor: pointer;
+                color: #aaa;
+                .icon-icon_huifu-mian {
+                  font-size: 13px;
+                }
+                &:hover {
+                  color: #666;
+                  .icon-icon_huifu-mian {
+                    color: #666;
+                  }
+                }
+              }
+            }
+            .reply-list {
+              display: flex;
+              justify-self: start;
+            }
+          }
         }
       }
     }
