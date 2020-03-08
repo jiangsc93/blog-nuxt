@@ -189,6 +189,12 @@ export default class  {
   static commentLike(data){
     return Net.postJSON(Checkenv.url.api + "/commentLike", {}, data);
   }
+  /**
+   * 对文章点赞
+   */
+  static likeArticle(data){
+    return Net.postJSON(Checkenv.url.api + "/likeArticle", {}, data);
+  }
 
 
   /**

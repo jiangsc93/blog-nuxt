@@ -55,7 +55,7 @@ var checkCurrentEnv = function (localEnv, rt) {
 //当前加载环境 dev：开发环境 test：测试环境 "": 生产环境或本地  pre 预发布
 let SERVER = checkCurrentEnv("");
 
-console.log('当前服务器地址....',SERVER);
+// console.log('当前服务器地址....',SERVER);
 
 
 export default SERVER;

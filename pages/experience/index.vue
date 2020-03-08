@@ -111,6 +111,7 @@ export default {
     font-weight: 600;
   }
   .description {
+    padding: 6px 0;
     color: #333;
     font-size: 13px;
     line-height: 1.5;

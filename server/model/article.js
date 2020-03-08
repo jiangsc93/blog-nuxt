@@ -10,7 +10,7 @@ const listSchema = new mongoose.Schema({
   type: String,
   tag: String,
   imgSrc: String,
-  like: String,
+  like: { type: Number, default: 0 },
   visit: { type: Number, required: true, default: 0 },
   beginDate: {
     type: String,

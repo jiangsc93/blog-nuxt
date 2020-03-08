@@ -93,6 +93,9 @@ router.post('/api/commentOne', comment.commentOne);
 // 对一级评论点赞
 router.post('/api/commentLike', comment.commentLike);
 
+// 对文章点赞
+router.post('/api/likeArticle', article.likeArticle);
+
 
 // 极验接口
 router.get("/api/gt/register-slide", function (req, res) {

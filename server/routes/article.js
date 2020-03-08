@@ -232,6 +232,22 @@ exports.modifyArticleAdmin = ({ res, body }) => {
   });
 };
 
+// 对文章点赞
+exports.likeArticle = ({ res, body }) => {
+  articleModel.findById(body.id, (err, data) => {
+    if (!data.like) data.like = 0;
+    data.like = Number(data.like);
+    data.like += 1;
+    data.save(function(err, data) {
+      if (err) {
+        responseClient(res, 404, '点赞成功', data);
+      } else {
+        responseClient(res, 200, '点赞失败!', err);
+      }
+    })
+  });
+};
+
 // admin获取单个文章
 exports.getArticleOneAdmin = ({ res, body}) => {
   articleModel.findById(body.id, (err, data) => {

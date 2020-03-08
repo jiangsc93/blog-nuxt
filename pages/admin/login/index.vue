@@ -38,8 +38,8 @@
           { hid: 'description', name: 'description', content: 'login页面....' }
         ],
         script: [
-         { src: 'gt.js', type: 'text/javascript' } // 本地静态资源可用次,线上无法读取改地址,建议换成下面
-          // { src: 'http://static.geetest.com/static/tools/gt.js', type: 'text/javascript' }
+        //  { src: 'gt.js', type: 'text/javascript' } // 本地静态资源可用次,线上无法读取改地址,建议换成下面
+          { src: 'http://static.geetest.com/static/tools/gt.js', type: 'text/javascript' }
         ]
       }
     },
@@ -150,6 +150,9 @@
 </script>
 
 <style scoped lang="scss">
+  .container .el-form-item {
+    margin-bottom: 18px!important;
+  }
   .container{
     height: 60vh;
     margin: 0 auto;

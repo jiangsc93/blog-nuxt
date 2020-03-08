@@ -23,7 +23,7 @@
       <!-- <div class="like">
         如果您觉得这篇文章不错或者对你有所帮助，请给个赞或者星呗，你的点赞就是我继续创作的最大动力。
       </div> -->
-      <div class="like"><el-button type="danger" @click="like">{{likeText}}</el-button></div>
+      <div class="like"><el-button type="danger" @click="likeArticle(responseData._id)">{{likeText}}</el-button></div>
       <!-- 编辑一级评论 -->
       <div class="comment">
         <div class="edit">
@@ -147,7 +147,7 @@ export default {
     onThumb(id, index) {
       if (this.likeActiveIndex === index) {
         this.$message({
-          message: "你已点过赞了，悠着点吧！",
+          message: "你已经点过赞了，悠着点吧！",
           type: "warning"
         })
         return;
@@ -249,7 +249,7 @@ export default {
         })
       })
     },
-    like() {
+    likeArticle(id) {
       if (!this.getCustomerInfo.customerName) {
         this.$message({
           message: "登录才能点赞哦，请先登录",
@@ -261,8 +261,21 @@ export default {
           message: "已经点过赞啦，悠着点吧",
           type: "warning"
         })
+        return;
       }
-      this.likeText = '已赞';
+      Api.likeArticle({id: id}).then(res => {
+        this.likeText = '已赞';
+        this.$message({
+          message: "文章点赞成功！",
+          type: "success"
+        })
+      }).catch(err => {
+        console.log('error:', err);
+        this.$message({
+          message: "点赞失败",
+          type: "danger"
+        })
+      })
 
     },
     commentFocus() {

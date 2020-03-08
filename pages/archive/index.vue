@@ -14,7 +14,7 @@
           :key="index"
           type="warning "
           placement="top">
-          <nuxt-link :to="`/article/${m._id}`">
+          <nuxt-link :to="`/article/${m._id}`" target="_blank">
             <h3 class="title">{{m.title}}</h3>
           </nuxt-link>
           <p class="time">{{m.beginDate}}</p>
@@ -92,6 +92,7 @@ export default {
   }
 
   .title {
+    padding-bottom: 6px;
     color: #333;
     &:hover {
       color: #409eff;

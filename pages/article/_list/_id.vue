@@ -11,7 +11,7 @@
             <div class="info" v-if="articleData.length !== 0">
               <span class="time"><i class="iconfont icon-shijian"></i>{{item.beginDate}}</span>
               <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{item.visit || '1'}}次浏览</span>
-              <span class="like inline-b"><i class="iconfont icon-xin"></i>{{item.like || '1'}}</span>
+              <span class="like-span inline-b"><i class="iconfont icon-xin"></i>{{item.like || 0}}</span>
               <span class="comment inline-b"><i class="iconfont icon-icon_huifu-mian"></i>{{ item.comments ? item.comments.length : 0 }}</span>
               <span class="tag inline-b"><i class="iconfont icon-icontag"></i>{{item.tag || '其他'}}</span>
             </div>
@@ -161,7 +161,7 @@
           .visit {
             margin: 0 13px;
           }
-          .like {
+          .like-span {
             margin-right: 13px;
             .icon-xin {
               font-size: 14px;

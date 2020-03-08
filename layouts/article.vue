@@ -16,7 +16,7 @@
             <p class="text">益码凭川</p>
           </div>
           <div class="item">
-            <h2 class="title"><span>标</span><span style="color: #06c;">签</span>云</h2>
+            <h2 class="title"><span>标</span><span style="color: #409EFF;">签</span>云</h2>
             <div class="cont">
               <span class="tag" v-for="(item, index) in tagsList" :key="index">
                 <a :href="`/article/list/${item.tag}`" :alt="item.tag" :title="`查看${item.tag}相关文章`">{{item.tag}}</a>
@@ -129,6 +129,7 @@ html {
       color: inherit;
     }
     .__lt {
+      min-height: 80vh;
       float: left;
       width: 65%;
     }
@@ -149,11 +150,11 @@ html {
         border-radius: 4px;
         position: relative;
         .title {
-          font-size: 20px;
+          font-size: 17px;
           font-weight: bold;
           line-height: 22px;
           text-align: center;
-          padding: 15px 0;
+          padding: 10px 0 15px;
           border-bottom: 1px solid #eaeaea;
         }
         ul {
@@ -191,8 +192,9 @@ html {
   text-align: center;
   padding: 20px 0;
   .text {
+    margin-top: 6px;
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     color: #2c3e50;
     font-weight: bold;
   }

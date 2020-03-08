@@ -3,7 +3,7 @@
       <div class="pc-header">
         <div class="__lt">
           <div class="logo">
-            <img :style="backgColor" src="./images/ympc.png" alt="">
+            <img :style="backgColor" src="../../assets/images/user_logo11.png" alt="">
           </div>
           <el-menu :default-active="activeIndex" :router="true" class="el-menu-demo" mode="horizontal">
             <el-menu-item
@@ -234,12 +234,15 @@
         }
         .logo {
           display: inline-block;
-          width: 130px;
-          height: 60px;
+          width: 55px;
+          height: 55px;
+          position: relative;
+          top: -3px;
+          margin-right: 30px;
           img {
             width: 100%;
             height: 100%;
-            border-radius: 2px;
+            border-radius: 50%;
           }
         }
       }
@@ -252,10 +255,10 @@
           width: 30px;
           height: 30px;
           position: relative;
-          top: 9px;
+          top: 10px;
           right: 3px;;
           img {
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             border-radius: 50%;
             width: 100%;
             height: 100%;
@@ -267,13 +270,13 @@
       display: flex;
       justify-content: space-between;
       .logo {
-        width: 70px;
+        width: 40px;
         height: 40px;
         margin: 10px;
         img {
           width: 100%;
           height: 100%;
-          border-radius: 2px;
+          border-radius: 50%;
         }
       }
       .title {

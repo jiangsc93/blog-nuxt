@@ -12,7 +12,7 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       // 添加iconfont图标 如果需要添加图标  需更新此地址
-      { rel: 'stylesheet', type: 'text/css', href: 'https://at.alicdn.com/t/font_1620619_sm99vzqy6wk.css' },
+      { rel: 'stylesheet', type: 'text/css', href: 'https://at.alicdn.com/t/font_1620619_elnpcuhlrj5.css' },
     ]
   },
   /*
