@@ -97,6 +97,9 @@ export default {
 <style lang="scss" scoped>
 .page-archive {
   padding: 40px 0;
+  ul {
+    padding-left: 16px;
+  }
   .year {
     font-size: 30px;
     font-weight: bold;

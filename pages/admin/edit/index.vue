@@ -54,7 +54,8 @@
         </el-form-item>
         <p class="tips">编辑完内容请点击保存(或Ctrl + S)</p>
         <el-form-item>
-          <el-button type="primary" @click="submitArticle('editForm')">立即发布</el-button>
+          <el-button type="primary" @click="submitArticle('editForm', 0)">立即发布</el-button>
+          <el-button type="warning" @click="submitArticle('editForm', 1)">保存到草稿</el-button>
           <el-button @click="resetForm('editForm')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -135,7 +136,8 @@
           tag: '',
           content: '',
           summary: '',
-          imgSrc: ''
+          imgSrc: '',
+          state: 0
         },
         rules: {
           title: [
@@ -182,9 +184,10 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      submitArticle(formName) {
+      submitArticle(formName, state) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            this.editData.state = state; // 记录文章发布状态
             this.editData.author = this.editData.author ? this.editData.author : '佚名';
             // 将数组 标签 转化成字符串存进去
             this.editData.tag = this.editData.tag.join(',').toLowerCase();
@@ -195,7 +198,11 @@
               this.editData.id = this.$route.params.id;
               Api.ModifyArticleAdmin(this.editData)
               .then((res) => {
-                Util.UI.toast('文章修改成功!', 'success')
+                if (state === 0) {
+                  Util.UI.toast('文章修改成功!', 'success')
+                } else {
+                  Util.UI.toast('文章已保存到草稿!', 'success')
+                }
               }).then((res) => {
                 this.$router.push('/admin/article/list/1')
               }, err => {
@@ -207,7 +214,11 @@
             }
               Api.editNewArticleAdmin(this.editData)
               .then(res => {
-                Util.UI.toast('发表文章成功!', 'success')
+                if (state === 0) {
+                  Util.UI.toast('发表文章成功!', 'success')
+                } else {
+                  Util.UI.toast('文章已保存到草稿!', 'success')
+                }
               }).then((res) => {
                 this.$router.push('/admin/article/list/1')
               }, err => {

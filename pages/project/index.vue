@@ -1,7 +1,7 @@
 <template>
   <div class="project">
     <el-row :gutter="20">
-      <el-col :span="12" v-for="item in projectList" :key="item._id" style="margin-bottom: 20px">
+      <el-col :span="isMobile ? 24 : 12" v-for="item in projectList" :key="item._id" style="margin-bottom: 20px">
         <el-card :body-style="{ padding: '0px' }" class="project-item" shadow="hover">
           <a :href="item.link || 'https://github.com/jiangsc93'" target="_blank">
             <img class="image" :src="item.imgSrc">
@@ -23,6 +23,7 @@
 <script>
 import Api from '~/utils/api'
 import { Row, Col, Card } from 'element-ui'
+import { mapState } from 'vuex'
 export default {
   layout: 'article',
   head() {
@@ -43,6 +44,9 @@ export default {
     Row,
     Col,
     Card
+  },
+  computed: {
+    ...mapState(['isMobile'])
   },
   mounted() {
       this.getProjectList();
@@ -79,7 +83,7 @@ export default {
     margin: 0 0 10px 0;
   }
   .desc {
-    height: 60px;
+    max-height: 60px;
     font-size: 13px;
     line-height: 1.5;
   }

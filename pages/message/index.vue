@@ -1,6 +1,6 @@
 <template>
   <div class="message">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" class="demo-ruleForm">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" :label-width="isMobile ? '80px' : '138px'" class="demo-ruleForm">
       <el-form-item label="姓名" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
@@ -31,6 +31,7 @@
 <script>
 import Api from '~/utils/api'
 import markdown from '~/utils/markdown'
+import { mapState } from 'vuex'
 export default {
   middleware: 'getTagList',
   layout: 'article',
@@ -59,8 +60,8 @@ export default {
       }
     }
   },
-  beforeMount() {
-    
+  computed: {
+    ...mapState(['isMobile'])
   },
   methods: {
     submitForm(formName) {
@@ -118,5 +119,6 @@ export default {
 <style lang="scss">
 .message {
   margin: 90px 0 90px;
+  padding: 0 20px;
 }
 </style>

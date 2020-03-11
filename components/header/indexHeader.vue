@@ -1,6 +1,6 @@
 <template>
   <header>
-      <div class="pc-header">
+      <div v-if="!isMobile" class="pc-header">
         <div class="__lt">
           <div class="logo">
             <img :style="backgColor" src="../../assets/images/user_logo11.png" alt="">
@@ -30,12 +30,12 @@
           </el-dropdown>
         </div>
       </div>
-      <!-- <div v-else class="mobile-header">
+      <div v-else class="mobile-header">
         <div class="logo">
-          <img :style="backgColor" src="./images/ympc.png" alt="">
+          <img :style="backgColor" src="../../assets/images/user_logo11.png" alt="">
         </div>
         <div class="title">{{ title }}</div>
-        <div class="__rt"><i @click="isShowSide = true" class="iconfont icon-zhankai1"></i></div>
+        <div class="__rt"><i @click="isShowSide = !isShowSide" class="iconfont icon-zhankai4"></i></div>
       </div>
       <div v-show="isShowSide" class="side">
         <ul class="nav">
@@ -44,8 +44,10 @@
             :key="index"
             :class="activeIndex === index ? 'active' : ''">
             <a :href="item.link" @click="goLink(item.title)">{{item.title}}</a></li>
+            <li class="list-item" @click="handleCommand(avatorSrc ? 'customerLogout' : 'customerLogin')">{{avatorSrc? '退出' : '登录'}}</li>
+            <li class="list-item" @click="handleCommand('customerRegister')">注册</li>
         </ul>
-      </div> -->
+      </div>
       <LoginRegister
         :visible="visible"
         :handleFlag="handleFlag"
@@ -281,16 +283,15 @@
       }
       .title {
         font-size: 20px;
-        color: #fff;
         line-height: 60px;
       }
       .__rt {
-        .icon-zhankai1 {
-          font-size: 40px;
+        .icon-zhankai4 {
+          font-size: 32px;
           margin-right: 10px;
           position: relative;
-          top: 5px;
-          color:#409eff;
+          top: 12px;
+          color:#001529;
         }
       }
     }
@@ -302,9 +303,12 @@
       text-align: center;
       background: #fff;
       border: 1px solid #eee;
+      ul {
+        padding: 0!important;
+      }
       .nav {
         .list-item {
-          padding: 5px 0;
+          padding: 7px 0;
         }
       }
     }

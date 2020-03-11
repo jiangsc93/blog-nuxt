@@ -1,12 +1,13 @@
 <template>
   <el-dialog :title="handleFlag === 'login' ? '登录' : '注册'"
-             :width="isMobile ? '60%' : '35%'"
+             :width="isMobile ? '80%' : '30%'"
              :visible="visible"
              :close-on-click-modal="false"
              @close="cancel"
              :append-to-body="true"
+             :top="handleFlag === 'login' ? '25vh' : '13vh'"
              center>
-    <el-form>
+    <el-form :class="!isMobile ? 'login-form' : ''">
       <el-formItem label="邮箱"
                    :label-width="formLabelWidth">
         <el-input v-model="params.email"
@@ -79,7 +80,7 @@ import Cookie from 'js-cookie'
     },
     data(){
       return {
-        formLabelWidth: '80px',
+        formLabelWidth: '50px',
         params: {},
         btnLoading: false,
       }
@@ -198,8 +199,19 @@ import Cookie from 'js-cookie'
   }
 </script>
 
-<style scoped lang="scss">
+<style>
+.el-dialog--center .el-dialog__body {
+  padding-bottom: 0!important;
+}
+</style>
 
+<style scoped lang="scss">
+.el-dialog--center .el-dialog__body {
+  padding-bottom: 0;
+}
+.login-form {
+  padding: 0 15px;
+}
 
 </style>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="page-archive">
-    <el-timeline>
+    <el-timeline :class="isMobile ? 'ul_m' : ''">
       <el-timeline-item
         v-for="it in archiveList"
         :key="it.year"
@@ -8,7 +8,6 @@
         placement="top"
         hide-timestamp>
         <h3 class="year">{{it.year}}</h3>
-
         <el-timeline-item
           v-for="(m, index) in it.list"
           :key="index"
@@ -27,6 +26,7 @@
 <script>
 import Api from '~/utils/api'
 import { Timeline, TimelineItem } from 'element-ui';
+import { mapState } from 'vuex'
 export default {
   layout: 'article',
   head() {
@@ -48,6 +48,7 @@ export default {
     TimelineItem
   },
   computed: {
+    ...mapState(['isMobile'])
   },
   mounted() {
     this.getArchiveList();
@@ -81,6 +82,9 @@ export default {
 }
 .page-archive {
   padding: 40px 0;
+  .ul_m.el-timeline {
+    padding-left: 10px;
+  }
   .year {
     font-size: 30px;
     font-weight: bold;

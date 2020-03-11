@@ -1,8 +1,8 @@
 <template>
   <div class="item">
-    <div class="__lt">
-      <h2 class="title">{{responseData.title}}</h2>
-      <div class="author">
+    <div :class="isMobile ? '__lt_m' : '__lt'">
+      <h2 :class="isMobile ? 'title_m' : 'title'">{{responseData.title}}</h2>
+      <div :class="isMobile ? 'author_m author-info' : 'author_pc author-info'">
         <div class="lt">
           <img class="avatar" v-if="responseData.author==='益码凭川'" src="../../assets/images/user_logo.png" alt="">
           <el-avatar class="avatar" v-else icon="el-icon-user-solid"></el-avatar>
@@ -15,7 +15,7 @@
             </div>
           </div>
         </div>
-        <div class="tag inline-b">
+        <div :class="!isMobile ? 'tag inline-b' : 'tag_m'">
           <el-tag v-for="(x, y) in handleTag(responseData.tag)" :key="y">{{x}}</el-tag>
         </div>
       </div>
@@ -23,13 +23,21 @@
       <!-- <div class="like">
         如果您觉得这篇文章不错或者对你有所帮助，请给个赞或者星呗，你的点赞就是我继续创作的最大动力。
       </div> -->
-      <div class="like"><el-button type="danger" @click="likeArticle(responseData._id)">{{likeText}}</el-button></div>
+      <div class="like">
+        <el-button type="danger" @click="likeArticle(responseData._id)">{{likeText}}</el-button>
+        <div class="like-users" v-if="responseData.like_users && responseData.like_users.length > 0">
+          <span class="img" v-for="(item, index) in responseData.like_users" :key="index">
+            <img v-if="item.avatarSrc" :src="item.avatarSrc" :alt="item.userName" :title="item.userName">
+          </span>
+          <span class="total">共{{responseData.like_users.length}}人点赞</span>
+        </div>
+      </div>
       <!-- 编辑一级评论 -->
       <div class="comment">
         <div class="edit">
           <div class="textarea-warp">
             <i class="iconfont icon-comment"></i>
-            <el-input class="textarea" type="textarea" @focus="commentFocus" :autosize="{ minRows: 4}" placeholder="写下评论" v-model="textareaOne"></el-input>
+            <el-input class="textarea" type="textarea" @focus="commentFocus" :autosize="{ minRows: 4}" placeholder="写下你的评论" v-model="textareaOne"></el-input>
           </div>
           <div class="button" v-show="showButton">
             <el-button class="btn" type="danger" round size="small" @click="submitComment('one', responseData.author)">发布</el-button>
@@ -54,7 +62,7 @@
               <div class="reply-textarea edit" v-show="showItemId === index">
                 <div class="textarea-warp">
                   <i class="iconfont icon-comment"></i>
-                  <el-input class="textarea" type="textarea" :autosize="{ minRows: 3}" placeholder="写下评论" v-model="textareaTwo"></el-input>
+                  <el-input class="textarea" type="textarea" :autosize="{ minRows: 3}" placeholder="写下你的评论" v-model="textareaTwo"></el-input>
                 </div>
                 <div class="button">
                   <el-button class="btn" type="danger" round size="small" @click="submitComment('two', item.userName, item.floor, index)">发布</el-button>
@@ -71,12 +79,12 @@
                     <div class="time">{{m.create_time}}</div>
                     <div class="cont"><span>回复 <span class="replay-color">{{m.owner}}：</span></span> {{m.content}}</div>
                     <div class="handle">
-                      <span class="reply" @click="showItemTwoInput(n)"><i class="iconfont icon-icon_huifu-mian"></i>回复</span>
+                      <span class="reply" @click="showItemTwoInput(n, index)"><i class="iconfont icon-icon_huifu-mian"></i>回复</span>
                     </div>
-                    <div class="edit" v-show="showItemTwoId === n">
+                    <div class="edit" v-show="showItemTwoId === n && showFatherId === index">
                       <div class="textarea-warp">
                         <i class="iconfont icon-comment"></i>
-                        <el-input class="textarea" type="textarea" :autosize="{ minRows: 3}" placeholder="写下评论" v-model="textareaThree"></el-input>
+                        <el-input class="textarea" type="textarea" :autosize="{ minRows: 3}" placeholder="写下你的评论" v-model="textareaThree"></el-input>
                       </div>
                       <div class="button">
                         <el-button class="btn" type="danger" round size="small" @click="submitComment('three', m.userName, item.floor, index)">发布</el-button>
@@ -92,6 +100,7 @@
       </div>
     </div>
     <div
+      v-if="!isMobile"
       class="__rt fr anchor"
       v-html="responseData.toc"></div>
   </div>
@@ -101,7 +110,7 @@
 import Api from '~/utils/api'
 import markdown from '~/utils/markdown'
 import { Tag, Loading, Avatar } from 'element-ui'
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   layout: 'front',
   head() {
@@ -133,10 +142,13 @@ export default {
       likeText: '点赞',
       showItemId: '',
       showItemTwoId: '',
-      likeActiveIndex: ''
+      showFatherId: '',
+      likeActiveIndex: '',
+      isLiked: false
     }
   },
   computed: {
+    ...mapState(['isMobile']),
     ...mapGetters(['getCustomerInfo']),
   },
   mounted() {
@@ -176,8 +188,9 @@ export default {
     showItemInput(index) {
       this.showItemId = index;
     },
-    showItemTwoInput(index) {
-      this.showItemTwoId = index;
+    showItemTwoInput(n, index) {
+      this.showItemTwoId = n;
+      this.showFatherId = index;
     },
     cancel() {
       this.showItemId = '';
@@ -263,11 +276,30 @@ export default {
         })
         return;
       }
-      Api.likeArticle({id: id}).then(res => {
-        this.likeText = '已赞';
+      let params = {
+        id,
+        userName: this.getCustomerInfo.customerName,
+        avatarSrc: this.getCustomerInfo.avatorSrc // 这儿字段有变化
+      }
+      if (this.isLiked) {
         this.$message({
-          message: "文章点赞成功！",
-          type: "success"
+          message: '你已经点过赞啦，悠着点吧',
+          type: 'warning',
+        })
+        return;
+      }
+      Api.likeArticle(params).then(res => {
+        this.isLiked = true;
+        let type = 'success';
+        if (res.data.message === '点赞成功') {
+          this.likeText = '已赞';
+          this.getArticleOne();
+        } else {
+          type = 'warning';
+        }
+        this.$message({
+          message: res.data.message,
+          type: type
         })
       }).catch(err => {
         console.log('error:', err);
@@ -367,14 +399,17 @@ export default {
   }
 }
 .item {
-    width: 100%;
-    padding: 10px 0 40px;
+    width: 94%;
+    padding: 10px 3% 40px;
     border-radius: 4px;
     background: #fff;
     .__lt {
       width: 66%;
       float: left;
       padding-right: 20px;
+    }
+    .__lt_m {
+      width: 100%;
     }
     .__rt {
       width: 28%;
@@ -405,6 +440,14 @@ export default {
       margin: 20px 0;
       text-align: center;
     }
+    .title_m {
+      font-size: 20px;
+      color: #2c3e52;
+      line-height: 1.5;
+      margin: 20px 0;
+      text-align: center;
+
+    }
     .cont {
       ._wrap {
         width: 100%;
@@ -422,10 +465,6 @@ export default {
           overflow: hidden;
         }
       }
-    }
-    .like {
-      margin: 50px 0 80px;
-      text-align: center;
     }
     .comment {
       .textarea-warp {
@@ -564,17 +603,18 @@ export default {
         }
       }
     }
-    .author {
-      display: flex;
-      justify-content: space-between;
+    .author-info {
       font-size: 12px;
       height: 50px;
       color: #969696;
       margin-bottom: 30px;
       position: relative;
+      &.author_pc {
+        display: flex;
+        justify-content: space-between;
+      }
       .lt {
         overflow: hidden;
-        position: relative;
         .avatar {
           position: absolute;
           top: 0;
@@ -610,6 +650,33 @@ export default {
         top: 50%;
         right: 0;
         transform: translateY(-50%);
+      }
+      .tag_m {
+        margin: 5px 0 0 50px;
+      }
+    }
+    .like {
+      margin: 50px 0 80px;
+      text-align: center;
+      .like-users {
+        text-align: center;
+        padding: 10px 50px;
+        .img {
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          img {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #f2f2f2;
+            border-radius: 50%;
+          }
+        }
+        .total {
+          margin-left: 5px;
+          vertical-align: top;
+          color: #aaa;
+        }
       }
     }
   }

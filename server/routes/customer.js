@@ -15,7 +15,7 @@ exports.login = ({ res, body }) => {
   ).then(customerInfo => {
     if (customerInfo) { // 用户存在
       let responseData = {
-        customerInfo
+        customerInfo: customerInfo
       };
       responseClient(res, 200, 'success', responseData);
     } else {
@@ -48,7 +48,6 @@ exports.register = ({ res, body }) => {
     responseClient(res, 400, '密码不可为空');
     return;
   }
-  console.log('jinlail');
   CustomerModel.findOne(
     {
       email: email
@@ -65,9 +64,11 @@ exports.register = ({ res, body }) => {
         introduction: introduction,
         create_time: create_time || moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
       })
-      console.log('准备保存');
       customerModel.save().then(data => {
-        responseClient(res, 200, '注册成功', data);
+      let responseData = {
+        customerInfo: data
+      }
+        responseClient(res, 200, '注册成功', responseData);
       }).catch(err => {
         responseClient(res, 400, 'error', err);
       });

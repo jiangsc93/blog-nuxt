@@ -1,15 +1,13 @@
 <template>
   <div class="main">
     <index-header></index-header>
-    <!-- <div class="page-article" :class="isMobile ? 'mobile': ''"> -->
     <div class="page-article">
       <div class="wrap">
-        <div class="__lt">
+        <div :class="isMobile?'__lt_m' : '__lt'">
           <nuxt/>
         </div>
-        <!-- <div v-if="!isArticleDetail && !isMobile" class="__rt"> -->
-        <div class="__rt">
-          <div class="user">
+        <div :class="isMobile? '__rt_m article_rt':'__rt article_rt'">
+          <div class="user" v-if="!isMobile">
             <img class="user-logo"
                 src="../assets/images/user_logo.png"
                 alt="yimapingchuan logo" />
@@ -70,18 +68,6 @@
     },
     mounted() { 
       this.getTagList();
-      
-      // if (this.$route.path.indexOf('article') > -1 && this.$route.path.indexOf('list') === -1) {
-      //   this.isArticleDetail = true;
-      // }
-      // // 移动端 rem 单位适配
-      // if (this.isMobile) {
-      //   // width * 100 / 750 = width / 7.5
-      //   // 1rem = 100px
-      //   let width = window.screen.width;
-      //   window.document.getElementsByTagName("html")[0].style.fontSize =
-      //     width / 7.5 + "px";
-      // }
     },
     methods: {
       getTagList() {
@@ -133,6 +119,13 @@ html {
       float: left;
       width: 65%;
     }
+    .__lt_m {
+      padding: 0 12px;
+    }
+    .__rt_m {
+      display: block;
+      width: 100%;
+    }
     .__rt {
       display: block;
       float: right;
@@ -143,6 +136,8 @@ html {
       width: 350px;
       margin-left: 30px;
       border-radius: 4px;
+    }
+    .article_rt {
       .item {
         background: #fff;
         padding: 10px 15px 20px;

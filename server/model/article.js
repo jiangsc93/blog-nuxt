@@ -11,7 +11,14 @@ const listSchema = new mongoose.Schema({
   tag: String,
   imgSrc: String,
   like: { type: Number, default: 0 },
+  like_users: {
+    type: Array,
+    default: []
+  },
   visit: { type: Number, required: true, default: 0 },
+  state: { // 0 发布， 1 草稿
+    type: Number, default: 0
+  },
   beginDate: {
     type: String,
     default: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')

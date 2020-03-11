@@ -34,6 +34,7 @@ exports.getArticleList = ({ res, body }) => {
       type: 1,
       tag: 1,
       visit: 1,
+      state: 0,
       summary: 1,
       content: 1,
       comments: [],
@@ -66,10 +67,10 @@ exports.getArticleList = ({ res, body }) => {
       if (body.tag === '全部') {
         options.limit = 1000;
         options.sort = { visit: -1};
-        conditions = {title: { $exists: true }};
+        conditions = {title: { $exists: true }, state: 0};
       } else {
         let reg = new RegExp(body.tag, "i"); // 不区分大小写
-        conditions = { tag: { $regex: reg } };
+        conditions = { tag: { $regex: reg }, state: 0 };
       }
       // 只需查找tag标签存在就行 {tag: {$exists: true}, 以浏览量最大的靠前
       // articleModel.find(conditions, fields, options)
@@ -78,6 +79,7 @@ exports.getArticleList = ({ res, body }) => {
         title: 1,
         beginDate: 1
       };
+      conditions = { state: 0 };
       options.limit = 1000;
     }
     articleModel.find(conditions, fields, options)
@@ -131,7 +133,7 @@ exports.getArticleList = ({ res, body }) => {
 exports.getArticleOne = ({body, res}) => {
   if (body.id === 'introduce') {
     let reg = new RegExp('关于博主', "g"); // 不区分大小写
-    let conditions = { tag: { $regex: reg } };
+    let conditions = { tag: { $regex: reg, state: 0 } };
     articleModel.findOne(conditions).then(result => {
       // 保存浏览次数，每请求一次加一次
       result = _.cloneDeep(result);
@@ -142,7 +144,7 @@ exports.getArticleOne = ({body, res}) => {
       responseClient(res, 404, '没有找到', err);
     })
   } else {
-    articleModel.findOne({ _id: body.id }).then( result => {
+    articleModel.findOne({ _id: body.id, state: 0 }).then( result => {
       // 保存浏览次数，每请求一次加一次
       result.visit += 1;
       result.save(function(err, data) {
@@ -160,7 +162,7 @@ exports.getArticleOne = ({body, res}) => {
 
 // admin编辑新文章
 exports.editNewArticleAdmin = ({res, body}) => {
-  let { title, author, type, tag, summary, beginDate, content, wordage, imgSrc } = body;
+  let { title, author, type, tag, summary, beginDate, content, wordage, state, imgSrc } = body;
   wordage = content.length;
   
   let article = new articleModel({
@@ -174,6 +176,7 @@ exports.editNewArticleAdmin = ({res, body}) => {
     summary,
     content,
     imgSrc,
+    state,
     wordage
   });
   // 调用tag的addTag接口
@@ -219,6 +222,7 @@ exports.modifyArticleAdmin = ({ res, body }) => {
     data.type = body.type;
     data.tag = body.tag;
     data.title = body.title;
+    data.state = body.state;
     data.imgSrc = body.imgSrc;
     // 调用tag的addTag接口
     tagInterface.addTag(body.tag);
@@ -234,17 +238,40 @@ exports.modifyArticleAdmin = ({ res, body }) => {
 
 // 对文章点赞
 exports.likeArticle = ({ res, body }) => {
-  articleModel.findById(body.id, (err, data) => {
+  let { id, userName, avatarSrc } = body;
+  let likerInfo = {
+    userName,
+    avatarSrc,
+    create_time: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+  }
+  articleModel.findById(id, (err, data) => {
     if (!data.like) data.like = 0;
     data.like = Number(data.like);
     data.like += 1;
-    data.save(function(err, data) {
-      if (err) {
-        responseClient(res, 404, '点赞成功', data);
+    if (!data.like_users) { 
+      data.like_users = [];
+    };
+    let isRepeat = false;
+    _.forEach(data.like_users, item => {
+      console.log(item, 'item');
+      if (likerInfo.userName === item.userName) {
+        isRepeat = true;
       } else {
-        responseClient(res, 200, '点赞失败!', err);
+        isRepeat = false;
       }
     })
+    if (isRepeat) {
+      responseClient(res, 200, '你已经点过赞啦, 悠着点吧', data);
+    } else {
+      data.like_users.push(likerInfo);
+      data.save(function(err, data) {
+        if (err) {
+          responseClient(res, 404, '点赞失败', data);
+        } else {
+          responseClient(res, 200, '点赞成功', err);
+        }
+      })
+    }
   });
 };
 

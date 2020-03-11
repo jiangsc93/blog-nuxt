@@ -21,7 +21,7 @@ export const getters = {
     return state.configList;
   },
   getCustomerInfo(state) {
-    return {customerName: Cookie.get('customerName'), avatorSrc: Cookie.get('avatorSrc')};
+    return {customerName: state.customerName || Cookie.get('customerName'), avatorSrc: state.avatorSrc || Cookie.get('avatorSrc')};
   }
 }
 export const mutations = {

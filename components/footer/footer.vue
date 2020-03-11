@@ -23,7 +23,7 @@ export default {
 <style scoped lang="scss">
   footer {
     background: #fff;
-    padding: 0 100px 10px;
+    padding: 0 auto 10px;
     margin-top: 20px;
     text-align: center;
     color: #333;

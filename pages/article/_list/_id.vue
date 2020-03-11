@@ -2,15 +2,16 @@
   <div class="item">
     <h3 class="tag-title">{{tagTitle}}</h3>
     <div v-if="articleData.length === 0" class="no-data">该类型的文章已删除！</div>
-    <ul v-else>
+    <ul v-else :class="isMobile ? 'ul_m' : ''">
       <li class="item-li overflow" v-for="(item, index) in articleData" :key="index">
         <a :href="`/article/${item._id}`">
-          <div class="__lt">
+          <div class="__lt" :class="isMobile ? '__lt_m' : ''">
             <h3 class="title cursor">{{item.title}}</h3>
             <div class="cont"><span class="inline-b _wrap">{{item.summary}}</span></div>
             <div class="info" v-if="articleData.length !== 0">
               <span class="time"><i class="iconfont icon-shijian"></i>{{item.beginDate}}</span>
-              <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{item.visit || '1'}}次浏览</span>
+              <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{item.visit || '1'}}{{!isMobile ? '次浏览' : ''}}</span>
+              <br v-if="isMobile">
               <span class="like-span inline-b"><i class="iconfont icon-xin"></i>{{item.like || 0}}</span>
               <span class="comment inline-b"><i class="iconfont icon-icon_huifu-mian"></i>{{ item.comments ? item.comments.length : 0 }}</span>
               <span class="tag inline-b"><i class="iconfont icon-icontag"></i>{{item.tag || '其他'}}</span>
@@ -28,6 +29,7 @@
 <script>
   import Api from '~/utils/api';
   import _ from 'lodash';
+  import {  mapState } from 'vuex'
   export default {
     middleware: 'configInit',
     layout: 'article',
@@ -63,6 +65,7 @@
       }
     },
     computed: {
+      ...mapState(['isMobile']),
       coverImg() {
         let arr = this.$store.state.configList;
         let value = '';
@@ -102,7 +105,7 @@
   .item {
     .tag-title {
       font-weight: bold;
-      margin: 20px 0;
+      margin: 20px 0 0;
       color: #336;
       font-size: 20px;
     }
@@ -116,6 +119,9 @@
     }
     a {
       color: inherit;
+    }
+    .ul_m {
+      margin: 0;
     }
     .iconfont {
       font-size: 12px;
@@ -135,6 +141,9 @@
       border-bottom: 1px solid #f0f0f0;
       .__lt {
         padding-right: 150px;
+        &.__lt_m {
+          padding-right: 135px;
+        }
         .title {
           text-align: left;
           font-size: 17px;
@@ -158,6 +167,9 @@
         .info {
           font-size: 12px;
           color: #888;
+          span {
+            margin-top: 3px;
+          }
           .visit {
             margin: 0 13px;
           }

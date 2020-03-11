@@ -19,6 +19,26 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="beginDate"
+          label="创建时间"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="visit"
+          label="浏览量"
+          width="80">
+        </el-table-column>
+        <el-table-column
+          prop="like"
+          label="点赞量"
+          width="80">
+        </el-table-column>
+        <el-table-column
+          prop="comments.length"
+          label="评论数"
+          width="80">
+        </el-table-column>
+        <el-table-column
           fixed="right"
           label="操作"
           width="260">
