@@ -31,7 +31,7 @@
           label="头像"
           width="120">
           <template slot-scope="scope">
-            <img :src="scope.row.avatorSrc" alt="">
+            <img :src="scope.row.avatar" alt="">
           </template>
         </el-table-column>
         <el-table-column
@@ -45,7 +45,7 @@
           width="260">
           <template slot-scope="scope">
             <el-button disabled size="mini" type="success" @click="editFn(scope.row._id)">修改</el-button>
-            <el-button :disabled="scope.row.userName === '益码凭川'" size="mini" type="danger" @click="deletFn(scope.row._id)">删除</el-button>
+            <el-button size="mini" type="danger" @click="deletFn(scope.row._id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -102,7 +102,7 @@
         Util.UI.confirm('确定删除这个管理员吗?', '提示').then(() => {
           Api.deleteManager({id})
             .then(res => {
-              Util.UI.toast('文章删除成功!', 'success')
+              Util.UI.toast('这个管理员删除成功!', 'success')
               this.getManagerList();
             })
           }, () => {

@@ -35,17 +35,17 @@
           </el-menu-item-group>
         </el-submenu>
         <el-menu-item
-          v-if="isSuperAmin"
+          v-show="isSuperAmin"
           index="/admin/project/">
           <i class="el-icon-document"></i>
           <span slot="title">项目</span>
         </el-menu-item>
-        <el-menu-item v-if="isSuperAmin" index="/admin/experience/">
+        <el-menu-item v-show="isSuperAmin" index="/admin/experience/">
           <i class="el-icon-collection"></i>
           <span slot="title">历程</span>
         </el-menu-item>
         <el-menu-item
-          v-if="isSuperAmin"
+          v-show="isSuperAmin"
           index="/admin/message/">
           <i class="el-icon-message"></i>
           <span slot="title">留言</span>
@@ -55,14 +55,14 @@
           <span slot="title">个人资料</span>
         </el-menu-item>
         <el-menu-item
-          v-if="isSuperAmin"
+          v-show="isSuperAmin"
           index="/admin/config/">
           <i class="el-icon-setting"></i>
           <span slot="title">配置中心</span>
         </el-menu-item>
         <el-submenu
           index="3"
-          v-if="isSuperAmin">
+          v-show="isSuperAmin">
           <template slot="title">
             <i class="el-icon-user"></i>
             <span>用户管理</span>

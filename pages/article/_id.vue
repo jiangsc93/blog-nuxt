@@ -485,7 +485,7 @@ export default {
           font-size: 13px;
           color: #ccc;
           position: absolute;
-          top: 2px;
+          top: 9px;
           left: 6px;
           z-index: 1000;
         }

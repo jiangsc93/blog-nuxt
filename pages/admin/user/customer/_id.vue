@@ -99,10 +99,10 @@
         })
       },
       deletFn(id) {
-        Util.UI.confirm('确定删除这个管理员吗?', '提示').then(() => {
+        Util.UI.confirm('确定删除这个游客吗?', '提示').then(() => {
           Api.deleteCustomer({id})
             .then(res => {
-              Util.UI.toast('文章删除成功!', 'success')
+              Util.UI.toast('这个游客删除成功!', 'success')
               this.getCustomerList();
             })
           }, () => {
