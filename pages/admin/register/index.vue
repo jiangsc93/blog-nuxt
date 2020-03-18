@@ -5,19 +5,18 @@
       <div class="list">
         <el-form :model="ruleForm2" status-icon ref="ruleForm2" :rules="rules" label-width="70px" class="demo-ruleForm">
           <el-form-item label="用户名" prop="userName">
-            <el-input type="text" v-model="ruleForm2.userName" auto-complete="off"></el-input>
+            <el-input type="text" placeholder="每篇文章的作者名，想一个吧" v-model="ruleForm2.userName" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
-            <el-input type="text" v-model="ruleForm2.email" auto-complete="off"></el-input>
+            <el-input type="text" placeholder="请输入格式正确的邮箱" v-model="ruleForm2.email" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input type="password" v-model="ruleForm2.password" auto-complete="off"></el-input>
+            <el-input type="password" placeholder="请输入密码" v-model="ruleForm2.password" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item class="footer">
             <el-button type="primary" id="btn" @click="register('ruleForm2')">注册</el-button>
             <el-button @click="resetForm('ruleForm2')">重置</el-button>
           </el-form-item>
-          <!-- <p class="username_pass">测试账号: 任意非空字符 密码: 123456</p> -->
         </el-form>
       </div>
     </div>
@@ -31,9 +30,9 @@
     layout: 'back',
     head() {
       return {
-        title: '登录页面',
+        title: '管理员注册页面',
         meta: [
-          { hid: 'description', name: 'description', content: 'login页面....' }
+          { hid: 'description', name: 'description', content: 'register页面....' }
         ]
       }
     },
@@ -47,13 +46,13 @@
         },
         rules: {
           userName: [
-            { type: 'string', required: true, message: '请输入用户名', trigger: 'change' }
+            { type: 'string', required: true, message: '请输入用户名', trigger: 'blur' }
           ],
           email: [
-            { type: 'string', required: true, message: '请输入邮箱', trigger: 'change' }
+            { type: 'string', required: true, message: '请输入邮箱', trigger: 'blur' }
           ],
           password: [
-            { type: 'string', required: true, message: '请输入密码', trigger: 'change' }
+            { type: 'string', required: true, message: '请输入密码', trigger: 'blur' }
           ]
         }
       }
@@ -66,15 +65,15 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             Api.register(this.ruleForm2).then(result => {
-              console.log(result, 'rrr');
-              if (result.data.code === 200 && result.data.data) {
-                Cookie.set('authUser', result.data.data)
+              if (result.status === 200 && Object.keys(result.data.data).length !== 0) { // 判断对象是否为空
+                Cookie.set('authUser', result.data.data);
+                sessionStorage.setItem('email', JSON.stringify(result.data.data.email));
                 Util.UI.toast('登录成功!', 'success');
                 setTimeout(() => {
                   window.location.href = '/admin/';
                 },1000)
               } else {
-                return;
+                Util.UI.toast(result.data.message, 'warning');
               }
             }).catch(err => {
               console.log('error:', err);
@@ -124,7 +123,13 @@
       color: #666;
     }
   }
-  footer{
-    display: none;
+  .footer{
+    text-align: center;
   }
+  
+</style>
+<style>
+.el-form .footer .el-form-item__content {
+  margin-left: 0!important;
+}
 </style>

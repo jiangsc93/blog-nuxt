@@ -22,6 +22,10 @@ const customerSchema = new mongoose.Schema({
   create_time: {
     type: String,
     default: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+  },
+  update_time: {
+    type: String,
+    default: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
   }
 });
 

@@ -1,7 +1,7 @@
 import Api from '~/utils/api'
 import Cookie from 'js-cookie'
 import Types from './types'
-
+import Checkenv from "../utils/checkenv";
 export const state = function() {
   return {
     isLogin: false,
@@ -9,7 +9,9 @@ export const state = function() {
     tagsList: [],
     configList: [],
     customerName: '',
-    avatorSrc: ''
+    avatorSrc: '',
+    imgurlhttp:  Checkenv.imgurlhttp || 'http://www.jscwwd.com:3000',
+    apiHttp: Checkenv.httpUrl || 'https://www.jscwwd.com',
   }
 }
 
@@ -62,7 +64,8 @@ export const actions = {
   },
 
   async logout({ commit }) {
-    Cookie.remove('authUser')
+    Cookie.remove('authUser');
+    sessionStorage.clear();
   },
   [Types.GET_TAGLIST]: async ({ commit }, data) => {
     await Api.getTagList(data)

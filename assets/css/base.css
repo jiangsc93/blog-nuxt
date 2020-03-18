@@ -31,9 +31,6 @@ a {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-a:active {
-  outline-width: 0;
-}
 
 img {
   border-style: none;
@@ -63,19 +60,11 @@ select:focus {
   border: 1px solid #dcdcdc;
 }
 
-/* ul, ol, li, dl, dd {
-  margin: 0;
-  padding: 0;
-} */
 
 ul, ol {
   list-style: none;
 }
 
-/* h1, h2, h3, h4, h5, h6, p {
-  margin: 0;
-  padding: 0;
-} */
 
 h2 {
   display: block;

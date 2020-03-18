@@ -77,3 +77,54 @@ exports.register = ({ res, body }) => {
     responseClient(res, 400, 'error', err);
   })
 };
+
+// admin获取分页游客列表
+exports.getCustomerList = ({ res, body }) => {
+  if (body.pageIndex == null) {
+    body.pageIndex = 1;
+  }
+  if (body.pageSize == null) {
+    body.pageSize = 5;
+  }
+
+  var resDatas = {
+    msg: '请求成功',
+    pageIndex: parseInt(body.pageIndex),
+    pageSize: parseInt(body.pageSize)
+  }
+
+  // 方法一, 此方法查询参数条件下的数据并返回
+  CustomerModel.count().then(count => {
+    resDatas.records = count; // 数据条数
+    resDatas.total = Math.ceil(count/resDatas.pageSize); // 总页数
+
+    if (resDatas.pageIndex > resDatas.total) resDatas.pageIndex = resDatas.total;
+    var limit = resDatas.pageSize;
+    var skip = (resDatas.pageIndex - 1) * resDatas.pageSize;
+
+    CustomerModel.find().sort({_id: -1}).limit(limit).skip(skip)
+      .then((data) => {
+        resDatas.list = data; // 数据包
+        responseClient(res, 200, 'success', resDatas);
+      }).catch(err => {
+        responseClient(res, 400, '获取失败', err);
+      })
+  });
+};
+
+// admin删除单个游客
+exports.deleteCustomer = ({ body, res }) => {
+  CustomerModel.findById(body.id, (err, data) => {
+    if (err) {
+      responseClient(res, 404, '没有找到这个游客', err);
+    } else {
+      data.remove((err, result) => {
+        if (err) {
+          responseClient(res, 404, '删除失败', err);
+        } else {
+          responseClient(res, 200, '你很叼哦,删除成功了!', result);
+        }
+      });
+    }
+  });
+};

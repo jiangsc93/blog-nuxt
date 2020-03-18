@@ -28,7 +28,6 @@ const tocObj = {
       result +=
         '<li><a class="toc-link" href="#' + anchor + '">' + text + "<a></li>\n";
     };
-
     this.toc.forEach(function (item) {
       let levelIndex = levelStack.indexOf(item.level);
       // 没有找到相应level的ul标签，则将li放入新增的ul中
@@ -67,7 +66,7 @@ class MarkUtils {
     this.rendererMD = new marked.Renderer();
     this.rendererMD.heading = function (text, level, raw) {
       var anchor = tocObj.add(text, level);
-      return `<h${level} id=${anchor}>${text}</h${level}>\n`;
+      return `<h${level} id=${anchor}><span class="text">${text}</span><span class="icon"></span></h${level}>\n`;
     };
     this.rendererMD.table = function (header, body) {
       return '<table class="table" border="0" cellspacing="0" cellpadding="0">' + header + body + '</table>'

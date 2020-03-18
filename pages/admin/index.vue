@@ -5,38 +5,50 @@
       <h3>
         欢迎使用'益码凭川'博客后台系统!
       </h3>
-      <!-- <h1 class="title">
-        文章增删改查系统
-      </h1>
-      <div class="links">
-        <a
-          href="/admin/edit"
-          class="button--green">发表文章</a>
-        <a
-          href="/admin/article/list/1"
-          class="button--grey">查看文章</a>
-      </div> -->
-      
+      <p class="tip" v-if="isShowTip"><strong>温馨提示：</strong>您还有资料未完善，请前往<a href="/admin/manager">个人资料</a></p>
     </div>
   </section>
 </template>
 
 <script>
 import AppLogo from '~/components/AppLogo.vue'
-
+import Api from '../../utils/api'
 export default {
   middleware: 'auth',
   layout: 'admin',
   head() {
     return {
-      title: '这是一个测试Title',
+      title: 'Admin首页',
       meta: [
-        { hid: 'description', name: 'description', content: '这是一段描述文字' }
+        { hid: 'description', name: 'description', content: 'Admin首页' }
       ]
+    }
+  },
+  data() {
+    return {
+      isShowTip: false
     }
   },
   components: {
     AppLogo
+  },
+  mounted() {
+    this.getUserInfo();
+  },
+  methods: {
+    getUserInfo() {
+      let params = {
+        email: JSON.parse(sessionStorage.getItem('email'))
+      }
+      Api.getUserInfo(params)
+        .then(res => {
+          if (res.status === 200 && res.data.data && !res.data.data.avatar) { // 头像存在
+            this.isShowTip = true;
+          }
+        }).catch(err => {
+          console.log('报错啦', err)
+        })
+    },
   }
 }
 </script>
@@ -51,16 +63,9 @@ export default {
   text-align: center;
 }
 
-.title {
-  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 1 */
-  display: block;
-  font-weight: 300;
-  font-size: 40px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.links {
-  padding-top: 15px;
+.tip {
+  font-size: 14px;
+  margin-top: 30px;
+  color: #f56c6c;
 }
 </style>

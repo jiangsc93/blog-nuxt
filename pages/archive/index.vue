@@ -4,7 +4,7 @@
       <el-timeline-item
         v-for="it in archiveList"
         :key="it.year"
-        type="success "
+        type="success"
         placement="top"
         hide-timestamp>
         <h3 class="year">{{it.year}}</h3>

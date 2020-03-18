@@ -106,8 +106,8 @@ export default class  {
   /**
    * 文章列表
    */
-  static getArticleListAdmin(pageIndex, pageSize){
-    return Net.postJSON(Checkenv.url.api + "/getArticleListAdmin/", {}, {pageIndex, pageSize});
+  static getArticleListAdmin(data){
+    return Net.postJSON(Checkenv.url.api + "/getArticleListAdmin/", {}, data);
   }
 
   /**
@@ -160,6 +160,30 @@ export default class  {
   static login(data){
     return Net.postJSON(Checkenv.url.api + "/login", {}, data);
   }
+  /**
+   * 获取管理员信息
+   */
+  static getUserInfo(data){
+    return Net.postJSON(Checkenv.url.api + "/getUserInfo", {}, data);
+  }
+  /**
+   * 修改管理员信息
+   */
+  static modifyUserInfo(data){
+    return Net.postJSON(Checkenv.url.api + "/modifyUserInfo", {}, data);
+  }
+  /**
+   * 获取管理员列表
+   */
+  static getManagerList(data){
+    return Net.postJSON(Checkenv.url.api + "/getManagerList", {}, data);
+  }
+  /**
+   * 删除单个管理员
+   */
+  static deleteManager(data){
+    return Net.postJSON(Checkenv.url.api + "/deleteManager", {}, data);
+  }
 
 
   /**
@@ -168,14 +192,24 @@ export default class  {
   static customerRegister(data){
     return Net.postJSON(Checkenv.url.api + "/customerRegister", {}, data);
   }
-
   /**
    * 游客登录
    */
   static customerLogin(data){
     return Net.postJSON(Checkenv.url.api + "/customerLogin", {}, data);
   }
-
+ /**
+   * 获取游客列表
+   */
+  static getCustomerList(data){
+    return Net.postJSON(Checkenv.url.api + "/getCustomerList", {}, data);
+  }
+  /**
+   * 删除单个游客
+   */
+  static deleteCustomer(data){
+    return Net.postJSON(Checkenv.url.api + "/deleteCustomer", {}, data);
+  }
 
   /**
    * 添加文章评论
@@ -215,8 +249,16 @@ export default class  {
   /**
    * 急眼2
    */
-    static JiyanValidate(data){
+  static JiyanValidate(data){
     return Net.postJSON(Checkenv.url.api + "/gt/validate-slide", {}, data);
+  }
+
+
+  /**
+   * 上传图片
+   */
+  static upload(data){
+    return Net.postJSON(Checkenv.url.api + "/upload", {}, data);
   }
 
 

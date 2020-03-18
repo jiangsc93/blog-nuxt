@@ -5,10 +5,10 @@
       <div class="list">
         <el-form :model="ruleForm2" status-icon ref="ruleForm2" :rules="rules" label-width="70px" class="demo-ruleForm">
           <el-form-item label="邮箱" prop="email">
-            <el-input type="text" v-model="ruleForm2.email" auto-complete="off"></el-input>
+            <el-input type="text" placeholder="请输入邮箱" v-model="ruleForm2.email" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input type="password" v-model="ruleForm2.password" auto-complete="off"></el-input>
+            <el-input type="password" placeholder="请输入密码" v-model="ruleForm2.password" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="验证">
             <div id="captcha">
@@ -16,7 +16,7 @@
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" id="btn" @click="login">登录</el-button>
+            <el-button type="primary" id="btn" @click="loginCheck">登录</el-button>
             <el-button @click="resetForm('ruleForm2')">重置</el-button>
             <el-button @click="register()">去注册</el-button>
           </el-form-item>
@@ -33,13 +33,13 @@
     layout: 'back',
     head() {
       return {
-        title: '登录页面',
+        title: '管理员登录页面',
         meta: [
           { hid: 'description', name: 'description', content: 'login页面....' }
         ],
         script: [
         //  { src: 'gt.js', type: 'text/javascript' } // 本地静态资源可用次,线上无法读取改地址,建议换成下面
-          { src: 'http://static.geetest.com/static/tools/gt.js', type: 'text/javascript' }
+          { src: 'https://static.geetest.com/static/tools/gt.js', type: 'text/javascript' }
         ]
       }
     },
@@ -58,26 +58,30 @@
         showJiyan: false,
         rules: {
           email: [
-            { type: 'array', required: true, message: '请输入邮箱', trigger: 'change' }
+            { type: 'string', required: true, message: '请输入邮箱', trigger: 'blur' }
           ],
           password: [
-            { type: 'string', required: true, message: '请输入密码', trigger: 'change' }
+            { type: 'string', required: true, message: '请输入密码', trigger: 'blur' }
           ]
         }
       }
     },
     mounted() {
       Api.JiyanSlide()
-      .then(res => {
+        .then(res => {
+          if (!res.data.data || res.status !== 200) {
+            return
+          }
+          let { gt, challenge, success, new_captcha } = res.data.data;
           // 参数1：配置参数
           // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它调用相应的接口
-        let _this = this;
+          let _this = this;
           initGeetest({ // 急眼自带方法
             // 以下 4 个配置参数为必须，不能缺少
-            gt: res.data.gt,
-            challenge: res.data.challenge,
-            offline: !res.data.success, // 表示用户后台检测极验服务器是否宕机
-            new_captcha: res.data.new_captcha, // 用于宕机时表示是新验证码的宕机
+            gt: gt,
+            challenge: challenge,
+            offline: !success, // 表示用户后台检测极验服务器是否宕机
+            new_captcha: new_captcha, // 用于宕机时表示是新验证码的宕机
             product: "float", // 产品形式，包括：float，popup
             width: "100%"
           }, function(captchaObj) {
@@ -88,57 +92,56 @@
             captchaObj.onReady(function () {
               _this.showJiyan = true;
             });
-            btn.onclick = function () {
-              _this.ruleForm2.userName = _this.ruleForm2.userName.trim()
-              Api.login(_this.ruleForm2)
-              .then(info => {
-                let result = captchaObj.getValidate();
-                if (!result) {
-                  return Util.UI.toast('请完成验证!', 'error')
-                }
-
-                _this.jiyanData.geetest_challenge = result.geetest_challenge;
-                _this.jiyanData.geetest_validate = result.geetest_validate;
-                _this.jiyanData.geetest_seccode = result.geetest_seccode;
-                Api.JiyanValidate(_this.jiyanData)
-                .then(res => {
-                  if (res.data.status === 'success') {
-                    Cookie.set('authUser', info.data)
-                    Util.UI.toast('登录成功!', 'success')
-                    _this.$router.push(`/admin/`)
-                  } else if (res.data.status === 'fail') {
-                    Util.UI.toast('登录失败，请完成验证!', 'error')
-                    captchaObj.reset();
-                  }
-                })
-
-              }, err => {
-                Util.UI.toast('账号或密码错误!', 'error')
-              })
-            }
+            captchaObj.onSuccess(function () {
+              let successResult = captchaObj.getValidate();
+              _this.jiyanData.geetest_challenge = successResult.geetest_challenge;
+              _this.jiyanData.geetest_validate = successResult.geetest_validate;
+              _this.jiyanData.geetest_seccode = successResult.geetest_seccode;
+            })
           });
-      })
+        })
     },
     methods: {
+      jiyanValidate () {
+        if (!this.jiyanData.geetest_challenge) {
+          return Util.UI.toast('未验证，请完成验证!', 'error')
+        }
+        Api.JiyanValidate(this.jiyanData)
+          .then(res => {
+            if (res.data.data.status === 'success') {
+              this.login();
+            } else if (res.data.data.status === 'fail') {
+              Util.UI.toast('验证失败，请重新完成验证!', 'error')
+              return;
+            }
+          }).catch(err => {
+            return Util.UI.toast('验证失败，请完成验证!', 'error')
+          })
+      },
       login() {
-       if (this.ruleForm2.userName !== '' && this.ruleForm2.password !== '') {
-         Api.login(this.ruleForm2).then(res => {
-           if (res.status === 200 && res.data.data.userInfo.userName) {
-             Cookie.set('authUser', res.data.data.userInfo);
-             Util.UI.toast('登录成功!', 'success');
-             setTimeout(() => {
-               window.location.href = '/admin/'
-             }, 1000)
-           } else {
-             Util.UI.toast(res.data.message, 'success');
-           }
-         }).catch(err => {
-           Util.UI.toast('账号或密码错误!', 'error')
-         })
-       } else {
-         Util.UI.toast('请输入账号和密码!', 'error')
-       }
-     },
+        Api.login(this.ruleForm2)
+          .then(res => {
+            if (res.status === 200 && res.data && res.data.data && res.data.data.userInfo && res.data.data.userInfo.userName) {
+              Cookie.set('authUser', res.data.data.userInfo);
+              sessionStorage.setItem('email', JSON.stringify(res.data.data.userInfo.email));
+              Util.UI.toast('登录成功!', 'success');
+              setTimeout(() => {
+                window.location.href = '/admin/'
+              }, 1000)
+            } else {
+              Util.UI.toast(res.data.message, 'error');
+            }
+          }, err => {
+            Util.UI.toast('账号或密码错误!', 'error')
+          })
+      },
+      loginCheck() {
+        if (this.ruleForm2.userName !== '' && this.ruleForm2.password !== '') {
+          this.jiyanValidate();
+        } else {
+          Util.UI.toast('请输入账号和密码!', 'error')
+        }
+      },
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
@@ -181,8 +184,5 @@
       line-height: 40px;
       color: #666;
     }
-  }
-  footer{
-    display: none;
   }
 </style>

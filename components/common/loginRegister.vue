@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="handleFlag === 'login' ? '登录' : '注册'"
-             :width="isMobile ? '80%' : '30%'"
+             :width="isMobile ? '80%' : '35%'"
              :visible="visible"
              :close-on-click-modal="false"
              @close="cancel"
@@ -32,16 +32,29 @@
       <el-formItem v-if="handleFlag === 'register'"
                    label="头像"
                    :label-width="formLabelWidth">
-        <el-input v-model="params.avatorSrc"
-                  placeholder="输入图片的网络链接"
-                  autocomplete="off"></el-input>
+        <el-upload class="upload-container"
+            ref="upload"
+            :action=" `${$store.state.apiHttp}/api/upload`"
+            :on-remove="handleRemove"
+            :file-list="fileList"
+            list-type="picture-card"
+            :limit='1'
+            :before-upload="beforeAvatarUpload"
+            :auto-upload="true"
+            :on-success='handleSucess'
+            :on-error='handleError'>
+            <div slot="trigger">+</div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过 300kb</div>
+          </el-upload>
       </el-formItem>
-      <el-formItem v-if="handleFlag === 'register'"
-                   label="简介"
-                   :label-width="formLabelWidth">
-        <el-input v-model="params.introduction"
-                  placeholder="个人简介"
-                  autocomplete="off"></el-input>
+      <el-formItem
+          v-if="handleFlag === 'register'"
+          label="简介"
+          :label-width="formLabelWidth">
+        <el-input
+            v-model="params.introduction"
+            placeholder="用一句话描述你的职业、擅长或喜欢做的事情"
+            autocomplete="off"></el-input>
       </el-formItem>
     </el-form>
     <div slot="footer"
@@ -52,10 +65,15 @@
                  :loading="btnLoading"
                  type="primary"
                  @click="submit('login')">登 录</el-button>
+      <!-- <el-button class="forget" v-if="handleFlag === 'login'"
+        :loading="btnLoading"
+        plain
+        @click="submit('modify')">忘记密码</el-button> -->
       <el-button v-if="handleFlag === 'register'"
                  :loading="btnLoading"
                  type="primary"
                  @click="submit('register')">注 册</el-button>
+      <div class="tip">我也想在这个上面写文章，<a href="/admin/register">去写文章</a></div>
     </div>
   </el-dialog>
 </template>
@@ -83,6 +101,8 @@ import Cookie from 'js-cookie'
         formLabelWidth: '50px',
         params: {},
         btnLoading: false,
+        //上传图片参数
+			  fileList: [],
       }
     },
     mounted() {
@@ -119,7 +139,7 @@ import Cookie from 'js-cookie'
           return;
         } else if (val === 'register' && !this.params.avatorSrc) {
           this.$message({
-            message: "请输入头像图片链接！",
+            message: "请上传头像！",
             type: "warning"
           });
           return;
@@ -159,6 +179,7 @@ import Cookie from 'js-cookie'
             });
           })
         } else {
+          this.params.avatorSrc = this.fileList[0].url;
           Api.customerRegister(this.params).then(res => {
             if (res.status === 200 && res.data.data.customerInfo) {
               this.$message({
@@ -188,13 +209,65 @@ import Cookie from 'js-cookie'
           })
         }
       },
-      handleOAuth() {
-
-      },
       cancel() {
         this.params = {};
         this.$emit('feedback', false);
-      }
+      },
+      handleRemove(file, fileList) {
+        fileList.splice(file, 1);
+        this.fileList = [];
+        this.params.avatorSrc = '';
+      },
+      // 图片上传前
+      beforeAvatarUpload(file) {
+        const isJPG = (file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png');
+        const isLt2M = file.size / 1024 / 1024 <= 0.3;
+        if (!isJPG || !isLt2M) {
+          this.$notify({
+            title: "提示",
+            message: '只能上传 jpg/jpeg/png文件，且不超过300kb',
+            type: "warning",
+            duration: 3000
+          });
+        }
+        return isJPG && isLt2M;
+      },
+      //上传成功过后
+      handleSucess(response, file, fileList) {
+        if (response.code == 200) {
+          let data = response.data;
+          
+          let file = {};
+          file.name = data.name;
+          file.url = this.$store.state.imgurlhttp + data.url;
+          this.fileList = [];
+          this.fileList.push(file);
+          this.params.avatorSrc = file.url;
+          this.$notify({
+            title: "提示",
+            message: response.message,
+            type: "success",
+            duration: 2000
+          });
+          return;
+        } else {
+          this.$notify({
+            title: "失败",
+            message: response.message,
+            type: "warning",
+            duration: 2000
+          });
+        }					 
+      },
+      //上传失败
+      handleError(err, file, fileList) {
+        this.$notify({
+          title: "失败",
+          message: "上传失败",
+          type: "warning",
+          duration: 2000
+        });
+      },
     }
   }
 </script>
@@ -202,6 +275,15 @@ import Cookie from 'js-cookie'
 <style>
 .el-dialog--center .el-dialog__body {
   padding-bottom: 0!important;
+}
+.upload-container>.el-upload.el-upload--picture-card {
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+}
+.el-upload-list--picture-card .el-upload-list__item {
+  width: 80px;
+  height: 80px;
 }
 </style>
 
@@ -211,6 +293,14 @@ import Cookie from 'js-cookie'
 }
 .login-form {
   padding: 0 15px;
+}
+.forget {
+  margin-left: 35px;
+}
+.tip {
+  font-size: 13px;
+  color: #888;
+  margin-top: 10px;
 }
 
 </style>

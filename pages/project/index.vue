@@ -25,13 +25,14 @@ import Api from '~/utils/api'
 import { Row, Col, Card } from 'element-ui'
 import { mapState } from 'vuex'
 export default {
+  middleware: 'getTagList',
   layout: 'article',
   head() {
     return {
       title: '项目',
       meta: [
         { id: 'keywords', hid: 'keywords', name: 'keywords', content: '' },
-        { id: 'description', hid: 'description', name: 'description', content: '蒋少川的个人博客' },
+        { id: 'description', hid: 'description', name: 'description', content: '蒋少川的个人博客，自己创建并开发的项目' },
       ]
     }
   },
@@ -50,9 +51,6 @@ export default {
   },
   mounted() {
       this.getProjectList();
-    // document.title = this.item.title;
-    // document.querySelector("#keywords").setAttribute("content", this.item.tag);
-    // document.querySelector("#description").setAttribute("content", this.item.summary);
   },
   methods: {
     handleTag(tag) {
@@ -83,7 +81,7 @@ export default {
     margin: 0 0 10px 0;
   }
   .desc {
-    max-height: 60px;
+    min-height: 40px;
     font-size: 13px;
     line-height: 1.5;
   }

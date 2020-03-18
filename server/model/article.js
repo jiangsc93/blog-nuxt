@@ -10,6 +10,7 @@ const listSchema = new mongoose.Schema({
   type: String,
   tag: String,
   imgSrc: String,
+  avatar: String,
   like: { type: Number, default: 0 },
   like_users: {
     type: Array,

@@ -4,43 +4,12 @@
       <el-menu
         :default-active="activeRouter"
         class="el-menu-vertical-demo"
-        @open="handleOpen"
-        @close="handleClose"
-        @select="onSelectMenuItem"
         background-color="#001529"
         text-color="#aaa"
         router
         :unique-opened="true"
         :collapse="isCollapse"
         active-text-color="#fff">
-        <!-- <template v-for="(item, ind) in navList">
-          <el-submenu v-if="item.isSubmenu && !item.isShow" :index="item.index?item.index:''" :key="ind">
-            <template slot="title">
-              <i class="menu-icon" :class="item.class"></i><span slot="title" v-html="item.name"></span>
-              <i class="menu-indicator"></i>
-            </template>
-            <el-menu-item-group>
-              <template v-for="(it, subind) in item.list">
-                <el-menu-item :index="it.internal? it.index : 'external_' + ind + '_' + subind" :menudata="it" :key="subind">
-                  <i class="el-icon-arrow-right"></i>
-                  <span v-html="it.name"></span>
-                  <i class="submenu-indicator"></i>
-                </el-menu-item>
-              </template>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-menu-item
-            v-else-if="!item.isShow"
-            :menudata="item "
-            :index="item.internal? item.index: 'external_' + ind"
-            :key="ind">
-            <a>
-              <i class="menu-icon" :class="item.class"></i>
-              <span slot="title" v-html="item.name"></span>
-              <i class="menu-indicator"></i>
-            </a>
-          </el-menu-item>
-        </template> -->
         <el-menu-item index="/admin" class="logo">
           <i class="el-icon-user-solid"></i>
           <span class="user-name" slot="title">益码凭川</span>
@@ -65,22 +34,44 @@
             <el-menu-item index="/admin/edit/">创建新文章</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item index="/admin/project/">
+        <el-menu-item
+          v-if="isSuperAmin"
+          index="/admin/project/">
           <i class="el-icon-document"></i>
           <span slot="title">项目</span>
         </el-menu-item>
-        <el-menu-item index="/admin/experience/">
+        <el-menu-item v-if="isSuperAmin" index="/admin/experience/">
           <i class="el-icon-collection"></i>
           <span slot="title">历程</span>
         </el-menu-item>
-        <el-menu-item index="/admin/message/">
+        <el-menu-item
+          v-if="isSuperAmin"
+          index="/admin/message/">
           <i class="el-icon-message"></i>
           <span slot="title">留言</span>
         </el-menu-item>
-        <el-menu-item index="/admin/config/">
+        <el-menu-item index="/admin/manager/">
+          <i class="el-icon-s-custom"></i>
+          <span slot="title">个人资料</span>
+        </el-menu-item>
+        <el-menu-item
+          v-if="isSuperAmin"
+          index="/admin/config/">
           <i class="el-icon-setting"></i>
           <span slot="title">配置中心</span>
         </el-menu-item>
+        <el-submenu
+          index="3"
+          v-if="isSuperAmin">
+          <template slot="title">
+            <i class="el-icon-user"></i>
+            <span>用户管理</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item index="/admin/user/manager/1">管理员</el-menu-item>
+            <el-menu-item index="/admin/user/customer/1">游客</el-menu-item>
+          </el-menu-item-group>
+        </el-submenu>
       </el-menu>
     </div>
     <div class="__rt">
@@ -101,6 +92,7 @@
     data() {
       let authUser = Cookie.get('authUser') ? JSON.parse(Cookie.get('authUser')) : '';
       return {
+        isSuperAmin: authUser.userName === '益码凭川',
         userName: authUser.userName,
         activeRouter: '/admin/article',
         isCollapse: false,
@@ -184,13 +176,9 @@
       BackHeader,
       AdminFooter,
     },
-    // watch: {
-    //   // 如果路由有变化，会再次执行该方法
-    //   '$route': 'changeActive'
-    // },
     watch: {
        '$route' (to, from) {
-         this.changeActive()
+        //  this.changeActive()
          //刷新参数放到这里里面去触发就可以刷新相同界面了
         //  to.path == '/admin/login' ? this.isLogin = true : this.isLogin = false;
         //  let authUser = Cookie.get('authUser') ? JSON.parse(Cookie.get('authUser')) : '';
@@ -199,7 +187,7 @@
        }
      },
     created () {
-      this.changeActive()
+      // this.changeActive()
     },
     mounted() {
     },
@@ -214,7 +202,6 @@
       },
       changeActive () {
         let path = this.$route.path;
-        console.log(path, 'path');
         this.activeMenu(this.navList, path);
       },
       activeMenu (menus, path) {
@@ -223,22 +210,16 @@
           if (nav.isSubmenu) {
             this.activeMenu(nav.list, path)
           } else if (nav.url.indexOf(path) !== -1) {
-            console.log(nav.index, 'index');
             this.activeIndex = nav.index
           }
         })
       },
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath, '333');
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath, '5555');
-      },
-      onSelectMenuItem(index, indexPath, item) {
-        let itemData = item.$attrs.menudata;
-        this.$router.push(itemData.url);
-        console.log(index, indexPath, item, '555');
-      }
+      // handleOpen(key, keyPath) {
+      //   console.log(key, keyPath, '333');
+      // },
+      // handleClose(key, keyPath) {
+      //   console.log(key, keyPath, '5555');
+      // },
     }
   }
 </script>

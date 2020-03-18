@@ -8,7 +8,6 @@ const connection = require('../connection');
 const userSchema = new mongoose.Schema({
   userName: String,
   email: String,
-  // 密码
   password: {
     type: String,
     required: true,
@@ -17,7 +16,13 @@ const userSchema = new mongoose.Schema({
       .update(argv.auth_default_password || 'root')
       .digest('hex'),
   },
+  avatar: String,
+  introduce: String,
   create_time: {
+    type: String,
+    default: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+  },
+  update_time: {
     type: String,
     default: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
   }

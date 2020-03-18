@@ -12,45 +12,14 @@
       </div>
       <div class="home-body">
         <div class="list">
-          <!-- <router-link class="link"
-                       to="/article/list/全部">
-            文章
-          </router-link> -->
           <a href="/article/list/全部" class="link">文章</a>
-          <router-link class="link"
-                       to="/project">
-            项目
-          </router-link>
+          <a href="/project" class="link">项目</a>
           <a target="_blank"
              rel="noopener noreferrer"
              class="link"
              href="https://github.com/jiangsc93">
             github
           </a>
-          <!-- <a target="_blank"
-             rel="noopener noreferrer"
-             class="link"
-             href="https://juejin.im/user/591d6b4d0ce463006926ae40">
-            掘金
-          </a> -->
-          <!-- <a target="_blank"
-             rel="noopener noreferrer"
-             class="link"
-             href="https://www.zhihu.com/people/gu-jian-qi-tan-shui/activities">
-            知乎
-          </a>
-          <a target="_blank"
-             rel="noopener noreferrer"
-             class="link"
-             href="https://segmentfault.com/u/biaochenxuying">
-            segmentfault
-          </a>
-          <a target="_blank"
-             rel="noopener noreferrer"
-             class="link"
-             href="https://www.jianshu.com/u/91717b553bfd">
-            简书
-          </a> -->
         </div>
         <div class="introduce"> 不积跬步，无以至千里。撸起袖子加油干！ </div>
       </div>

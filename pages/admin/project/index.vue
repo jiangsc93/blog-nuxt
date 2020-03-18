@@ -83,7 +83,7 @@ export default {
     return {
       title: 'Admin-项目',
       meta: [
-        { hid: 'description', name: 'description', content: '项目' }
+        { hid: 'description', name: 'description', content: '项目列表编辑' }
       ]
     }
   },

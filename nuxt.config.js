@@ -58,7 +58,7 @@ module.exports = {
     '@nuxtjs/proxy'
   ],
   proxy: [ // 设置代理
-    ['/api', { target: 'http://39.96.10.130:3000' }]
+    ['/api', { target: 'https://39.96.10.130:3000' }] // 已经添加https
     // ['/api', { target: 'http://localhost:3000' }]
   ],
   plugins: [

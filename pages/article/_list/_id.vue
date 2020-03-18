@@ -70,7 +70,7 @@
         let arr = this.$store.state.configList;
         let value = '';
         _.forEach(arr, (item) =>  { 
-          if (item.title === '文章列表封面') {
+          if (item.title === '文章列表默认封面') {
             value = item.imgSrc;
           }
         });
@@ -82,21 +82,21 @@
       // this.getArticleList();
     },
     methods: {
-      getArticleList() {
-        let reqParams = {
-          type: '1',
-          tag: this.$route.params.id
-        }
-        Api.getArticleList(reqParams)
-          .then(res => {
-            if (res.status === 200 && res.data.data && res.data.data.list) {
-              this.articleData = res.data.data.list;
-              this.tagTitle = `${this.$route.params.id} 相关的文章：`;
-            }
-        }).catch (err => {
-          console.log('报错了啊')
-        })
-      }
+      // getArticleList() {
+      //   let reqParams = {
+      //     type: '1',
+      //     tag: this.$route.params.id
+      //   }
+      //   Api.getArticleList(reqParams)
+      //     .then(res => {
+      //       if (res.status === 200 && res.data.data && res.data.data.list) {
+      //         this.articleData = res.data.data.list;
+      //         this.tagTitle = `${this.$route.params.id} 相关的文章：`;
+      //       }
+      //   }).catch (err => {
+      //     console.log('报错了啊')
+      //   })
+      // }
     },
   } 
 </script>

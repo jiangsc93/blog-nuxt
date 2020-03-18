@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <index-header></index-header>
-    <div class="article-detail">
+    <div class="article-detail-page">
       <nuxt/>
     </div>
     <index-footer></index-footer>
@@ -19,7 +19,7 @@
   }
 </script>
 <style lang="scss" scoped>
-.article-detail {
+.article-detail-page {
   max-width: 1200px;
   margin: 60px auto 30px;
   min-height: 100vh;

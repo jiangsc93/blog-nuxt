@@ -1,22 +1,29 @@
 <template>
   <header>
+    <div>
       <div v-if="!isMobile" class="pc-header">
         <div class="__lt">
           <div class="logo">
-            <img :style="backgColor" src="../../assets/images/user_logo11.png" alt="">
+            <img src="../../assets/images/user_logo11.png" alt="">
           </div>
-          <el-menu :default-active="activeIndex" :router="true" class="el-menu-demo" mode="horizontal">
+          <!-- <el-menu ref="menu" :default-active="activeIndex" :router="true" class="el-menu-demo" mode="horizontal">
             <el-menu-item
-              :route="item.link"
-              :index="index.toString()"
               v-for="(item, index) in navList"
-              :key="index">
-              {{item.title}}
-              </el-menu-item>
+              :key="index"
+              :route="item.link"
+              :index="index.toString()">{{item.title}}</el-menu-item>
+          </el-menu> -->
+          <el-menu :default-active="activeIndex"
+            active-text-color="#409EFF"
+            class="el-menu-demo" mode="horizontal">
+            <el-menu-item
+              v-for="(item, index) in navList"
+              :key="index"
+              :index="index.toString()">
+              <a :href="item.link">{{item.title}}</a></el-menu-item>
           </el-menu>
         </div>
         <div class="__rt">
-          <!-- <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"> -->
           <el-dropdown @command="handleCommand" trigger="click">
             <span class="el-dropdown-link">
               <div class="img" v-if="avatorSrc"><img :src="avatorSrc"></div>
@@ -24,7 +31,7 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="avatorSrc?'customerLogout':'customerLogin'">{{avatorSrc? '游客退出' : '游客登录'}}</el-dropdown-item>
-              <el-dropdown-item command="customerRegister">游客注册</el-dropdown-item>
+              <el-dropdown-item command="customerRegister" v-if="!avatorSrc">游客注册</el-dropdown-item>
               <el-dropdown-item command="administratorLogin">管理员登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -32,27 +39,27 @@
       </div>
       <div v-else class="mobile-header">
         <div class="logo">
-          <img :style="backgColor" src="../../assets/images/user_logo11.png" alt="">
+          <img src="../../assets/images/user_logo11.png" alt="">
         </div>
         <div class="title">{{ title }}</div>
-        <div class="__rt"><i @click="isShowSide = !isShowSide" class="iconfont icon-zhankai4"></i></div>
+        <div class="m__rt"><i @click="isShowSide = !isShowSide" class="iconfont icon-zhankai4"></i></div>
       </div>
-      <div v-show="isShowSide" class="side">
-        <ul class="nav">
-          <li class="list-item"
-            v-for="(item, index) in navList"
-            :key="index"
-            :class="activeIndex === index ? 'active' : ''">
-            <a :href="item.link" @click="goLink(item.title)">{{item.title}}</a></li>
-            <li class="list-item" @click="handleCommand(avatorSrc ? 'customerLogout' : 'customerLogin')">{{avatorSrc? '退出' : '登录'}}</li>
-            <li class="list-item" @click="handleCommand('customerRegister')">注册</li>
-        </ul>
-      </div>
-      <LoginRegister
-        :visible="visible"
-        :handleFlag="handleFlag"
-        :isMobile="isMobile"
-        @feedback="feedback"></LoginRegister>
+    </div>
+    <div v-show="isShowSide" class="side">
+      <ul class="nav">
+        <li class="list-item"
+          v-for="(item, index) in navList"
+          :key="index">
+          <a :href="item.link" @click="goLink(item.title)">{{item.title}}</a></li>
+          <li class="list-item" @click="handleCommand(avatorSrc ? 'customerLogout' : 'customerLogin')">{{avatorSrc? '退出' : '登录'}}</li>
+          <li class="list-item" @click="handleCommand('customerRegister')">注册</li>
+      </ul>
+    </div>
+    <LoginRegister
+      :visible="visible"
+      :handleFlag="handleFlag"
+      :isMobile="isMobile"
+      @feedback="feedback"></LoginRegister>
   </header>
 </template>
 
@@ -117,42 +124,32 @@
       MenuItem,
       LoginRegister
     },
-    watch: {
-      // '$route' (to, from){
+    // watch: {
+    //   '$route' (to, from){
       //   _.forEach(this.navList, item => {
       //     if(to.path.includes(item.link.substr(0, 8))) {
       //       this.activeIndex = item.activeIndex;
       //     }
       //   })
-        // _.filter(this.navList, (item)=>{
-        // this.activeIndex = this.$route.path.includes(item.link.substr(0, 8)) ? item.activeIndex : this.activeIndex;
-        // this.title = this.$route.path.includes(item.link.substr(0, 8)) ? item.title : this.title;
-      // })
+        // _.forEach(this.navList, (item)=>{
+        //   this.activeIndex = this.$route.path.includes(item.link.substr(0, 8)) ? item.activeIndex : this.activeIndex;
+        //   this.title = this.$route.path.includes(item.link.substr(0, 8)) ? item.title : this.title;
+        // })
       // }
-    },
+    // },
     computed: {
       ...mapState(['isMobile']),
       ...mapGetters(['getCustomerInfo']),
-      backgColor() {
-        return `background:${this.randomColor()};`
-      }
     },
-    mounted() {
-      // 路由识别菜单状态
-      _.filter(this.navList, (item)=>{
+    created() {
+      _.filter(this.navList, item =>{
         this.activeIndex = this.$route.path.includes(item.link.substr(0, 8)) ? item.activeIndex : this.activeIndex;
         this.title = this.$route.path.includes(item.link.substr(0, 8)) ? item.title : this.title;
       })
+    },
+    mounted() {
       this.loginTitle = this.getCustomerInfo.customerName || '登录';
       this.avatorSrc = this.getCustomerInfo.avatorSrc;
-      // this.avatorSrc = this.getCustomerInfo()
-      // if (this.isMobile) {
-        // width * 100 / 750 = width / 7.5
-        // 1rem = 100px
-      //   let width = window.screen.width;
-      //   window.document.getElementsByTagName("html")[0].style.fontSize =
-      //     width / 7.5 + "px";
-      // }
     },
     methods: {
       feedback(val) {
@@ -178,14 +175,6 @@
             window.location.href = '/admin/login/'
             return;
         }
-      },
-      randomColor() { // rgb颜色随机
-        let r = Math.floor(Math.random()*256);
-        let g = Math.floor(Math.random()*256);
-        let b = Math.floor(Math.random()*256);
-        var rgba = 'rgba('+r+','+g+','+b+', .6)';
-        // let color = '#'+r.toString(16)+g.toString(16)+b.toString(16); // 转成16进制
-        return rgba;
       },
       goLink(val) {
         this.title = val;
@@ -233,6 +222,18 @@
       .__lt {
         .el-menu-demo {
           display: inline-block;
+          li {
+            padding: 0 40px;
+            position: relative;
+            text-align: center;
+          a {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+          }
+          }
         }
         .logo {
           display: inline-block;
@@ -285,12 +286,11 @@
         font-size: 20px;
         line-height: 60px;
       }
-      .__rt {
+      .m__rt {
+        margin: 10px;
         .icon-zhankai4 {
           font-size: 32px;
-          margin-right: 10px;
-          position: relative;
-          top: 12px;
+          padding: 4px 0 4px 4px;
           color:#001529;
         }
       }

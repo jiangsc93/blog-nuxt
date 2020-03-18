@@ -10,6 +10,8 @@ var checkCurrentEnv = function (localEnv, rt) {
     url: {
       api : "/api"
     },
+    httpUrl: "",
+    imgurlhttp: "",
     env: ""
   };
 
@@ -21,31 +23,27 @@ var checkCurrentEnv = function (localEnv, rt) {
   else{
     root = rt;
   }
-
-  var env, localEnv, port;
-  if (localEnv) {
-    env = localEnv == "formal" ? "" : localEnv;
+  var env, port;
+  if (process.env.NODE_ENV === 'development') {
+    env = "localhost";
   } else {
-    // localEnv = "dev";
-    localEnv = "";
-    //当前加载环境 dev：开发环境 test：测试环境 "": 生产环境或本地  pre 预发布
-    
-    // env = root.indexOf("localhost") != -1 ? "localhost" : root.indexOf("dev") != -1 ? "dev" : root.indexOf("test")  != -1 ? "test" : root.indexOf("pre") != -1 ? "pre" : "";
-    // env = "localhost"; // 上线更改
     env = "";
   }
   SERVER.env = env;
   //端口检查
   for (var obj in SERVER.url) {
     var envTemp = env == "" ? "" : env == "localhost" ? "localhost" : (env + ".");
-    // port = envTemp != '' ? '' : ":3333";
     port = ":3000";
     // 服务地址
     if(envTemp == "localhost") {
-      // SERVER.url[obj] = "http://localhost"+port+ SERVER.url[obj]; // 上线更改
-      SERVER.url[obj] = "http://39.96.10.130:3000"+ SERVER.url[obj];
+      SERVER.url[obj] = "http://localhost" + port + SERVER.url[obj]; 
+      SERVER.httpUrl = "http://localhost" + port; 
+      SERVER.imgurlhttp = "http://localhost" + port; 
+
     } else {
-      SERVER.url[obj] = "http://" +envTemp+ "www.jscwwd.com"+port+ SERVER.url[obj];
+      SERVER.url[obj] = "https://" + envTemp + "www.jscwwd.com" + SERVER.url[obj];
+      SERVER.httpUrl = "https://" + envTemp + "www.jscwwd.com";
+      SERVER.imgurlhttp = "http://" + envTemp + "www.jscwwd.com" + port;
     }
   }
   return SERVER;

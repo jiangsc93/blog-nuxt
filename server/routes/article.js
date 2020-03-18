@@ -2,6 +2,7 @@ const _ = require('lodash');
 let moment = require('moment');
 let util = require('../util/util');
 let articleModel = require('../model/article');
+let UserModel = require('../model/user_model');
 let tagInterface = require('./tag');
 let { responseClient } = util;
 
@@ -164,30 +165,45 @@ exports.getArticleOne = ({body, res}) => {
 exports.editNewArticleAdmin = ({res, body}) => {
   let { title, author, type, tag, summary, beginDate, content, wordage, state, imgSrc } = body;
   wordage = content.length;
-  
-  let article = new articleModel({
-    title,
-    author,
-    type,
-    tag,
-    visit: 12,
-    beginDate,
-    lastDate: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
-    summary,
-    content,
-    imgSrc,
-    state,
-    wordage
-  });
-  // 调用tag的addTag接口
-  tagInterface.addTag(tag);
-  article.save((err, data) => {
-    if (err) {
-      responseClient(res, 404, 'error', err);
-    } else {
-      responseClient(res, 200, 'success', data);
+  let avatar = '';
+  UserModel.findOne(
+    {
+      userName: author,
     }
-  });
+  ).then(userInfo => {
+    console.log(userInfo, 'userinfo');
+    console.log(userInfo._doc, '_doc');
+    avatar = userInfo._doc.avatar;
+    console.log(avatar, 'avatar');
+    let article = new articleModel({
+      title,
+      author,
+      avatar,
+      type,
+      tag,
+      visit: 12,
+      beginDate,
+      lastDate: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
+      summary,
+      content,
+      imgSrc,
+      state,
+      wordage
+    });
+    // 调用tag的addTag接口
+    tagInterface.addTag(tag);
+    article.save((err, data) => {
+      console.log(data, 'datadata');
+      if (err) {
+        responseClient(res, 404, 'error', err);
+      } else {
+        responseClient(res, 200, 'success', data);
+      }
+    });
+  }).catch(err => {
+    // avatar = '';
+    console.log('报错');
+  })
 };
 
 // admin删除单个文章
@@ -211,29 +227,49 @@ exports.deleteArticleAdmin = ({ body, res }) => {
 
 // admin修改单个文章
 exports.modifyArticleAdmin = ({ res, body }) => {
-  
-  articleModel.findById(body.id, (err, data) => {
-    data.wordage = body.content.length;
-    data.content = body.content;
-    data.summary = body.summary;
-    data.beginDate = body.beginDate;
-    data.lastDate = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
-    data.author = body.author;
-    data.type = body.type;
-    data.tag = body.tag;
-    data.title = body.title;
-    data.state = body.state;
-    data.imgSrc = body.imgSrc;
-    // 调用tag的addTag接口
-    tagInterface.addTag(body.tag);
-    data.save(function(err, data) {
-      if (err) {
-        responseClient(res, 404, '文章修改失败', err);
-      } else {
-        responseClient(res, 200, '文章修改成功!', data);
-      }
-    })
-  });
+  let avatar = '';
+  console.log(body.author, 'body.author');
+  UserModel.findOne(
+    {
+      userName: body.author,
+    }
+  ).then(userInfo => {
+    console.log(userInfo, 'userinfo');
+    console.log(userInfo._doc, '_doc');
+    avatar = userInfo._doc.avatar;
+    console.log(avatar, 'avatar');
+    // if (userInfo._doc) { // 用户存在
+    // } else {
+      // avatar = '';
+    // }
+    articleModel.findById(body.id, (err, data) => {
+      data.wordage = body.content.length;
+      data.content = body.content;
+      data.summary = body.summary;
+      data.avatar = avatar;
+      data.beginDate = body.beginDate;
+      data.lastDate = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+      data.author = body.author;
+      data.type = body.type;
+      data.tag = body.tag;
+      data.title = body.title;
+      data.state = body.state;
+      data.imgSrc = body.imgSrc;
+      // 调用tag的addTag接口
+      tagInterface.addTag(body.tag);
+      data.save(function(err, data) {
+        if (err) {
+          responseClient(res, 404, '文章修改失败', err);
+        } else {
+          responseClient(res, 200, '文章修改成功!', data);
+        }
+      })
+    });
+  }).catch(err => {
+    console.log('报错');
+    // avatar = '';
+  })
+
 };
 
 // 对文章点赞
@@ -301,19 +337,40 @@ exports.getArticleListAdmin = ({ res, body }) => {
     pageSize: parseInt(body.pageSize)
   }
 
-  // 方法一, 此方法查询参数条件下的数据并返回
-  articleModel.count().then(count => {
-    resDatas.records = count; // 数据条数
-    resDatas.total = Math.ceil(count/resDatas.pageSize); // 总页数
 
+  if (body.author === '益码凭川') {
+    // 方法一, 此方法查询参数条件下的数据并返回
+    articleModel.count().then(count => {
+      resDatas.records = count; // 数据条数
+      resDatas.total = Math.ceil(count/resDatas.pageSize); // 总页数
+  
+      if (resDatas.pageIndex > resDatas.total) resDatas.pageIndex = resDatas.total;
+      var limit = resDatas.pageSize;
+      var skip = (resDatas.pageIndex - 1) * resDatas.pageSize;
+  
+      articleModel.find().sort({_id: -1}).limit(limit).skip(skip)
+        .then((data) => {
+          resDatas.list = data; // 数据包
+          responseClient(res, 200, 'success', resDatas);
+        }).catch(err => {
+          responseClient(res, 400, '获取失败', err);
+        })
+    });
+  } else {
+    let reg = new RegExp(body.author, "i"); // 不区分大小写
+    let conditions = { author: { $regex: reg } };
     if (resDatas.pageIndex > resDatas.total) resDatas.pageIndex = resDatas.total;
-    var limit = resDatas.pageSize;
-    var skip = (resDatas.pageIndex - 1) * resDatas.pageSize;
-
-    articleModel.find().sort({_id: -1}).limit(limit).skip(skip)
-      .then((data) => {
+    let limit = resDatas.pageSize;
+    let skip = (resDatas.pageIndex - 1) * resDatas.pageSize;
+    articleModel.find(conditions).then(result => {
+      resDatas.records = result.length;
+    })
+    articleModel.find(conditions).sort({_id: -1}).limit(limit).skip(skip)
+      .then( data => {
         resDatas.list = data; // 数据包
         responseClient(res, 200, 'success', resDatas);
+      }).catch(err => {
+        responseClient(res, 400, '获取失败', err);
       })
-  });
+  }
 };

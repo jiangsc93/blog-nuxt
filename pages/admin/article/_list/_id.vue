@@ -24,6 +24,11 @@
           width="180">
         </el-table-column>
         <el-table-column
+          prop="author"
+          label="作者"
+          width="80">
+        </el-table-column>
+        <el-table-column
           prop="visit"
           label="浏览量"
           width="80">
@@ -56,9 +61,9 @@
 </template>
 
 <script>
+  import Cookie from 'js-cookie'
   import Api from '~/utils/api'
   import MyPage from '~/components/PageAction'
-
   export default {
     middleware: 'auth',
     layout: 'admin',
@@ -71,39 +76,61 @@
       }
     },
     data(){
+      
       return {
         articleList: [],
         records: 0, // 总数据条数
-        pageSize: 0, // 分页数
-        pageIndex: 1 // 当前页
+        pageIndex: 1, // 当前页
+        pageSize: 10, // 每页数
       }
     },
-    asyncData ({ params, error }) {
-      return Api.getArticleListAdmin(params.id, 10)
-          .then(res => {
-            let { records, pageSize, pageIndex } = res.data.data;
-            return { articleList: res.data.data.list, records, pageSize, pageIndex }
-        }).catch (err => {
-        console.log('报错了啊')
-      })
-    },
+    // asyncData ({ params, error }) {
+    //   let authUser = Cookie.get('authUser') ? JSON.parse(Cookie.get('authUser')) : '';
+    //   let postParams = {
+    //     authore: authUser.userName,
+    //     pageIndex: params.id,
+    //     pageSize: 10
+    //   }
+    //   return Api.getArticleListAdmin(postParams)
+    //       .then(res => {
+    //         let { records, pageSize, pageIndex } = res.data.data;
+    //         return { articleList: res.data.data.list, records, pageSize, pageIndex }
+    //     }).catch (err => {
+    //     console.log('报错了啊')
+    //   })
+    // },
     mounted() {
-      console.log(this.datas, 'datas');
+      this.getArticleListAdmin();
     },
     methods: {
+      getArticleListAdmin() {
+        let authUser = Cookie.get('authUser') ? JSON.parse(Cookie.get('authUser')) : '';
+        let postParams = {
+          author: authUser.userName,
+          pageIndex: this.$route.params.id,
+          pageSize: 10
+        }
+        return Api.getArticleListAdmin(postParams)
+            .then(res => {
+              let { records, pageSize, pageIndex } = res.data.data;
+              this.articleList = res.data.data.list;
+              this.records = records;
+              this.pageSize = pageSize;
+              this.pageIndex = pageIndex
+            }).catch (err => {
+              console.log('报错了啊')
+        })
+      },
       deletFn(id) {
         Util.UI.confirm('确定删除这篇文章吗?', '提示').then(() => {
           Api.deleteArticleAdmin({id})
-          .then(res => {
-            Util.UI.toast('文章删除成功!', 'success')
-        setTimeout(() => {
-          this.$router.go(0)
-      }, 600)
-      })
-      }, () => {
-          console.log('取消了')
-        })
-
+            .then(res => {
+              Util.UI.toast('文章删除成功!', 'success')
+              this.getArticleListAdmin();
+            })
+          }, () => {
+            console.log('取消了')
+          })
       },
       editFn(id) {
         this.$router.push(`/admin/edit/${id}`)

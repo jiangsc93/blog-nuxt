@@ -21,7 +21,7 @@
     },
     methods: {
       currentChange(index) {
-        this.$emit("page-change",index);
+        this.$emit("page-change", index);
       }
     },
     computed: {

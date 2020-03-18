@@ -1,7 +1,7 @@
 <template>
   <footer>
     <div class="copyright">
-      益码凭川 © 2019 - {{ currentYear }}  Created by jiangsc
+      益码凭川 © 2019 - {{ currentYear }}
     </div>
     <div class="certificate">(渝ICP备19001861号-1)</div>
   </footer>
@@ -33,7 +33,7 @@ export default {
       font-size: 15px;
     }
     .certificate {
-      padding-top: 5px;
+      padding: 5px 0;
       color: #409EFF;
       font-weight: 500;
       font-size: 13px;

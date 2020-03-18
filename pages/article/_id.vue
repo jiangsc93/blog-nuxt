@@ -4,12 +4,11 @@
       <h2 :class="isMobile ? 'title_m' : 'title'">{{responseData.title}}</h2>
       <div :class="isMobile ? 'author_m author-info' : 'author_pc author-info'">
         <div class="lt">
-          <img class="avatar" v-if="responseData.author==='益码凭川'" src="../../assets/images/user_logo.png" alt="">
-          <el-avatar class="avatar" v-else icon="el-icon-user-solid"></el-avatar>
-          <div class="info">
+          <img class="avatar" :src="responseData.avatar || customerAvatar" alt="不给看">
+          <div class="article-info">
             <div class="name">{{responseData.author}}</div>
-            <div>
-              <span class="time"><i class="iconfont icon-shijian"></i>{{responseData.beginDate}}</span>
+            <div class="des">
+              <span class="shijian">{{responseData.beginDate}}</span>
               <span class="wordage">字数 {{responseData.wordage || 2333}}</span>
               <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{responseData.visit || '1'}}次浏览</span>
             </div>
@@ -52,7 +51,9 @@
               <img :src="item.avatar" alt="">
             </div>
             <div class="info">
-              <div class="name">{{item.userName}}</div>
+              <div class="name">{{item.userName}}
+                <span class="name-author">{{item.userName === item.owner ? '(作者)' : ''}}</span>
+              </div>
               <div class="time">{{item.floor || 1}}楼 {{item.create_time}}</div>
               <div class="cont">{{item.content}}</div>
               <div class="handle">
@@ -75,9 +76,9 @@
                     <img :src="m.avatar" alt="">
                   </div>
                   <div class="info">
-                    <div class="name">{{m.userName}}</div>
+                    <div class="name">{{m.userName}}<span class="name-author">{{m.userName === responseData.author ? '(作者)' : ''}}</span></div>
                     <div class="time">{{m.create_time}}</div>
-                    <div class="cont"><span>回复 <span class="replay-color">{{m.owner}}：</span></span> {{m.content}}</div>
+                    <div class="cont"><span>回复 <span class="replay-color">{{m.owner}} <span class="replay-author">{{m.owner === responseData.author ? '(作者)' : ''}}</span>：</span></span> {{m.content}}</div>
                     <div class="handle">
                       <span class="reply" @click="showItemTwoInput(n, index)"><i class="iconfont icon-icon_huifu-mian"></i>回复</span>
                     </div>
@@ -107,9 +108,10 @@
 </template>
 
 <script>
+import _ from 'lodash';
 import Api from '~/utils/api'
 import markdown from '~/utils/markdown'
-import { Tag, Loading, Avatar } from 'element-ui'
+import { Tag, Loading } from 'element-ui'
 import { mapState, mapGetters } from 'vuex'
 export default {
   layout: 'front',
@@ -124,8 +126,7 @@ export default {
   },
   components: {
     Tag,
-    Loading,
-    Avatar
+    Loading
   },
   data () {
     return {
@@ -150,8 +151,18 @@ export default {
   computed: {
     ...mapState(['isMobile']),
     ...mapGetters(['getCustomerInfo']),
+    customerAvatar() {
+      let arr = this.$store.state.configList;
+      let value = '';
+      _.forEach(arr, (item) =>  {
+        if (item.title === '游客默认头像') {
+          value = item.imgSrc;
+        }
+      });
+      return value;
+    }
   },
-  mounted() {
+  mounted () {
     this.getArticleOne();
   },
   methods: {
@@ -178,7 +189,6 @@ export default {
           this.getArticleOne();
         }
       }).catch(err => {
-        console.log('error:', err);
         this.$message({
           message: "点赞失败",
           type: "error"
@@ -255,7 +265,6 @@ export default {
         this.cancel();
         this.cancelTwo();
       }).catch(err => {
-        console.log('error:', err);
         this.$message({
           message: "请求失败",
           type: "error"
@@ -302,7 +311,6 @@ export default {
           type: type
         })
       }).catch(err => {
-        console.log('error:', err);
         this.$message({
           message: "点赞失败",
           type: "danger"
@@ -348,6 +356,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '~/assets/css/highlight.css';
+
 .el-textarea__inner:focus {
   border: 1px solid #DCDFE6;
 }
@@ -361,6 +371,9 @@ export default {
   border-left: 1px solid #eee;
   a {
     text-decoration: none;
+  }
+  a:link {
+    color: #551a8b;
   }
   ul {
     display: block;
@@ -387,12 +400,14 @@ export default {
   .anchor-ul {
     position: relative;
     top: 0;
-    max-width: 250px;
+    max-width: 265px;
     border: none;
     -moz-box-shadow: 0 0px 0px #fff;
     -webkit-box-shadow: 0 0px 0px #fff;
     box-shadow: 0 0px 0px #fff;
-
+    li {
+      line-height: 1.7;
+    }
     li.active {
       color: #009a61;
     }
@@ -418,9 +433,6 @@ export default {
       position: sticky;
       top: 213px;
       right: 70px;
-    }
-    a {
-      color: inherit;
     }
     .iconfont {
       font-size: 13px;
@@ -539,6 +551,11 @@ export default {
               color: #333;
               font-size: 15px;
               line-height: 1.2;
+              .name-author {
+                font-size: 14px;
+                margin-left: 3px;
+                color: #406599;
+              }
             }
             .time {
               padding-top: 5px;
@@ -623,25 +640,27 @@ export default {
           height: 45px;
           border-radius: 50%;
         }
-        .info {
+        .article-info {
           float: left;
           padding-left: 55px;
           line-height: 1;
-          .time {
-            .iconfont {
-              font-size: 12px;
-            }
-          }
           .name {
             margin: 5px 0 6px 0;
             color: #555;
             font-size: 13px;
           }
-          .visit {
-            margin: 0 13px;
-          }
-          .wordage {
-            margin-left: 10px;
+          .des {
+            // .shijian {
+              // .icon-shijian {
+              //   font-size: 12px;
+              // }
+            // }
+            .visit {
+              margin: 0 13px;
+            }
+            .wordage {
+              margin-left: 10px;
+            }
           }
         }
       }
@@ -665,6 +684,7 @@ export default {
           display: inline-block;
           width: 30px;
           height: 30px;
+          margin-left: 2px;
           img {
             width: 100%;
             height: 100%;

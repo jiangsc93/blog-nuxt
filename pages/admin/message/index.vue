@@ -20,14 +20,19 @@
         width="100">
       </el-table-column>
       <el-table-column
+        prop="email"
+        label="邮箱"
+        width="150">
+      </el-table-column>
+      <el-table-column
         prop="phone"
         label="手机号"
-        width="150">
+        width="120">
       </el-table-column>
       <el-table-column
         prop="sourceStr"
         label="来源"
-        width="200">
+        width="190">
       </el-table-column>
       <el-table-column
         prop="content"
@@ -48,7 +53,7 @@
       return {
         title: 'Admin-留言',
         meta: [
-          { hid: 'description', name: 'description', content: '这是useryemian一段描述文字' }
+          { hid: 'description', name: 'description', content: '留言列表' }
         ]
       }
     },

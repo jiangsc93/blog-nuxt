@@ -33,8 +33,8 @@ export default function ({ route, req, res, redirect, error, store }) {
   if (isClient) {
     authUser = getcookiesInClient('authUser')
     path = route.path;
-    console.log('authUser------', authUser)
-    console.log('path------', path)
+    // console.log('authUser------', authUser)
+    // console.log('path------', path)
   }
 
   if (path) {
