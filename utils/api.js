@@ -22,6 +22,12 @@ export default class  {
   }
 
   /**
+   * 搜索文章
+   */
+  static search(params){
+    return Net.postJSON(Checkenv.url.api + "/search/", {}, params);
+  }
+  /**
    * 提交留言
    */
   static submitMessage(params){

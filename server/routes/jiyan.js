@@ -34,7 +34,6 @@ exports.register = ({ res, req }) => {
 
 
 // 急眼验证
-// exports.validate = ({ res, req, body }) => {
 exports.validate = ({ body, res }) => {
   // 对ajax提供的验证凭证进行二次验证
   slide.validate(true, {

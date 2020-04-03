@@ -129,6 +129,30 @@ exports.getArticleList = ({ res, body }) => {
     console.log('error:', err);
   })
 }
+// 搜索文章search
+exports.search = ({ res, body }) => {
+
+  let responseData = {
+    msg: '请求成功',
+  }
+  
+  // 待返回的字段
+  let fields = {
+    _id: 1,
+    title: 1,
+  };
+  let reg = new RegExp(body.keywords, "i"); // 不区分大小写
+  let conditions = { title: { $regex: reg }, state: 0 };
+  articleModel.find(conditions, fields).limit(20)
+    .then(result => {
+      responseData.count = result.length;
+      responseData.list = result; // 数据包
+      responseClient(res, 200, 'success', responseData);
+    }).catch(err => {
+      responseClient(res);
+      console.log('error:', err);
+    })
+};
 
 // 前台获取单个文章
 exports.getArticleOne = ({body, res}) => {

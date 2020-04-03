@@ -26,7 +26,7 @@
           label="头像"
           width="80">
            <template slot-scope="scope">
-            <img :src="scope.row.avatorSrc" alt="">
+            <img v-lazy="scope.row.avatorSrc" alt="">
           </template>
         </el-table-column>
         <el-table-column

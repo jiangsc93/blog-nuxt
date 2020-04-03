@@ -33,6 +33,7 @@
           console.log('报错了啊')
       })
     },
+    
     methods: {
       
     }

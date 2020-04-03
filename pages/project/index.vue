@@ -4,7 +4,7 @@
       <el-col :span="isMobile ? 24 : 12" v-for="item in projectList" :key="item._id" style="margin-bottom: 20px">
         <el-card :body-style="{ padding: '0px' }" class="project-item" shadow="hover">
           <a :href="item.link || 'https://github.com/jiangsc93'" target="_blank">
-            <img class="image" :src="item.imgSrc">
+            <img class="image" v-lazy="item.imgSrc">
             <div style="padding: 14px;">
               <h5 class="title">{{item.title}}</h5>
               <div class="desc ellipsis-line3">{{item.description}}</div>

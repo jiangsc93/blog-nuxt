@@ -1,4 +1,5 @@
 module.exports = {
+  model: 'universal',
   /*
   ** Headers of the page
   */
@@ -6,13 +7,13 @@ module.exports = {
     title: '益码凭川',
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '蒋少川的个人博客' }
+      { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' },
+      { hid: 'description', name: 'description', content: '蒋少川的个人博客, 一个前端工程师的日常学习日志和经验总结。' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       // 添加iconfont图标 如果需要添加图标  需更新此地址
-      { rel: 'stylesheet', type: 'text/css', href: 'https://at.alicdn.com/t/font_1620619_pj0hi4dzo2l.css' },
+      { rel: 'stylesheet', type: 'text/css', href: 'https://at.alicdn.com/t/font_1620619_qn3qqx1m7t.css' },
     ]
   },
   /*
@@ -51,6 +52,39 @@ module.exports = {
     },
     styleResources: {
       scss: './assets/css/base.scss' 
+    },
+    // 新加
+    postcss: {
+      plugins: [
+        require("autoprefixer")()
+      ]
+    },
+    loaders: {
+      vue: {
+        compilerOptions: {
+          preserveWhitespace: false
+        }
+      }
+    },
+    //webpack配置
+    configureWebpack: {
+      //关闭 webpack 的性能提示
+      // performance: {
+      //   hints:false
+      // },
+      //或者
+      //警告 webpack 的性能提示
+      performance: {
+        hints:'warning',
+        //入口起点的最大体积
+        maxEntrypointSize: 50000000,
+        //生成文件的最大体积
+        maxAssetSize: 30000000,
+        //只给出 js 文件的性能提示
+        assetFilter: function(assetFilename) {
+          return assetFilename.endsWith('.js');
+        }
+      }
     }
   },
   modules: [
@@ -78,8 +112,4 @@ module.exports = {
     'element-ui/lib/theme-chalk/index.css',
     'mavon-editor/dist/css/index.css'
   ],
-  // router: {
-  //   middleware: 'chekRouter'
-  // }
-
 }

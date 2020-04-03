@@ -4,7 +4,7 @@
     <div class="page-article">
       <div class="wrap">
         <div :class="isMobile?'__lt_m' : '__lt'">
-          <nuxt/>
+          <nuxt keep-alive />
         </div>
         <div :class="isMobile? '__rt_m article_rt':'__rt article_rt'">
           <div class="user" v-if="!isMobile">
@@ -14,7 +14,7 @@
             <p class="text">益码凭川</p>
           </div>
           <div class="item">
-            <h2 class="title"><span>标</span><span style="color: #409EFF;">签</span>云</h2>
+            <h2 class="title"><span>标</span><span style="color: #46bd87;">签</span>云</h2>
             <div class="cont">
               <span class="tag" v-for="(item, index) in tagsList" :key="index">
                 <a :href="`/article/list/${item.tag}`" :alt="item.tag" :title="`查看${item.tag}相关文章`">{{item.tag}}</a>
@@ -38,17 +38,10 @@
     middleware: 'getTagList',
     data() {
       return {
-        // tagTitle: '',
         showTagTitle: true,
         isArticleDetail: false,
-        // tag: {},
         tagsList: [],
         time: new Date(),
-        // articleData: {
-        //   records: 0,
-        //   pageSize: 0,
-        //   currentPage: 0,
-        // },
         loading: false,
         activeIndex: -1,
         records: 0, // 总数据条数
@@ -103,7 +96,7 @@ html {
 .page-article {
   max-width: 1200px;
   margin: 60px auto 0;
-  // min-height: 100vh;
+  min-height: 100vh;
   position: relative;
   display: flex;
   &.mobile {

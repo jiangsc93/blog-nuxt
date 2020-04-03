@@ -1,15 +1,15 @@
 <template>
   <div class="item">
-    <div :class="isMobile ? '__lt_m' : '__lt'">
+    <div id="page-article-one" :class="isMobile ? '__lt_m' : '__lt'">
       <h2 :class="isMobile ? 'title_m' : 'title'">{{responseData.title}}</h2>
       <div :class="isMobile ? 'author_m author-info' : 'author_pc author-info'">
         <div class="lt">
-          <img class="avatar" :src="responseData.avatar || customerAvatar" alt="不给看">
+          <img class="avatar" :src="responseData.avatar" alt="不给看">
           <div class="article-info">
             <div class="name">{{responseData.author}}</div>
             <div class="des">
               <span class="shijian">{{responseData.beginDate}}</span>
-              <span class="wordage">字数 {{responseData.wordage || 2333}}</span>
+              <span class="wordage" v-if="!isMobile">字数 {{responseData.wordage || 2333}}</span>
               <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{responseData.visit || '1'}}次浏览</span>
             </div>
           </div>
@@ -48,7 +48,7 @@
           <div class="no-data" v-if="commentTotal === 0">~赶紧来抢占第一个沙发吧~</div>
           <div class="content" v-for="(item, index) in responseData.comments" :key="index">
             <div class="avator">
-              <img :src="item.avatar" alt="">
+              <img v-lazy="item.avatar" alt="">
             </div>
             <div class="info">
               <div class="name">{{item.userName}}
@@ -73,7 +73,7 @@
               <template v-if="item.children">
                 <div class="reply-list" v-for="(m, n) in item.children" :key="n">
                   <div class="avator">
-                    <img :src="m.avatar" alt="">
+                    <img v-lazy="m.avatar" alt="">
                   </div>
                   <div class="info">
                     <div class="name">{{m.userName}}<span class="name-author">{{m.userName === responseData.author ? '(作者)' : ''}}</span></div>
@@ -100,6 +100,7 @@
         </div>
       </div>
     </div>
+    <div class="to-top" v-if="isScroll" v-scroll-to="'#index-header'"><i class="iconfont icon-huidaodingbu"></i></div>
     <div
       v-if="!isMobile"
       class="__rt fr anchor"
@@ -145,7 +146,8 @@ export default {
       showItemTwoId: '',
       showFatherId: '',
       likeActiveIndex: '',
-      isLiked: false
+      isLiked: false,
+      isScroll: false,
     }
   },
   computed: {
@@ -164,8 +166,15 @@ export default {
   },
   mounted () {
     this.getArticleOne();
+    // 监听页面滚动事件
+    window.addEventListener('scroll', this.onScroll);
   },
   methods: {
+    onScroll() {
+      const scroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      let offsetTop = document.getElementById('page-article-one').offsetTop;
+      this.isScroll = (parseInt(scroll) - 300) > offsetTop;
+    },
     // 对一级评论点赞
     onThumb(id, index) {
       if (this.likeActiveIndex === index) {
@@ -356,7 +365,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~/assets/css/highlight.css';
+@import '../../assets/css/highlight.css';
 
 .el-textarea__inner:focus {
   border: 1px solid #DCDFE6;
@@ -534,7 +543,7 @@ export default {
           justify-content: start;
           .avator {
             width: 40px;
-            height: 40px;
+            height: 35px;
             img {
               width: 100%;
               height: 100%;
@@ -693,10 +702,19 @@ export default {
           }
         }
         .total {
-          margin-left: 5px;
+          display: inline-block;
+          margin: 4px 0 0 5px;
           vertical-align: top;
           color: #aaa;
         }
+      }
+    }
+    .to-top {
+      position: fixed;
+      bottom: 50px;
+      right: 25px;
+      i {
+        font-size: 35px;
       }
     }
   }

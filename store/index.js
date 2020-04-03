@@ -12,6 +12,7 @@ export const state = function() {
     avatorSrc: '',
     imgurlhttp:  Checkenv.imgurlhttp || 'http://www.jscwwd.com:3000',
     apiHttp: Checkenv.httpUrl || 'https://www.jscwwd.com',
+    httpDomain: Checkenv.httpDomain || 'https://www.jscwwd.com',
   }
 }
 
@@ -23,7 +24,7 @@ export const getters = {
     return state.configList;
   },
   getCustomerInfo(state) {
-    return {customerName: state.customerName || Cookie.get('customerName'), avatorSrc: state.avatorSrc || Cookie.get('avatorSrc')};
+    return {customerName: state.customerName || window.localStorage.getItem('customerName'), avatorSrc: state.avatorSrc || window.localStorage.getItem('avatorSrc')};
   }
 }
 export const mutations = {
@@ -34,8 +35,8 @@ export const mutations = {
     state.isMobile = val;
   },
   setCustomer(state, val) {
-    state.customerName = val.customerName || Cookie.get('customerName');
-    state.avatorSrc = val.avatorSrc || Cookie.get('avatorSrc');
+    state.customerName = val.customerName || window.localStorage.getItem('customerName');
+    state.avatorSrc = val.avatorSrc || window.localStorage.getItem('avatorSrc');
   },
   [Types.GET_CONFIGLIST](state, val) {
     state.configList = val;

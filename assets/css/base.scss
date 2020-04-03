@@ -10,9 +10,6 @@ body {
 	padding: 0;
 }
 .container {
-  // min-height: 100vh;
-  // justify-content: center;
-  // align-items: center;
   margin: 20px;
 	padding: 20px;
 	width: calc(100% -40);
@@ -20,8 +17,6 @@ body {
 	background: #fff;
 	margin-bottom: 100px;
 	position: relative;
-  // -webkit-box-shadow: 0 0 6px hsla(0,0%,39%,.4);
-  // box-shadow: 0 0 6px hsla(0,0%,39%,.4);
 }
 
 .el-message .el-message__content {
@@ -86,6 +81,7 @@ h4,
 h5,
 h6 {
 	margin-top: 1em;
+	color: #2c3e50;
 }
 strong {
 	font-weight: bold;
@@ -96,8 +92,6 @@ p > code:not([class]) {
 	color: #d63200;
 	padding: 4px 4px;
 	margin: 0 3px;
-	// color: #c7254e;
-	// background-color: #f9f2f4;
 	background-color: #f8f8f8;
 	border-radius: 4px;
 }
@@ -140,9 +134,12 @@ img {
 	}
 	p {
 		margin: 0.6em 0 1em;
-		strong {
-    	color: rgb(233, 105, 0);
+		a { 
+			color: #42b983!important;
 		}
+	}
+	ul>li>a {
+		color: #42b983!important;
 	}
 	h4 {
 		font-size: 1.2em;
@@ -159,99 +156,25 @@ img {
     line-height: inherit;
 		font-weight: bold;
 		margin: 1.6em 0 1.3em;
-    border-bottom: 2px solid rgb(239, 112, 96);
-		font-size: 1.6em;
-		.text {
-			font-size: inherit;
-			// line-height: inherit;
-			margin: 0px;
-			display: inline-block;
-			font-weight: normal;
-			background: rgb(239, 112, 96);
-			color: rgb(255, 255, 255);
-			padding: 4px 10px 7px;
-			border-top-right-radius: 3px;
-			border-top-left-radius: 3px;
-			margin-right: 3px;
-		}
-		.icon {
-			display: inline-block;
-			vertical-align: bottom;
-			// border-bottom: 45px solid rgb(239, 235, 233);
-			// border-right: 20px solid transparent;
-			width: 0;
-			height: 0;
-			border-right: 21px solid transparent;
-			border-bottom: 21px solid transparent;
-			border-left: 21px solid rgb(239, 235, 233);
-			border-top: 21px solid transparent;
-		}
+    border-bottom: 1px solid #eaecef;
+		font-size: 2em;
 	}
 	h2 {
 		color: inherit;
     line-height: inherit;
-		font-weight: bold;
+		font-weight: 600;
 		margin: 1.6em 0 1.3em;
-    border-bottom: 2px solid rgb(239, 112, 96);
-		font-size: 1.4em;
-		.text {
-			font-size: inherit;
-			// line-height: inherit;
-			margin: 0px;
-			display: inline-block;
-			font-weight: normal;
-			background: rgb(239, 112, 96);
-			color: rgb(255, 255, 255);
-			padding: 5px 10px 6px;
-			border-top-right-radius: 3px;
-			border-top-left-radius: 3px;
-			margin-right: 3px;
-		}
-		.icon {
-			display: inline-block;
-			vertical-align: bottom;
-			// border-bottom: 40px solid rgb(239, 235, 233);
-			// border-right: 20px solid transparent;
-			width: 0;
-			height: 0;
-			border-right: 19px solid transparent;
-			border-bottom: 19px solid transparent;
-			border-left: 19px solid rgb(239, 235, 233);
-			border-top: 19px solid transparent;
-		}
+    border-bottom: 1px solid #eaecef;
+		font-size: 1.6em;
+		
 	}
 	h3 {
 		color: inherit;
     line-height: inherit;
-		font-weight: bold;
+		font-weight: 600;
 		margin: 1.6em 0 1.3em;
-    border-bottom: 2px solid rgb(239, 112, 96);
-		font-size: 1.3em;
-		.text {
-			font-size: inherit;
-			// line-height: inherit;
-			margin: 0px;
-			display: inline-block;
-			font-weight: normal;
-			background: rgb(239, 112, 96);
-			color: rgb(255, 255, 255);
-			padding: 4px 10px 5px;
-			border-top-right-radius: 3px;
-			border-top-left-radius: 3px;
-			margin-right: 3px;
-		}
-		.icon {
-			display: inline-block;
-			vertical-align: bottom;
-			// border-bottom: 37px solid rgb(239, 235, 233);
-			// border-right: 20px solid transparent;
-			width: 0;
-			height: 0;
-			border-right: 17px solid transparent;
-			border-bottom: 17px solid transparent;
-			border-left: 17px solid rgb(239, 235, 233);
-			border-top: 17px solid transparent;
-		}
+    border-bottom: 1px solid #eaecef;
+		font-size: 1.4em;
 	}
 }
 
@@ -272,17 +195,13 @@ img {
 // }
 
 .article-detail blockquote {
-	margin: 0 0 1em;
-	background-color: rgb(220, 230, 240);
-	padding: 0.5em 0 0.3em 0.5em;
-	border-left: 6px solid rgb(181, 204, 226);
+	padding: 1em 0 1em 1em;
 	display: block;
-	padding: 16px 15px 16px 1rem;
 	font-size: 0.9em;
 	margin: 1em 0px;
 	color: rgb(0, 0, 0);
-	border-left: 5px solid rgb(239, 112, 96);
-	background: rgb(239, 235, 233);
+	border-left: 5px solid #42b983;
+	background: #f3f5f7;
 	overflow: auto;
 	overflow-wrap: normal;
 	word-break: normal;
@@ -292,7 +211,6 @@ img {
 	}
 	strong {
 		margin: 0 3px;
-    color: rgb(233, 105, 0);
 	}
 }
 

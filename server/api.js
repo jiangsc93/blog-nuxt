@@ -23,19 +23,25 @@ router.use(session({
   saveUninitialized: true
 }));
 
-var slide = require('./slide');
 
 // CORS解决跨域问题
 router.all('*', (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // 最核心的
+  if (req.headers.origin === 'http://localhost' || 'https://www.jscwwd.com') {
+    res.header("Access-Control-Allow-Origin", req.headers.origin); // 最核心的
+  } else {
+    res.header("Access-Control-Allow-Origin", "https://www.jscwwd.com"); // 最核心的
+  }
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-  res.header("X-Powered-By",' 3.2.1')
+  res.header("X-Powered-By",' 3.2.1');
   res.header("Content-Type", "application/json;charset=utf-8");
+  res.header("Cache-Control", "max-age=3600");
   next();
 });
 // 前台：按类型-分页读取文章列表
 router.post('/api/getArticleList/', article.getArticleList);
+// 前台：搜索文章
+router.post('/api/search/', article.search);
 // 前台：读取单个文章详情
 router.post('/api/getArticleOne/', article.getArticleOne);
 // admin 删除文章
@@ -130,7 +136,6 @@ router.post('/api/upload', (req, res, next) => {
       form.encoding = 'utf-8';
       let filedr = "/upload";
       form.uploadDir = path.join(__dirname + filedr); // 上传到server下upload文件夹里
-      console.log(form.uploadDir, 'dddd');
       form.keepExtensions = true; // 保留后缀
       form.maxFieldsSize = 2 * 1024 * 1024;
       form.parse(req, function (err, fields, files) {

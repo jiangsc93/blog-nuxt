@@ -5,7 +5,7 @@
              :close-on-click-modal="false"
              @close="cancel"
              :append-to-body="true"
-             :top="handleFlag === 'login' ? '25vh' : '13vh'"
+             :top="handleFlag === 'login' ? '25vh' : '9vh'"
              center>
     <el-form :class="!isMobile ? 'login-form' : ''">
       <el-formItem label="邮箱"
@@ -53,7 +53,7 @@
           :label-width="formLabelWidth">
         <el-input
             v-model="params.introduction"
-            placeholder="用一句话描述你的职业、擅长或喜欢做的事情"
+            :placeholder="isMobile ? '简单描述你的职业、擅长的事情' : '用一句话描述你的职业、擅长或喜欢做的事情'"
             autocomplete="off"></el-input>
       </el-formItem>
     </el-form>
@@ -155,8 +155,9 @@ import Cookie from 'js-cookie'
             if (res.status === 200 && res.data.data.customerInfo) {
               let userName = res.data.data.customerInfo.userName;
               let avatorSrc = res.data.data.customerInfo.avatorSrc;
-              Cookie.set('customerName', userName);
-              Cookie.set('avatorSrc', avatorSrc);
+              // 设置本地缓存
+              window.localStorage.setItem('customerName', userName);
+              window.localStorage.setItem('avatorSrc', avatorSrc);
               this.$store.commit('setCustomer', {userName, avatorSrc});
               this.$message({
                 message: "登录成功",
@@ -188,8 +189,11 @@ import Cookie from 'js-cookie'
               });
               let userName = res.data.data.customerInfo.userName;
               let avatorSrc = res.data.data.customerInfo.avatorSrc;
-              Cookie.set('customerName', userName);
-              Cookie.set('avatorSrc', avatorSrc);
+              // 设置本地缓存
+              window.localStorage.setItem('customerName', userName);
+              window.localStorage.setItem('avatorSrc', avatorSrc);
+              // Cookie.set('customerName', userName);
+              // Cookie.set('avatorSrc', avatorSrc);
               this.$store.commit('setCustomer', {userName, avatorSrc});
               this.$emit('feedback', false);
               setTimeout(() => {

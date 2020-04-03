@@ -8,19 +8,9 @@ import 'element-ui/lib/theme-chalk/rate.css';
 
 
 Vue.use(VueLazyload, {
-  loading: 'https://bgl.zbjimg.com/bgl%2Fbjclound%2Fdefault.png%2Forigine%2Fcab99d5e-fbf9-481f-a444-505f2b219b99?imageMogr2/auto-orient/strip/quality/90',
-  error: 'https://bgl.zbjimg.com/bgl%2Fbjclound%2Fdefault.png%2Forigine%2Fcab99d5e-fbf9-481f-a444-505f2b219b99?imageMogr2/auto-orient/strip/quality/90',
-  attempt: 1,
-  filter: {
-    webp(listener, options) {
-      if (!options.supportWebp) return;
-      const src = listener.src || '';
-      const isCDN = src.includes('public-test.zbjimg.com') || src.includes('caishui.zbjimg.com');
-      if (isCDN && !/\?/g.test(src)) {
-        listener.src += '?imageView2/0/format/webp/q/75|imageslim';
-      }
-    },
-  },
+  loading: 'http://www.jscwwd.com:3000/upload/lazy_ympc_202003290028.png',
+  error: 'http://www.jscwwd.com:3000/upload/lazy_ympc_202003290028.png',
+  attempt: 1
 });
 
 Vue.use(VueCookie);

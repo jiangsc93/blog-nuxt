@@ -61,7 +61,7 @@ Vue.filter('momentFormat', (time, format) => {
  * 图片链接替换成https
  * */
 Vue.filter('img4https', (img = '') => {
-  if (runtime === 'product' && (typeof img === 'string')) {
+  if (NODE_ENV === 'production' && (typeof img === 'string')) {
     return img.replace(/^http:\/\//g, 'https://');
   }
   return img;

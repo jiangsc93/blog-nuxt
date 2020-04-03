@@ -18,7 +18,7 @@
             </div>
           </div>
           <div class="__rt">
-            <img :src="item.imgSrc || coverImg" alt="文章封面">
+            <img v-lazy="item.imgSrc">
           </div>
         </a>
       </li>
@@ -66,16 +66,6 @@
     },
     computed: {
       ...mapState(['isMobile']),
-      coverImg() {
-        let arr = this.$store.state.configList;
-        let value = '';
-        _.forEach(arr, (item) =>  { 
-          if (item.title === '文章列表默认封面') {
-            value = item.imgSrc;
-          }
-        });
-        return value;
-      }
     },
     mounted() {
       this.$store.dispatch("getConfigList");

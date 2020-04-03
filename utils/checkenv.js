@@ -11,6 +11,7 @@ var checkCurrentEnv = function (localEnv, rt) {
       api : "/api"
     },
     httpUrl: "",
+    httpDomain: "",
     imgurlhttp: "",
     env: ""
   };
@@ -38,11 +39,13 @@ var checkCurrentEnv = function (localEnv, rt) {
     if(envTemp == "localhost") {
       SERVER.url[obj] = "http://localhost" + port + SERVER.url[obj]; 
       SERVER.httpUrl = "http://localhost" + port; 
-      SERVER.imgurlhttp = "http://localhost" + port; 
+      SERVER.imgurlhttp = "http://localhost" + port;
+      SERVER.httpDomain = "http://localhost";
 
     } else {
       SERVER.url[obj] = "https://" + envTemp + "www.jscwwd.com" + SERVER.url[obj];
       SERVER.httpUrl = "https://" + envTemp + "www.jscwwd.com";
+      SERVER.httpDomain = "https://" + envTemp + "www.jscwwd.com";
       SERVER.imgurlhttp = "http://" + envTemp + "www.jscwwd.com" + port;
     }
   }
