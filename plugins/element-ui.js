@@ -1,62 +1,70 @@
 import Vue from 'vue'
-// import {Select, Option, Input, Button, Form, FormItem, Pagination} from 'element-ui'
-// import {
-//   Dialog,
-//   Form,
-//   FormItem,
-//   Input,
-//   Button,
-//   Message,
-//   MessageBox,
-//   Menu,
-//   MenuItem,
-//   Row,
-//   Col,
-//   Dropdown,
-//   DropdownMenu,
-//   DropdownItem,
-//   Loading,
-//   Card,
-//   Select,
-//   Option,
-//   Tag,
-//   Checkbox,
-//   CheckboxGroup,
-//   Pagination
-// } from "element-ui";
-import ElementUi from 'element-ui';
+import {
+  Dialog,
+  Form,
+  FormItem,
+  Input,
+  Button,
+  Timeline,
+  TimelineItem,
+  Message,
+  MessageBox,
+  Menu,
+  MenuItem,
+  Row,
+  Col,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  Submenu,
+  MenuItemGroup,
+  Table,
+  TableColumn,
+  DatePicker,
+  // Loading,
+  Card,
+  Select,
+  Option,
+  Tag,
+  Checkbox,
+  CheckboxGroup,
+  Pagination,
+  Upload,
+  Notification
+} from "element-ui";
 import 'element-ui/lib/theme-chalk/base.css';
-import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
+// import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 export default () => {
-  // Vue.component(Dialog.name, Dialog);
-  // Vue.component(Form.name, Form);
-  // Vue.component(FormItem.name, FormItem);
-  // Vue.component(Input.name, Input);
-  // Vue.component(Button.name, Button);
-  // Vue.component(Message.name, Message);
-  // Vue.component(MessageBox.name, MessageBox);
-  // Vue.component(Menu.name, Menu);
-  // Vue.component(MenuItem.name, MenuItem);
-  // Vue.component(Row.name, Row);
-  // Vue.component(Col.name, Col);
-  // Vue.component(Dropdown.name, Dropdown);
-  // Vue.component(DropdownMenu.name, DropdownMenu);
-  // Vue.component(DropdownItem.name, DropdownItem);
-  // Vue.component(CollapseTransition.name, CollapseTransition);
-  // Vue.component(Card.name, Card);
-  // Vue.component(Select.name, Select);
-  // Vue.component(Option.name, Option);
-  // Vue.component(Tag.name, Tag);
-  // Vue.component(Checkbox.name, Checkbox);
-  // Vue.component(CheckboxGroup.name, CheckboxGroup);
-  // Vue.component(Pagination.name, Pagination);
-  // Vue.use(Loading.directive);
-  Vue.use(ElementUi);
-  // Vue.use(Input);
-  // Vue.use(Button);
-  // Vue.use(Form);
-  // Vue.use(FormItem);
-  // Vue.use(Pagination);
-  // Vue.use(Select);
-  // Vue.use(Option);
+  Vue.use(Dialog);
+  Vue.use(Form);
+  Vue.use(FormItem);
+  Vue.use(Input);
+  Vue.use(Button);
+  Vue.use(Timeline);
+  Vue.use(TimelineItem);
+  Vue.use(Button);
+  Vue.component(Message);
+  Vue.component(MessageBox);
+  Vue.use(Menu);
+  Vue.use(MenuItem);
+  Vue.use(Row);
+  Vue.use(Col);
+  Vue.use(Dropdown);
+  Vue.use(DropdownItem);
+  Vue.use(DropdownMenu);
+  Vue.use(Submenu);
+  Vue.use(MenuItemGroup);
+  Vue.use(Table);
+  Vue.use(TableColumn);
+  Vue.use(DatePicker);
+  // Vue.use(Loading);
+  Vue.use(Card);
+  Vue.use(Select);
+  Vue.use(Option);
+  Vue.use(Tag);
+  Vue.use(Checkbox);
+  Vue.use(CheckboxGroup);
+  Vue.use(Pagination);
+  Vue.use(Upload);
+  Vue.prototype.$notify = Notification;
 }

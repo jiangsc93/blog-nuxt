@@ -5,7 +5,7 @@
              :close-on-click-modal="false"
              @close="cancel"
              :append-to-body="true"
-             :top="handleFlag === 'login' ? '25vh' : '9vh'"
+             :top="handleFlag === 'login' ? '25vh' : '8vh'"
              center>
     <el-form :class="!isMobile ? 'login-form' : ''">
       <el-formItem label="邮箱"

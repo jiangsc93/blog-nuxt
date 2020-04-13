@@ -3,7 +3,7 @@
     <div class="login_logout">
       <h1 class="title">{{title}}</h1>
       <div class="list">
-        <el-form :model="ruleForm2" status-icon ref="ruleForm2" :rules="rules" label-width="70px" class="demo-ruleForm">
+        <el-form :model="ruleForm2" status-icon ref="ruleForm2" :rules="rules" label-width="80px" class="demo-ruleForm">
           <el-form-item label="用户名" prop="userName">
             <el-input type="text" placeholder="每篇文章的作者名，想一个吧" v-model="ruleForm2.userName" auto-complete="off"></el-input>
           </el-form-item>
@@ -11,7 +11,10 @@
             <el-input type="text" placeholder="请输入格式正确的邮箱" v-model="ruleForm2.email" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input type="password" placeholder="请输入密码" v-model="ruleForm2.password" auto-complete="off"></el-input>
+            <el-input show-password type="password" placeholder="请输入密码" v-model="ruleForm2.password" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码" prop="password">
+            <el-input show-password type="password" placeholder="请再次输入密码" v-model="ruleForm2.password2" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item class="footer">
             <el-button type="primary" id="btn" @click="register('ruleForm2')">注册</el-button>
@@ -64,20 +67,24 @@
       register(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            Api.register(this.ruleForm2).then(result => {
-              if (result.status === 200 && Object.keys(result.data.data).length !== 0) { // 判断对象是否为空
-                Cookie.set('authUser', result.data.data);
-                sessionStorage.setItem('email', JSON.stringify(result.data.data.email));
-                Util.UI.toast('登录成功!', 'success');
-                setTimeout(() => {
-                  window.location.href = '/admin/';
-                },1000)
-              } else {
-                Util.UI.toast(result.data.message, 'warning');
-              }
-            }).catch(err => {
-              console.log('error:', err);
-            })
+            if (this.ruleForm2.password2 == this.ruleForm2.password) {
+              Api.register(this.ruleForm2).then(result => {
+                if (result.status === 200 && Object.keys(result.data.data).length !== 0) { // 判断对象是否为空
+                  Cookie.set('authUser', result.data.data);
+                  sessionStorage.setItem('email', JSON.stringify(result.data.data.email));
+                  Util.UI.toast('注册并登录成功!', 'success');
+                  setTimeout(() => {
+                    window.location.href = '/admin/';
+                  },1000)
+                } else {
+                  Util.UI.toast(result.data.message, 'warning');
+                }
+              }).catch(err => {
+                console.log('error:', err);
+              })
+            } else {
+              Util.UI.toast('两次输入密码不一致!', 'warning');
+            }
           }
         })
       }

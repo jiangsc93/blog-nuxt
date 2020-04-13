@@ -15,7 +15,7 @@
           prop="title"
           label="文章标题">
           <template slot-scope="scope">
-            <nuxt-link :to="`/admin/article/${scope.row._id}`">{{scope.row.title}}</nuxt-link>
+            <nuxt-link :to="`/admin/article/${scope.row._id}`"><span :class="scope.row.state === 0 ? 'publish' : 'draft'">{{scope.row.state === 0 ? '已发布' : '草稿'}}</span>{{scope.row.title}}</nuxt-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -189,6 +189,26 @@
           }
         }
       }
+    }
+    .publish {
+      display: inline-block;
+      font-size: 13px;
+      color: #67c23a;
+      background: #f0f9eb;
+      padding: 0 4px;
+      margin-right: 5px;
+      border: 1px solid #c2e7b0;
+      border-radius: 3px;
+    }
+    .draft {
+      display: inline-block;
+      font-size: 13px;
+      color: #e6a23c;
+      background: #fdf6ec;
+      padding: 0 4px;
+      margin-right: 5px;
+      border: 1px solid #f5dab1;
+      border-radius: 3px;
     }
   }
 </style>

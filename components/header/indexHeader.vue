@@ -10,7 +10,7 @@
         <div class="__rt">
           <div class="search-wrap">
             <i class="iconfont icon-search"></i>
-            <el-input class="search-input" size="medium" v-model="keywords" clearable @input="onSearch"></el-input>
+            <el-input class="search-input" size="medium" v-model.trim="keywords" clearable @input="onSearch"></el-input>
             <div class="search" v-show="showSearchList && keywords">
               <ul v-if="searchList.length > 0">
                 <li v-for="(item, index) in searchList"
@@ -49,11 +49,10 @@
             class="search-input"
             size="medium"
             ref="input"
-            v-model="keywords"
+            v-model.trim="keywords"
             clearable
             @input="onSearch"
-            @focus="isShowInput = true"
-            @blur="onBlur">
+            @focus="isShowInput = true">
           </el-input>
         </div>
       </div>
@@ -95,7 +94,6 @@
 </template>
 
 <script>
-  import { Menu, MenuItem } from 'element-ui' 
   import { mapState, mapGetters } from 'vuex'
   import Cookie from 'js-cookie'
   import _ from 'lodash'
@@ -157,8 +155,6 @@
       }
     },
     components: {
-      Menu,
-      MenuItem,
       LoginRegister
     },
     computed: {
@@ -185,8 +181,24 @@
         if (this.isShowSide && !(e.target).closest('.side, .icon-caidan-zhankai')) {
           this.isShowSide = false;
         }
-        if (this.showSearchList && !(e.target).closest('.m-li, .show-input, .show-wrap')) {
-          this.showSearchList = false;
+        if (!(e.target).closest('.m-li, .show-input, .show-wrap')) {
+          this.isShowInput = false;
+          this.keywords = '';
+          if (this.showSearchList && !(e.target).closest('.m-li, .show-input, .show-wrap')) {
+            this.showSearchList = false;
+          }
+        }
+      })
+      document.addEventListener("touchstart", (e) => {
+        if (this.isShowSide && !(e.target).closest('.side, .icon-caidan-zhankai')) {
+          this.isShowSide = false;
+        }
+        if (!(e.target).closest('.m-li, .show-input, .show-wrap')) {
+          this.isShowInput = false;
+          this.keywords = '';
+          if (this.showSearchList && !(e.target).closest('.m-li, .show-input, .show-wrap')) {
+            this.showSearchList = false;
+          }
         }
       })
     },
@@ -218,15 +230,12 @@
       goLink(val) {
         this.title = val;
       },
-      onBlur() {
-        this.isShowInput = false;
-        this.keywords = '';
-      },
       onSearch() {
         // 3秒节流
         throttle(this.search, 3000);
       },
       search() {
+        if (this.keywords === '' || this.keywords === ' ') return;
         Api.search({keywords: this.keywords}).then((res => {
           if (res.status === 200 && res.data && res.data.data.list) {
             this.searchList = res.data.data.list;
@@ -550,7 +559,7 @@
       height: 95vh;
       overflow-y: auto;
       position: fixed;
-      top: 54px;
+      top: 55.4px;
       left: 0;
       text-align: center;
       background: #fff;

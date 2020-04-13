@@ -156,17 +156,24 @@ img {
     line-height: inherit;
 		font-weight: bold;
 		margin: 1.6em 0 1.3em;
-    border-bottom: 1px solid #eaecef;
 		font-size: 2em;
+		span {
+			display: inline-block;
+			padding-bottom: 3px;
+			border-bottom: 2px solid #42b983;
+		}
 	}
 	h2 {
 		color: inherit;
     line-height: inherit;
 		font-weight: 600;
 		margin: 1.6em 0 1.3em;
-    border-bottom: 1px solid #eaecef;
 		font-size: 1.6em;
-		
+		span {
+			display: inline-block;
+			padding-bottom: 3px;
+			border-bottom: 2px solid #42b983;
+		}
 	}
 	h3 {
 		color: inherit;
@@ -198,7 +205,7 @@ img {
 	padding: 1em 0 1em 1em;
 	display: block;
 	font-size: 0.9em;
-	margin: 1em 0px;
+	margin: 1.5em 0px;
 	color: rgb(0, 0, 0);
 	border-left: 5px solid #42b983;
 	background: #f3f5f7;

@@ -168,9 +168,7 @@ export default {
     },
     // 删除图片
     deleteConfig(val) {
-      this.$confirm('确定要删除吗？', '提示', {
-        type: 'warning',
-      }).then(() => {
+      Util.UI.confirm('确定删除这个配置吗?', '提示').then(() => {
         this.delete(val.title);
       })
     },

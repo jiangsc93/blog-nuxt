@@ -64,7 +64,8 @@ router.post('/api/deleteProject/', project.deleteProject);
 
 // 获取标签列表
 router.get('/api/getTagList/', tag.getTagList);
-
+// 获取标签分类
+router.get('/api/getTagSort/', article.getTagSort);
 
 // 提交留言
 router.post('/api/submitMessage', message.submitMessage);

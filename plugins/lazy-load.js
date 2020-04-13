@@ -1,6 +1,4 @@
 import Vue from 'vue';
-import Mint from 'mint-ui';
-import { Rate } from 'element-ui';
 import VueScrollTo from 'vue-scrollto';
 import VueCookie from 'vue-cookie';
 import VueLazyload from 'vue-lazyload';
@@ -14,6 +12,4 @@ Vue.use(VueLazyload, {
 });
 
 Vue.use(VueCookie);
-Vue.use(Mint);
-Vue.use(Rate);
 Vue.use(VueScrollTo);

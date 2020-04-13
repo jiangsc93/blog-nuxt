@@ -39,6 +39,8 @@ module.exports = app => {
 
   // 获取标签列表
   app.get('/api/getTagList/', tag.getTagList);
+  // 获取标签分类
+  app.get('/api/getTagSort/', article.getTagSort);
 
   // 提交留言
   app.post('/api/submitMessage', message.submitMessage);

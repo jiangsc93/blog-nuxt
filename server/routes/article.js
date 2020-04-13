@@ -195,8 +195,6 @@ exports.editNewArticleAdmin = ({res, body}) => {
       userName: author,
     }
   ).then(userInfo => {
-    console.log(userInfo, 'userinfo');
-    console.log(userInfo._doc, '_doc');
     avatar = userInfo._doc.avatar;
     console.log(avatar, 'avatar');
     let article = new articleModel({
@@ -217,7 +215,6 @@ exports.editNewArticleAdmin = ({res, body}) => {
     // 调用tag的addTag接口
     tagInterface.addTag(tag);
     article.save((err, data) => {
-      console.log(data, 'datadata');
       if (err) {
         responseClient(res, 404, 'error', err);
       } else {
@@ -397,4 +394,48 @@ exports.getArticleListAdmin = ({ res, body }) => {
         responseClient(res, 400, '获取失败', err);
       })
   }
+};
+// 获取文章分类
+exports.getTagSort = ({ res, body }) => {
+  let tagList = [];
+  let conditions = {};
+  let fields = {
+    tag: 1,
+  }
+  
+  articleModel.find(conditions, fields)
+    .then((data) => {
+      let arr = data; // 数据包
+      arr.forEach(item => {
+        tagList.push(item.tag);
+      })
+      newTagList = tagList.join(',').split(',');
+      var obj = {};
+      // 转换成这样的形式
+      // obj = {
+      //   'css': 1,
+      //   'javascript': 2
+      // }
+      newTagList.forEach((v, k) => {
+        if (obj[v]) {
+          obj[v]++;
+        } else {
+          obj[v] = 1;
+        }
+      })
+      let tagData = [];
+      let tagNum = [];
+      for (let prop in obj) {
+        tagData.push(prop);
+        tagNum.push(obj[prop]);
+      }
+      let resDatas = {
+        msg: '请求成功',
+        tagList: tagData,
+        tagNum
+      }
+      responseClient(res, 200, 'success', resDatas);
+    }).catch(err => {
+      responseClient(res, 400, '获取失败', err);
+    })
 };

@@ -38,18 +38,6 @@ module.exports = {
         })
       }
     },
-    babel: {
-      plugins: [
-        [
-          'component',
-          {
-            libraryName: 'element-ui',
-            styleLibraryName: 'theme-chalk'
-          }
-        ]
-      ],
-      comments: true
-    },
     styleResources: {
       scss: './assets/css/base.scss' 
     },
@@ -85,7 +73,21 @@ module.exports = {
           return assetFilename.endsWith('.js');
         }
       }
-    }
+    },
+    analyze: false,
+    maxChunkSize: 300000,
+    babel: {
+      plugins: [
+        [
+          'component',
+          {
+            libraryName: 'element-ui',
+            styleLibraryName: 'theme-chalk'
+          }
+        ]
+      ],
+      comments: true
+    },
   },
   modules: [
     '@nuxtjs/axios',
@@ -97,8 +99,7 @@ module.exports = {
   ],
   plugins: [
     { src: '~plugins/nuxt-mavon-plugin.js', ssr: false },
-    { src: '~plugins/nuxt-quill-plugin.js', ssr: false },
-    { src: '~plugins/element-ui.js', ssr: true },
+    { src: '~plugins/element-ui', ssr: true },
     { src: '~plugins/util.js', ssr: false },
     // { src: '~plugins/components.js', ssr: true },
     { src: '~plugins/filter.js', ssr: false },

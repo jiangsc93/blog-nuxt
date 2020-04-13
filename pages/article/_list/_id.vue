@@ -42,7 +42,7 @@
         ]
       }
     },
-    asyncData({params}) {
+    async asyncData({params}) {
       let reqParams = {
         type: '1',
         tag: params.id
@@ -61,7 +61,7 @@
     data() {
       return {
         articleData: [1],
-        tagTitle: ''
+        tagTitle: '',
       }
     },
     computed: {
@@ -69,7 +69,6 @@
     },
     mounted() {
       this.$store.dispatch("getConfigList");
-      // this.getArticleList();
     },
     methods: {
       // getArticleList() {

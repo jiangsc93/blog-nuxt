@@ -13,7 +13,7 @@ const app = express();
 app.use(bodyParser.json({limit: '100mb'}));
 app.use(bodyParser.urlencoded({limit: '100mb', extended: false}));
 app.use(api);
-
+// app.set('view engine', 'html');
 
 var session = require('express-session');
 app.use(session({
@@ -71,7 +71,11 @@ app.use(function(err, req, res, next) {
 
 	// render the error page
 	res.status(err.status || 500);
-	res.render('error');
+  res.render('error');
+  // res.json({
+  //   message: err.message,
+  //   error: err
+  // });
 });
 
 

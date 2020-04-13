@@ -36,6 +36,17 @@ export default {
       ]
     }
   },
+  async asyncData() {
+    return Api.getProjectList()
+        .then(res => {
+          if (res.status === 200 && res.data && res.data.data && res.data.data.list) {
+            let projectList = res.data.data.list;
+            return { projectList };
+          }
+      }).catch (err => {
+        console.log('报错了啊')
+      })
+  },
   data () {
     return {
       projectList: []
@@ -49,24 +60,6 @@ export default {
   computed: {
     ...mapState(['isMobile'])
   },
-  mounted() {
-      this.getProjectList();
-  },
-  methods: {
-    handleTag(tag) {
-      if (tag) return tag.split(',')
-    },
-    getProjectList() {
-      Api.getProjectList()
-        .then(res => {
-          if (res.status === 200 && res.data && res.data.data && res.data.data.list) {
-            this.projectList = res.data.data.list;
-          }
-      }).catch (err => {
-        console.log('报错了啊')
-      })
-    }
-  }
 }
 </script>
 

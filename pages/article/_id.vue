@@ -129,6 +129,41 @@ export default {
     Tag,
     Loading
   },
+  async asyncData({ params }) {
+    let postParams = {
+      id: params.id
+    }
+    return Api.getArticleOne(postParams)
+      .then((res) => {
+        let responseData = res.data.data;
+        if (res.status === 200 && res.data && res.data.data.content) {
+          // markdown 处理
+          const article = markdown.marked(res.data.data.content);
+          article.then(result => {
+            responseData.content = result.content;
+            responseData.toc = result.toc;
+          });
+          let commentTotal = responseData.comments.length;
+          return { responseData, commentTotal };
+        }
+    }).catch (err => {
+      console.log('报错了啊')
+    })
+    // let reqParams = {
+    //   type: '1',
+    //   tag: params.id
+    // }
+    // return Api.getArticleList(reqParams)
+    //   .then(res => {
+    //     if (res.status === 200 && res.data.data && res.data.data.list) {
+    //       let articleData = res.data.data.list;
+    //       let tagTitle = params.id === '全部' ? '热门文章：' : `${params.id} 相关的文章：`;
+    //       return { articleData, tagTitle}
+    //     }
+    // }).catch (err => {
+    //   console.log('报错了啊')
+    // })
+  },
   data () {
     return {
       textareaOne: '',
@@ -165,11 +200,54 @@ export default {
     }
   },
   mounted () {
-    this.getArticleOne();
+    // this.start = Math.floor(new Date().getTime()/1000);
+    // this.query(50, 2, 10);
+    // this.getArticleOne();
+    this.seoHandle();
     // 监听页面滚动事件
     window.addEventListener('scroll', this.onScroll);
   },
   methods: {
+    query(num, interval, limitTime=60) { // 参数num：轮询次数   interval：定时器时间  l imitTime：最大限制时长
+      let timer;
+      if (num > 1) {
+        return new Promise((resolve, reject) => {
+          let postParams = {
+            id: this.$route.params.id
+          }
+          Api.getArticleOne(postParams).then(res => {
+            console.log(res, 'res');
+            this.end = Math.floor(new Date().getTime()/1000);
+          }, err => {
+            reject(err);
+          }).catch((err) => {
+            console.log(err);
+          });
+          if (this.end !== 0) {
+            // 如果拿到数据了，就用当前的 剩余限制时长 - （结束时间 - 开始时间）
+            this.remainTime = limitTime - (this.end - this.start);
+          } else {
+            // 如果还没拿到接口数据  这个时候  end就为0  需要继续 轮询  这个时候的剩余时间还是 传过来的 限制时长
+            this.remainTime = limitTime;
+          }
+
+          if (this.remainTime <= 0) { // 如果剩余时间小于等于 0 或者 循环次数 为 1 就结束定时器
+            clearTimeout(timer);
+            return;
+          } else {
+            // 轮询一次  num就减少一次
+            num--;
+            this.remainTime = this.remainTime - interval; // 当前剩余时长 = 当前剩余时长 - 定时器
+            timer = setTimeout(() => { this.query(num, interval, this.remainTime)}, interval * 1000);
+          }
+        }).catch( err => {
+          console.log(err);
+        })
+      } else {
+        clearTimeout(timer);
+        return;
+      }
+    },
     onScroll() {
       const scroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
       let offsetTop = document.getElementById('page-article-one').offsetTop;

@@ -147,6 +147,14 @@ export default class  {
   }
 
   /**
+   * 获取标签分类
+   */
+  static getTagSort(){
+
+    return Net.getJSON(Checkenv.url.api + "/getTagSort/");
+  }
+
+  /**
    * 获取单个文章
    */
   static getArticleOneAdmin(data){

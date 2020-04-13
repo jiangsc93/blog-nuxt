@@ -29,7 +29,6 @@ Vue.prototype.mobileDeal = function (mobile = '') {
  */
 Vue.prototype.scrollToIndex = function (options = {}) {
   let width = 0;
-  console.log('2222');
   const el = document.getElementsByClassName(options.parentsDom),
     defaults = setDefault(options),
     elChild = document.getElementsByClassName(options.childDom);
