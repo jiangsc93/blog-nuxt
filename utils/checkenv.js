@@ -33,20 +33,20 @@ var checkCurrentEnv = function (localEnv, rt) {
   SERVER.env = env;
   //端口检查
   for (var obj in SERVER.url) {
+
     var envTemp = env == "" ? "" : env == "localhost" ? "localhost" : (env + ".");
     port = ":3000";
     // 服务地址
     if(envTemp == "localhost") {
-      SERVER.url[obj] = "http://localhost" + port + SERVER.url[obj]; 
-      SERVER.httpUrl = "http://localhost" + port; 
+      SERVER.url[obj] = "http://localhost" + port + SERVER.url[obj];
+      SERVER.httpUrl = "http://localhost";
       SERVER.imgurlhttp = "http://localhost" + port;
       SERVER.httpDomain = "http://localhost";
-
     } else {
-      SERVER.url[obj] = "https://" + envTemp + "www.jscwwd.com" + SERVER.url[obj];
-      SERVER.httpUrl = "https://" + envTemp + "www.jscwwd.com";
-      SERVER.httpDomain = "https://" + envTemp + "www.jscwwd.com";
-      SERVER.imgurlhttp = "http://" + envTemp + "www.jscwwd.com" + port;
+      SERVER.url[obj] = "http://www.jscwwd.com" + port + SERVER.url[obj];
+      SERVER.httpUrl = "http://www.jscwwd.com";
+      SERVER.httpDomain = "http://www.jscwwd.com";
+      SERVER.imgurlhttp = "http://www.jscwwd.com" + port;
     }
   }
   return SERVER;

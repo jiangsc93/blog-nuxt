@@ -17,8 +17,8 @@ export default class  {
    *   pageSize: 10,
    * }
    */
-  static getArticleList(data){
-    return Net.postJSON(Checkenv.url.api + "/getArticleList/", {}, data);
+  static queryByArea(data){
+    return Net.postJSON(Checkenv.url.api + "/queryByArea/", {}, data);
   }
 
   /**
@@ -38,67 +38,6 @@ export default class  {
    */
   static getMessageListAdmin(){
     return Net.getJSON(Checkenv.url.api + "/getMessageListAdmin/");
-  }
-  /**
-   * 添加项目
-   */
-  static addProject(params){
-    return Net.postJSON(Checkenv.url.api + "/addProject/", {}, params);
-  }
-  /**
-   * 删除项目
-   */
-  static deleteProject(params){
-    return Net.postJSON(Checkenv.url.api + "/deleteProject/", {}, params);
-  }
-
-    /**
-   * 获取项目列表
-   */
-  static getProjectList(data){
-    return Net.getJSON(Checkenv.url.api + "/getProjectList/", {}, data);
-  }
-  /**
-   * 添加历程
-   */
-  static addExperience(params){
-    return Net.postJSON(Checkenv.url.api + "/addExperience/", {}, params);
-  }
-  /**
-   * 删除历程
-   */
-  static deleteExperience(params){
-    return Net.postJSON(Checkenv.url.api + "/deleteExperience/", {}, params);
-  }
-
-    /**
-   * 获取历程列表
-   */
-  static getExperienceList(data){
-
-    return Net.getJSON(Checkenv.url.api + "/getExperienceList/", {}, data);
-  }
-
-
-  /**
-   * 添加配置
-   */
-  static addConfig(params){
-    return Net.postJSON(Checkenv.url.api + "/addConfig/", {}, params);
-  }
-  /**
-   * 删除配置
-   */
-  static deleteConfig(params){
-    return Net.postJSON(Checkenv.url.api + "/deleteConfig/", {}, params);
-  }
-
-    /**
-   * 获取配置列表
-   */
-  static getConfigList(data){
-
-    return Net.getJSON(Checkenv.url.api + "/getConfigList/", {}, data);
   }
 
 
@@ -120,14 +59,14 @@ export default class  {
    * 删除文章
    */
   static deleteArticleAdmin(data){
-    return Net.postJSON(Checkenv.url.api + "/deleteArticleAdmin/", {}, data);
+    return Net.postJSONByToken(Checkenv.url.api + "/deleteArticleAdmin/", {}, data);
   }
 
   /**
    * 创建文章
    */
   static editNewArticleAdmin(data){
-    return Net.postJSON(Checkenv.url.api + "/editNewArticleAdmin/", {}, data);
+    return Net.postJSONByToken(Checkenv.url.api + "/editNewArticleAdmin/", {}, data);
   }
 
   /**
@@ -135,24 +74,9 @@ export default class  {
    */
   static ModifyArticleAdmin(data){
 
-    return Net.postJSON(Checkenv.url.api + "/ModifyArticleAdmin/", {}, data);
+    return Net.postJSONByToken(Checkenv.url.api + "/ModifyArticleAdmin/", {}, data);
   }
 
-  /**
-   * 获取标签列表
-   */
-  static getTagList(){
-
-    return Net.getJSON(Checkenv.url.api + "/getTagList/");
-  }
-
-  /**
-   * 获取标签分类
-   */
-  static getTagSort(){
-
-    return Net.getJSON(Checkenv.url.api + "/getTagSort/");
-  }
 
   /**
    * 获取单个文章
@@ -181,55 +105,49 @@ export default class  {
     return Net.postJSON(Checkenv.url.api + "/getUserInfo", {}, data);
   }
   /**
+   * 获取作者信息
+   */
+  static getAuthorInfo(data){
+    return Net.postJSON(Checkenv.url.api + "/getAuthorInfo", {}, data);
+  }
+  /**
    * 修改管理员信息
    */
   static modifyUserInfo(data){
-    return Net.postJSON(Checkenv.url.api + "/modifyUserInfo", {}, data);
+    return Net.postJSONByToken(Checkenv.url.api + "/modifyUserInfo", {}, data);
   }
   /**
-   * 获取管理员列表
+   * 获取用户列表
    */
-  static getManagerList(data){
-    return Net.postJSON(Checkenv.url.api + "/getManagerList", {}, data);
+  static getUserList(data){
+    return Net.postJSON(Checkenv.url.api + "/getUserList", {}, data);
   }
   /**
-   * 删除单个管理员
+   * 删除单个用户
    */
-  static deleteManager(data){
-    return Net.postJSON(Checkenv.url.api + "/deleteManager", {}, data);
+  static deleteUser(data){
+    return Net.postJSON(Checkenv.url.api + "/deleteUser", {}, data);
   }
 
 
+  
   /**
-   * 游客注册
+   * 查询评论列表
    */
-  static customerRegister(data){
-    return Net.postJSON(Checkenv.url.api + "/customerRegister", {}, data);
+  static queryCommentList(data){
+    return Net.postJSON(Checkenv.url.api + "/queryCommentList", {}, data);
   }
-  /**
-   * 游客登录
-   */
-  static customerLogin(data){
-    return Net.postJSON(Checkenv.url.api + "/customerLogin", {}, data);
-  }
- /**
-   * 获取游客列表
-   */
-  static getCustomerList(data){
-    return Net.postJSON(Checkenv.url.api + "/getCustomerList", {}, data);
-  }
-  /**
-   * 删除单个游客
-   */
-  static deleteCustomer(data){
-    return Net.postJSON(Checkenv.url.api + "/deleteCustomer", {}, data);
-  }
-
   /**
    * 添加文章评论
    */
   static commentOne(data){
-    return Net.postJSON(Checkenv.url.api + "/commentOne", {}, data);
+    return Net.postJSONByToken(Checkenv.url.api + "/commentOne", {}, data);
+  }
+  /**
+   * 删除评论
+   */
+  static deleteComment(data){
+    return Net.postJSONByToken(Checkenv.url.api + "/deleteComment", {}, data);
   }
   /**
    * 对一级评论点赞
@@ -240,8 +158,91 @@ export default class  {
   /**
    * 对文章点赞
    */
-  static likeArticle(data){
-    return Net.postJSON(Checkenv.url.api + "/likeArticle", {}, data);
+  static like(data){
+    return Net.postJSONByToken(Checkenv.url.api + "/like", {}, data);
+  }
+  /**
+   * 对文章取消点赞
+   */
+  static unlike(data){
+    return Net.postJSONByToken(Checkenv.url.api + "/unlike", {}, data);
+  }
+  /**
+   * 点过赞的文章列表
+   */
+  static likeList(data){
+    return Net.postJSON(Checkenv.url.api + "/likeList", {}, data);
+  }
+  /**
+   * 查询当前用户是否点赞、关注
+   */
+  static likeAndFollowStatus(data){
+    return Net.postJSON(Checkenv.url.api + "/likeAndFollowStatus", {}, data);
+  }
+
+
+  /**
+   * 关注
+   */
+  static follow(data){
+    return Net.postJSONByToken(Checkenv.url.api + "/follow", {}, data);
+  }
+  /**
+   * 取关
+   */
+  static unfollow(data){
+    return Net.postJSONByToken(Checkenv.url.api + "/unfollow", {}, data);
+  }
+  /**
+   * 查询用户关注的或被关注列表
+   */
+  static queryFollowList(data){
+    return Net.postJSON(Checkenv.url.api + "/queryFollowList", {}, data);
+  }
+
+
+
+  /**
+   * 收藏
+   */
+  static collect(data){
+    return Net.postJSONByToken(Checkenv.url.api + "/collect", {}, data);
+  }
+  /**
+   * 取消收藏
+   */
+  static uncollect(data){
+    return Net.postJSONByToken(Checkenv.url.api + "/uncollect", {}, data);
+  }
+  /**
+   * 查询收藏列表
+   */
+  static queryCollectList(data){
+    return Net.postJSON(Checkenv.url.api + "/queryCollectList", {}, data);
+  }
+
+
+  /**
+   * 查询用户通知
+   */
+  static getUserNotification(data){
+    return Net.postJSON(Checkenv.url.api + "/getUserNotification", {}, data);
+  }
+
+
+  /**
+   * 重置密码通过邮箱
+   */
+  static resetPwdByEmail(data){
+    return Net.postJSON(Checkenv.url.api + "/resetPwdByEmail", {}, data);
+  }
+
+
+  /**
+   * 通过邮箱token修改密码
+   */
+  static changePwdByEmailToken(data){
+    return Net.postJSON(Checkenv.url.api + "/changePwdByEmailToken", {}, data);
   }
 
 
@@ -259,6 +260,7 @@ export default class  {
   static JiyanSlide(){
     return Net.getJSON(Checkenv.url.api + "/gt/register-slide?t=" + (new Date()).getTime());
   }
+
 
   /**
    * 急眼2

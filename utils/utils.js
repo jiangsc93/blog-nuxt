@@ -153,3 +153,16 @@ export function deepCompare(x, y) {
 
   return true;
 }
+// 清除所有cookie函数
+export function clearAllCookie() {
+        var date = new Date();
+        date.setTime(date.getTime()-10000);
+        console.log(document.cookie, 'document.cookie');
+        var keys = document.cookie.match(/[^ =;]+(?=\=)/g);
+        console.log("需要删除的cookie名字："+keys);
+        if (keys) {
+            for (var i =  keys.length; i--;) {
+                document.cookie=keys[i]+"=0; expire="+date.toGMTString()+"; path=/";
+            }
+        }
+}

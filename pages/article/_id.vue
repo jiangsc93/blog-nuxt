@@ -1,251 +1,260 @@
 <template>
-  <div class="item">
-    <div id="page-article-one" :class="isMobile ? '__lt_m' : '__lt'">
-      <h2 :class="isMobile ? 'title_m' : 'title'">{{responseData.title}}</h2>
-      <div :class="isMobile ? 'author_m author-info' : 'author_pc author-info'">
-        <div class="lt">
-          <img class="avatar" :src="responseData.avatar" alt="不给看">
-          <div class="article-info">
-            <div class="name">{{responseData.author}}</div>
-            <div class="des">
-              <span class="shijian">{{responseData.beginDate}}</span>
-              <span class="wordage" v-if="!isMobile">字数 {{responseData.wordage || 2333}}</span>
-              <span class="visit inline-b"><i class="iconfont icon-yanjing"></i>{{responseData.visit || '1'}}次浏览</span>
+  <div class="page-article-item">
+    <Index-header></Index-header>
+    <div class="article-content common-container" :class="{'m-article-content': isMobile}">
+      <div id="page-article-one" class="__lt" :class="{'__lt_m': isMobile}">
+        <div class="__header">
+          <div :class="isMobile ? 'author_m author-info' : 'author_pc author-info'">
+            <div class="lt">
+              <a :href="`/user/${userInfo._id}`" class="avatar-img">
+                <img class="avatar" :src="userInfo.avatar" alt="">
+              </a>
+              <div class="article-info">
+                <a :href="`/user/${userInfo._id}`" class="name">{{userInfo.userName}}<span class="level" :style="{backgroundColor:levelToColor(userInfo.level)}">Lv{{userInfo.level || '1'}}</span></a>
+                <div class="des">
+                  <span class="shijian" v-text="formDate(responseData.beginDate)"></span>
+                  <span class="visit inline-b">阅读 {{responseData.visit || '1'}}</span>
+                </div>
+              </div>
             </div>
+            <div class="rt" :class="{ 'rt_active': editorFollowText === '已关注'}" @click="onEditOrFollow('user')">{{ editorFollowText }}</div>
           </div>
+          <div class="cover" :class="{'m-cover': isMobile}" v-if="responseData.imgSrc">
+            <img :src="responseData.imgSrc" alt="">
+          </div>
+          <h1 :class="isMobile ? 'title_m' : 'title'">{{responseData.title}}</h1>
+          <div class="cont"><div class="inline-b _wrap article-detail" v-html="responseData.content"></div></div>
+          <!-- 引导关注 -->
+          <div class="author-info-wrap" id="article-comment">
+            <div class="author_pc author-info">
+            <div class="lt">
+              <a :href="`/user/${userInfo._id}`"  class="avatar-img">
+                <img class="avatar" :src="userInfo.avatar" alt="不给看">
+              </a>
+              <div class="article-info">
+                <a :href="`/user/${userInfo._id}`" class="name">{{userInfo.userName}}<span class="level" :style="{backgroundColor:levelToColor(userInfo.level)}">Lv{{userInfo.level || '1'}}</span></a>
+                <div class="des">
+                  <span>发布了 {{userInfo.articleNum || 0}} 篇文章</span> - 
+                  <span>获赞 {{userInfo.totalLikes || 0}}</span> -
+                  <span>被阅读 {{userInfo.totalVisits || 0}}</span>
+                </div>
+              </div>
+            </div>
+            <div v-if="editorFollowText !== '编辑'" class="rt" :class="{ 'rt_active': editorFollowText === '已关注'}" @click="onEditOrFollow('user')">{{ editorFollowText }}</div>
+          </div>
+          </div>
+          <!-- 评论模块 -->
+          <Comment :responseData="responseData" @getArticleOne="getArticleOne"></Comment>
         </div>
-        <div :class="!isMobile ? 'tag inline-b' : 'tag_m'">
-          <el-tag v-for="(x, y) in handleTag(responseData.tag)" :key="y">{{x}}</el-tag>
+        <div class="recommened-article">
+          <div class="head">
+            文章推荐
+          </div>
+          <ArticelList :articleData="recommenedArticleList"></ArticelList>
+          <div v-if="!hasNextPage && recommenedArticleList.length > 20" class="page-bottom">已经到底啦~</div>
         </div>
       </div>
-      <div class="cont"><div class="inline-b _wrap article-detail" v-html="responseData.content"></div></div>
-      <!-- <div class="like">
-        如果您觉得这篇文章不错或者对你有所帮助，请给个赞或者星呗，你的点赞就是我继续创作的最大动力。
-      </div> -->
-      <div class="like">
-        <el-button type="danger" @click="likeArticle(responseData._id)">{{likeText}}</el-button>
-        <div class="like-users" v-if="responseData.like_users && responseData.like_users.length > 0">
-          <span class="img" v-for="(item, index) in responseData.like_users" :key="index">
-            <img v-if="item.avatarSrc" :src="item.avatarSrc" :alt="item.userName" :title="item.userName">
-          </span>
-          <span class="total">共{{responseData.like_users.length}}人点赞</span>
-        </div>
+      <div class="to-top" v-if="isScroll" v-scroll-to="'#index-header'"><i class="iconfont icon-huidaodingbu"></i></div>
+      <div
+        v-if="!isMobile"
+        class="__rt fr">
+        <ArticleDetailRight :toc="responseData.toc" :authorInfo="userInfo" :articleList="articleList"></ArticleDetailRight>
       </div>
-      <!-- 编辑一级评论 -->
-      <div class="comment">
-        <div class="edit">
-          <div class="textarea-warp">
-            <i class="iconfont icon-comment"></i>
-            <el-input class="textarea" type="textarea" @focus="commentFocus" :autosize="{ minRows: 4}" placeholder="写下你的评论" v-model="textareaOne"></el-input>
-          </div>
-          <div class="button" v-show="showButton">
-            <el-button class="btn" type="danger" round size="small" @click="submitComment('one', responseData.author)">发布</el-button>
-            <el-button class="btn" round plain size="small" @click="showButton = false">取消</el-button>
-          </div>
+      <div class="article-sidebar" :class="{'m-article-sidebar': isMobile}">
+        <div :class="isCurrentUserLiked ? 'active-like-btn': 'like-btn'" :badge="responseData.like" @click="likeArticle(responseData._id)"><i class="iconfont icon-dianzan1"></i></div>
+        <div class="comment-btn" :badge="responseData.comments_num || '0'" v-scroll-to="'#article-comment'"><i class="iconfont icon-icon_huifu-mian"></i>
         </div>
-        <div class="list">
-          <div class="head">全部评论 {{commentTotal}}</div>
-          <div class="no-data" v-if="commentTotal === 0">~赶紧来抢占第一个沙发吧~</div>
-          <div class="content" v-for="(item, index) in responseData.comments" :key="index">
-            <div class="avator">
-              <img v-lazy="item.avatar" alt="">
-            </div>
-            <div class="info">
-              <div class="name">{{item.userName}}
-                <span class="name-author">{{item.userName === item.owner ? '(作者)' : ''}}</span>
-              </div>
-              <div class="time">{{item.floor || 1}}楼 {{item.create_time}}</div>
-              <div class="cont">{{item.content}}</div>
-              <div class="handle">
-                <span class="like" @click="onThumb(responseData._id, index)" :class="likeActiveIndex === index ? 'like-active' : ''"><i class="iconfont icon-dianzan1"></i>{{(item.like === 0 || !item.like) ? '赞' : item.like}}</span>
-                <span class="reply" @click="showItemInput(index)"><i class="iconfont icon-icon_huifu-mian"></i>回复</span>
-              </div>
-              <div class="reply-textarea edit" v-show="showItemId === index">
-                <div class="textarea-warp">
-                  <i class="iconfont icon-comment"></i>
-                  <el-input class="textarea" type="textarea" :autosize="{ minRows: 3}" placeholder="写下你的评论" v-model="textareaTwo"></el-input>
-                </div>
-                <div class="button">
-                  <el-button class="btn" type="danger" round size="small" @click="submitComment('two', item.userName, item.floor, index)">发布</el-button>
-                  <el-button class="btn" round plain size="small" @click="cancel">取消</el-button>
-                </div>
-              </div>
-              <template v-if="item.children">
-                <div class="reply-list" v-for="(m, n) in item.children" :key="n">
-                  <div class="avator">
-                    <img v-lazy="m.avatar" alt="">
-                  </div>
-                  <div class="info">
-                    <div class="name">{{m.userName}}<span class="name-author">{{m.userName === responseData.author ? '(作者)' : ''}}</span></div>
-                    <div class="time">{{m.create_time}}</div>
-                    <div class="cont"><span>回复 <span class="replay-color">{{m.owner}} <span class="replay-author">{{m.owner === responseData.author ? '(作者)' : ''}}</span>：</span></span> {{m.content}}</div>
-                    <div class="handle">
-                      <span class="reply" @click="showItemTwoInput(n, index)"><i class="iconfont icon-icon_huifu-mian"></i>回复</span>
-                    </div>
-                    <div class="edit" v-show="showItemTwoId === n && showFatherId === index">
-                      <div class="textarea-warp">
-                        <i class="iconfont icon-comment"></i>
-                        <el-input class="textarea" type="textarea" :autosize="{ minRows: 3}" placeholder="写下你的评论" v-model="textareaThree"></el-input>
-                      </div>
-                      <div class="button">
-                        <el-button class="btn" type="danger" round size="small" @click="submitComment('three', m.userName, item.floor, index)">发布</el-button>
-                        <el-button class="btn" round plain size="small" @click="cancelTwo">取消</el-button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </div>
-          </div>
-        </div>
+        <div class="collect-btn" :class="{'active': isCurrentUserCollected}" @click="onCollect()"><i class="iconfont icon-shoucang"></i></div>
       </div>
     </div>
-    <div class="to-top" v-if="isScroll" v-scroll-to="'#index-header'"><i class="iconfont icon-huidaodingbu"></i></div>
-    <div
-      v-if="!isMobile"
-      class="__rt fr anchor"
-      v-html="responseData.toc"></div>
   </div>
 </template>
 
-<script>
+<script type="module">
 import _ from 'lodash';
-import Api from '~/utils/api'
-import markdown from '~/utils/markdown'
-import { Tag, Loading } from 'element-ui'
-import { mapState, mapGetters } from 'vuex'
+import Api from '~/utils/api';
+import markdown from '~/utils/markdown';
+import { Tag } from 'element-ui';
+import { mapState, mapGetters } from 'vuex';
+import ArticleDetailRight from '~/components/article-detail-right/index';
+import ArticelList from '~/components/common/articleList';
+import IndexHeader from '~/components/header/indexHeader';
+import Comment from '~/components/article/comment';
 export default {
-  layout: 'front',
+  middleware: 'checkMobile',
   head() {
     return {
       title: '文章',
       meta: [
         { id: 'keywords', hid: 'keywords', name: 'keywords', content: '文章' },
         { id: 'description', hid: 'description', name: 'description', content: '蒋少川的个人博客' },
-      ]
+      ],
     }
   },
   components: {
+    IndexHeader,
     Tag,
-    Loading
+    ArticleDetailRight,
+    ArticelList,
+    Comment
   },
-  async asyncData({ params }) {
+  async asyncData(req) {
     let postParams = {
-      id: params.id
+      id: req.params.id
     }
-    return Api.getArticleOne(postParams)
-      .then((res) => {
-        let responseData = res.data.data;
-        if (res.status === 200 && res.data && res.data.data.content) {
-          // markdown 处理
-          const article = markdown.marked(res.data.data.content);
-          article.then(result => {
-            responseData.content = result.content;
-            responseData.toc = result.toc;
-          });
-          let commentTotal = responseData.comments.length;
-          return { responseData, commentTotal };
-        }
-    }).catch (err => {
-      console.log('报错了啊')
-    })
-    // let reqParams = {
-    //   type: '1',
-    //   tag: params.id
-    // }
-    // return Api.getArticleList(reqParams)
-    //   .then(res => {
-    //     if (res.status === 200 && res.data.data && res.data.data.list) {
-    //       let articleData = res.data.data.list;
-    //       let tagTitle = params.id === '全部' ? '热门文章：' : `${params.id} 相关的文章：`;
-    //       return { articleData, tagTitle}
-    //     }
-    // }).catch (err => {
-    //   console.log('报错了啊')
-    // })
+    // 获取单个文章详情
+    let responseData = (await Api.getArticleOne(postParams));
+    let { content } = responseData;
+    let reqParams = {
+      variables: {
+        userId: content.uid,
+        query: '',
+        type: '',
+        pageSize: 5,
+        pageIndex: 1,
+      },
+    }
+    // 查询文章列表
+    let res = (await Api.queryByArea(reqParams));
+    let { articleList } = res;
+
+    const article = markdown.marked(content);
+    article.then(result => {
+      responseData.content = result.content;
+      responseData.toc = result.toc;
+    });
+    let params = {
+      variables: {
+        order: 'recommened',
+        category: '',
+        tag: '',
+        query: '',
+        type: '',
+        pageSize: 20,
+        pageIndex: 1,
+      },
+    }
+    let recommenedArticleList = (await Api.queryByArea(params)).articleList;
+    let userInfo = (await Api.getAuthorInfo({_id: responseData.uid}));
+    return { responseData, articleList, recommenedArticleList, userInfo };
   },
   data () {
     return {
-      textareaOne: '',
-      textareaTwo: '',
-      textareaThree: '',
-      commentTotal: '',
       responseData: {},
       content: '',
       toc: '',
-      showButton: false,
-      showReplay: false,
-      showThreeReplay: false,
-      likeText: '点赞',
-      showItemId: '',
-      showItemTwoId: '',
-      showFatherId: '',
-      likeActiveIndex: '',
-      isLiked: false,
       isScroll: false,
+      userInfo: {},
+      hasNextPage: false,
+      isCurrentUserLiked: false,
+      isCurrentUserFollowed: false,
+      isCurrentUserCollected: false,
+      isCurrentUserFollowedAuthor: false,
+      recommenedArticleList: [],
+      user_follow_id: '',
+      article_collect_id: '',
     }
   },
   computed: {
     ...mapState(['isMobile']),
-    ...mapGetters(['getCustomerInfo']),
-    customerAvatar() {
-      let arr = this.$store.state.configList;
-      let value = '';
-      _.forEach(arr, (item) =>  {
-        if (item.title === '游客默认头像') {
-          value = item.imgSrc;
-        }
-      });
-      return value;
+    editorFollowText() {
+      if (this.isCurrentUserFollowedAuthor && this.$store.state.userId !== this.responseData.uid) {
+        return '已关注';
+      } else {
+        return this.$store.state.isUserself && this.$store.state.userId === this.responseData.uid ? '编辑' : '关注';
+      }
     }
   },
   mounted () {
-    // this.start = Math.floor(new Date().getTime()/1000);
-    // this.query(50, 2, 10);
-    // this.getArticleOne();
     this.seoHandle();
     // 监听页面滚动事件
     window.addEventListener('scroll', this.onScroll);
+    this.judgeCurrentUserStatus();
   },
   methods: {
-    query(num, interval, limitTime=60) { // 参数num：轮询次数   interval：定时器时间  l imitTime：最大限制时长
-      let timer;
-      if (num > 1) {
-        return new Promise((resolve, reject) => {
-          let postParams = {
-            id: this.$route.params.id
-          }
-          Api.getArticleOne(postParams).then(res => {
-            console.log(res, 'res');
-            this.end = Math.floor(new Date().getTime()/1000);
-          }, err => {
-            reject(err);
-          }).catch((err) => {
-            console.log(err);
-          });
-          if (this.end !== 0) {
-            // 如果拿到数据了，就用当前的 剩余限制时长 - （结束时间 - 开始时间）
-            this.remainTime = limitTime - (this.end - this.start);
-          } else {
-            // 如果还没拿到接口数据  这个时候  end就为0  需要继续 轮询  这个时候的剩余时间还是 传过来的 限制时长
-            this.remainTime = limitTime;
-          }
-
-          if (this.remainTime <= 0) { // 如果剩余时间小于等于 0 或者 循环次数 为 1 就结束定时器
-            clearTimeout(timer);
-            return;
-          } else {
-            // 轮询一次  num就减少一次
-            num--;
-            this.remainTime = this.remainTime - interval; // 当前剩余时长 = 当前剩余时长 - 定时器
-            timer = setTimeout(() => { this.query(num, interval, this.remainTime)}, interval * 1000);
-          }
-        }).catch( err => {
-          console.log(err);
-        })
-      } else {
-        clearTimeout(timer);
+    onCollect() {
+      if (!this.$store.state.isLogin) {
+        this.$store.commit('setVisible', true);
+        this.$store.commit('setHandleFlag', 'login');
         return;
+      }
+      let postParams = {
+        article_id: this.responseData._id,
+        collecter_id: this.$store.state.userId
+      }
+      if (!this.isCurrentUserCollected) {
+        Api.collect(postParams)
+          .then(res => {
+            this.$message({
+              message: "已收藏",
+              type: "success"
+            })
+            // 重新获取关注状态
+            this.judgeCurrentUserStatus();
+          })
+      } else {
+        Api.uncollect(postParams)
+          .then(res => {
+            this.$message({
+              message: "已取消收藏",
+              type: "success"
+            })
+            // 重新获取关注状态
+            this.judgeCurrentUserStatus();
+          })
+      }
+    },
+    judgeCurrentUserStatus() {
+      let userId = this.$store.state.userId;
+      Api.likeAndFollowStatus({articleId: this.responseData._id, ownerId: this.responseData.uid, userId}).then(res => {
+        this.isCurrentUserLiked = res.toArticle.isLiked;
+        this.isCurrentUserCollected = res.toArticle.isCollected;
+        this.isCurrentUserFollowedAuthor = res.toUser.isFollowed;
+        this.user_follow_id = res.toUser.follow_id;
+        this.article_collect_id = res.toArticle.collect_id;
+      });
+    },
+    onEditOrFollow(type='user') {
+      if (!this.$store.state.isLogin) {
+        this.$store.commit('setVisible', true);
+        this.$store.commit('setHandleFlag', 'login');
+        return;
+      }
+      if (type === 'user') {
+        if (this.editorFollowText === '编辑') {
+          location.href = `/edit?aid=${this.responseData._id}`;
+        } else if (this.editorFollowText === '关注') { // 关注
+          let postParams = {
+            type: type,
+            owner_id: this.userInfo._id,
+            follower_id: localStorage.getItem('userId'),
+          }
+          Api.follow(postParams)
+            .then(res => {
+              // 重新获取关注状态
+              this.judgeCurrentUserStatus();
+            })
+        } else {
+          if (this.user_follow_id) {
+            let postParams = {
+              type: type,
+              follow_id: this.user_follow_id,
+              owner_id: this.responseData.uid,
+              follower_id: localStorage.getItem('userId'),
+            }
+            Api.unfollow(postParams)
+              .then(res => {
+                // 重新获取关注状态
+                this.judgeCurrentUserStatus();
+              })
+          }
+        }
+      }
+    },
+    formDate(date) {
+      if (date) {
+        let arr = date.split(' ')[0].split('-');
+        return `${arr[0]}年${arr[1]}月${arr[2]}日`;
       }
     },
     onScroll() {
@@ -253,184 +262,55 @@ export default {
       let offsetTop = document.getElementById('page-article-one').offsetTop;
       this.isScroll = (parseInt(scroll) - 300) > offsetTop;
     },
-    // 对一级评论点赞
-    onThumb(id, index) {
-      if (this.likeActiveIndex === index) {
-        this.$message({
-          message: "你已经点过赞了，悠着点吧！",
-          type: "warning"
-        })
-        return;
-      }
-      this.likeActiveIndex = index;
-      let params = {
-        id,
-        index
-      }
-      Api.commentLike(params).then(res => {
-        if (res.status === 200 && res.data.data) {
-          this.$message({
-            message: "评论点赞成功！",
-            type: "success"
-          })
-          this.getArticleOne();
-        }
-      }).catch(err => {
-        this.$message({
-          message: "点赞失败",
-          type: "error"
-        })
-      })
-    },
-    showItemInput(index) {
-      this.showItemId = index;
-    },
-    showItemTwoInput(n, index) {
-      this.showItemTwoId = n;
-      this.showFatherId = index;
-    },
-    cancel() {
-      this.showItemId = '';
-    },
-    cancelTwo() {
-      this.showItemTwoId = '';
-    },
-    submitComment(val, userName, floor, index) {
-      // 判断是否登录
-      if (!this.getCustomerInfo.customerName) {
-        this.$message({
-          message: "登录才能评论哦，请先登录",
-          type: "warning"
-        })
-        return;
-      }
-      let params = {
-        type: '1', // 1 为一级评论 直接评论文章作者  2 为二级评论
-        id: this.responseData._id,
-        userName: this.getCustomerInfo.customerName,
-        avatar: this.getCustomerInfo.avatorSrc,
-        content: this.textareaOne,
-        owner: userName,
-        floor: 0,
-        index: index
-      }
-
-      // 判断是否输入内容
-      let text = '';
-      if (val === 'one') {
-        params.content = this.textareaOne;
-        params.floor = this.responseData.comments.length + 1;
-        text = this.textareaOne;
-      } else if (val === 'two') {
-        params.content = this.textareaTwo;
-        params.floor = floor;
-        text = this.textareaTwo;
-        params.type = '2';
-      } else if (val === 'three') {
-        params.content = this.textareaThree;
-        params.floor = floor;
-        text = this.textareaThree;
-        params.type = '2';
-      }
-      if (!text) {
-        this.$message({
-          message: "你还没有写评论呢",
-          type: "warning"
-        })
-        return
-      }
-
-      Api.commentOne(params).then(res => {
-        this.$message({
-          message: "评论成功",
-          type: "success"
-        })
-        this.textareaOne = '';
-        this.textareaTwo = '';
-        this.textareaThree = '';
-        this.getArticleOne();
-        this.cancel();
-        this.cancelTwo();
-      }).catch(err => {
-        this.$message({
-          message: "请求失败",
-          type: "error"
-        })
-      })
-    },
+    
     likeArticle(id) {
-      if (!this.getCustomerInfo.customerName) {
-        this.$message({
-          message: "登录才能点赞哦，请先登录",
-          type: "warning"
-        })
-        return;
-      } else if (this.likeText === '已赞') {
-        this.$message({
-          message: "已经点过赞啦，悠着点吧",
-          type: "warning"
-        })
+      if (!this.$store.state.isLogin) {
+        this.$store.commit('setVisible', true);
+        this.$store.commit('setHandleFlag', 'login');
         return;
       }
       let params = {
-        id,
-        userName: this.getCustomerInfo.customerName,
-        avatarSrc: this.getCustomerInfo.avatorSrc // 这儿字段有变化
+        articleId: id,
+        userId: this.$store.state.userId,
       }
-      if (this.isLiked) {
-        this.$message({
-          message: '你已经点过赞啦，悠着点吧',
-          type: 'warning',
-        })
-        return;
-      }
-      Api.likeArticle(params).then(res => {
-        this.isLiked = true;
-        let type = 'success';
-        if (res.data.message === '点赞成功') {
-          this.likeText = '已赞';
+      if (!this.isCurrentUserLiked) {
+        Api.like(params).then(res => {
           this.getArticleOne();
-        } else {
-          type = 'warning';
-        }
-        this.$message({
-          message: res.data.message,
-          type: type
+          this.judgeCurrentUserStatus();
+        }).catch(err => {
+          this.$message({
+            message: "点赞失败",
+            type: "danger"
+          })
         })
-      }).catch(err => {
-        this.$message({
-          message: "点赞失败",
-          type: "danger"
-        })
-      })
-
-    },
-    commentFocus() {
-      this.showButton = true;
-    },
-    handleTag(tag) {
-      if (tag) return tag.split(',')
+      } else {
+          Api.unlike(params).then(res => {
+            this.getArticleOne();
+            this.judgeCurrentUserStatus();
+          }).catch(err => {
+            this.$message({
+              message: "取消点赞失败",
+              type: "danger"
+            })
+          })
+      }
     },
     getArticleOne() {
       let postParams = {
         id: this.$route.params.id
       }
       Api.getArticleOne(postParams)
-        .then((res) => {
-          let responseData = res.data.data;
-          if (res.status === 200 && res.data && res.data.data.content) {
+        .then(res => {
+          if (res.content) {
             // markdown 处理
-            const article = markdown.marked(res.data.data.content);
+            const article = markdown.marked(res.content);
             article.then(result => {
-              responseData.content = result.content;
-              responseData.toc = result.toc;
+              res.content = result.content;
+              res.toc = result.toc;
+              this.responseData = res;
+              this.seoHandle();
             });
-            this.responseData = responseData;
-            this.commentTotal = responseData.comments.length;
-            this.seoHandle();
           }
-      }).catch (err => {
-        console.log('报错了啊')
       })
     },
     seoHandle() {
@@ -441,111 +321,84 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
 @import '../../assets/css/highlight.css';
+.page-article-item {
+  .el-textarea__inner:focus {
+    border: 1px solid #DCDFE6;
+  }
+}
+.page-article-item textarea.el-textarea__inner {
+  position: relative;
+  padding: 5px 20px;
+}
+</style>
+<style lang="scss" scoped>
 
-.el-textarea__inner:focus {
-  border: 1px solid #DCDFE6;
-}
-.el-tag {
-  height: 24px;
-  line-height: 22px;
-  margin: 0 2px;
-}
-.anchor {
-  padding-left: 20px;
-  border-left: 1px solid #eee;
-  a {
-    text-decoration: none;
-  }
-  a:link {
-    color: #551a8b;
-  }
-  ul {
-    display: block;
-    list-style-type: disc;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    padding-inline-start: 25px;
-    ul {
-      list-style-type: circle;
-      margin-block-start: 0px;
-      margin-block-end: 0px;
-      ul {
-        list-style-type: square;
-      }
+.page-article-item {
+  .article-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: 84px auto 50px;
+    &.m-article-content {
+      margin: 74px auto 50px;
     }
-    li {
-      display: list-item;
-      line-height: 1.5;
-      text-align: -webkit-match-parent;
-    }
-  }
-  .anchor-ul {
-    position: relative;
-    top: 0;
-    max-width: 265px;
-    border: none;
-    -moz-box-shadow: 0 0px 0px #fff;
-    -webkit-box-shadow: 0 0px 0px #fff;
-    box-shadow: 0 0px 0px #fff;
-    li {
-      line-height: 1.7;
-    }
-    li.active {
-      color: #009a61;
-    }
-  }
-}
-.item {
-    width: 94%;
-    padding: 10px 3% 40px;
-    border-radius: 4px;
-    background: #fff;
     .__lt {
-      width: 66%;
-      float: left;
-      padding-right: 20px;
+      width: 72%;
+      .__header {
+        padding: 0 20px;
+        background: #fff;
+      }
+      .recommened-article {
+        margin-top: 20px;
+        background: #fff;
+        .head {
+          font-size: 17px;
+          color: #969696;
+          font-weight: 600;
+          padding: 12px 18px;
+          border-bottom: 1px solid #f2f2f2;
+        }
+      }
     }
     .__lt_m {
       width: 100%;
     }
     .__rt {
-      width: 28%;
-      float: right;
-      display: block;
-      position: sticky;
-      top: 213px;
-      right: 70px;
+      width: 26%;
     }
     .iconfont {
-      font-size: 13px;
       margin-right: 5px;
-      color: #969696;
-      font-weight: bold;
-      &.icon-yanjing {
-        font-size: 17px;
-        position: relative;
-        top: 1px;
-      }
+    }
+    .handle-wrap {
+      padding-bottom: 10px;
     }
     .title {
-      font-size: 32px;
-      color: #2c3e52;
+      font-size: 35px;
+      color: #333;
       line-height: 1.5;
-      margin: 20px 0;
-      text-align: center;
+      padding: 25px 0;
+      font-weight: bold;
     }
     .title_m {
       font-size: 20px;
-      color: #2c3e52;
+      color: #333;
       line-height: 1.5;
-      margin: 20px 0;
+      padding: 20px 0;
+      font-weight: bold;
+    }
+    .cover {
+      width: 100%;
+      height: 350px;
       text-align: center;
-
+      img {
+        width: 100%;
+        height: 100%;
+      }
+      &.m-cover {
+        height: 250px;
+      }
     }
     .cont {
       ._wrap {
@@ -565,226 +418,94 @@ export default {
         }
       }
     }
-    .comment {
-      .textarea-warp {
-        position: relative;
-        .icon-comment {
-          font-size: 13px;
-          color: #ccc;
-          position: absolute;
-          top: 9px;
-          left: 6px;
-          z-index: 1000;
-        }
-        .textarea {
-          textarea {
-            padding-left: 23px;
-            background: #fafafa;
-          }
-        }
-      }
-      .reply-textarea .textarea-warp .icon-comment, .reply-list .textarea-warp .icon-comment {
-        top: 6px;
-      }
-      .edit {
-        .btn {
-          margin: 20px 0 20px 12px;
-        }
-        .button {
-          text-align: right;
-        }
-      }
-      .list {
-        margin: 30px 0;
-        .head {
-          margin: 20px 0;
-          font-size: 18px;
-          &:before {
-            display: inline-block;
-            content: '';
-            width: 4px;
-            height: 20px;
-            margin-right: 8px;
-            background:#ec7259;
-            border-radius: 5px;
-            position: relative;
-            top: 3px;
-          }
-        }
-        .no-data {
-          margin-top: 20px;
-          color: #ec7259;
-          text-align: center;
-        }
-        .content {
-          display: flex;
-          justify-content: start;
-          .avator {
-            width: 40px;
-            height: 35px;
-            img {
-              width: 100%;
-              height: 100%;
-              border-radius: 50%;
-            }
-          }
-          .info {
-            width: 100%;
-            margin-left: 10px;
-            * {
-              line-height: 1.5;
-            }
-            .name {
-              color: #333;
-              font-size: 15px;
-              line-height: 1.2;
-              .name-author {
-                font-size: 14px;
-                margin-left: 3px;
-                color: #406599;
-              }
-            }
-            .time {
-              padding-top: 5px;
-              font-size: 12px;
-              color: #aaa;
-            }
-            .cont {
-              color: #2c3e50;
-              font-size: 13px;
-              line-height: 1.7;
-              margin: 10px 0;
-              .replay-color {
-                color: #406599;
-              }
-            }
-            .handle {
-              padding-bottom: 20px;
-              border-bottom: 1px solid #eee;
-              margin-bottom: 10px;
-              font-size: 13px;
-              .like {
-                cursor: pointer;
-                margin-right: 20px;
-                color: #aaa;
-                &.like-active {
-                  color: #ec7259!important;
-                  .icon-dianzan1 {
-                    color: #ec7259;
-                  }
-                }
-                .icon-dianzan1 {
-                  font-size: 15px;
-                }
-                &:hover {
-                  color: #ec7259;
-                  .icon-dianzan1 {
-                    color: #ec7259;
-                  }
-                }
-              }
-              .reply {
-                position: relative;
-                top: 1px;
-                cursor: pointer;
-                color: #aaa;
-                .icon-icon_huifu-mian {
-                  font-size: 13px;
-                }
-                &:hover {
-                  color: #666;
-                  .icon-icon_huifu-mian {
-                    color: #666;
-                  }
-                }
-              }
-            }
-            .reply-list {
-              display: flex;
-              justify-self: start;
-            }
-          }
-        }
-      }
-    }
     .author-info {
       font-size: 12px;
-      height: 50px;
       color: #969696;
       margin-bottom: 30px;
+      padding-top: 20px;
       position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       &.author_pc {
         display: flex;
         justify-content: space-between;
       }
       .lt {
-        overflow: hidden;
-        .avatar {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 45px;
-          height: 45px;
-          border-radius: 50%;
+        display: flex;
+        justify-content: flex-start;
+        .avatar-img {
+          width: 40px;
+          height: 40px;
+          cursor: pointer;
+          .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid #f1f1f1;
+          }
         }
         .article-info {
-          float: left;
-          padding-left: 55px;
+          margin-left: 10px;
           line-height: 1;
+          display: flex;
+          flex-direction: column;
           .name {
-            margin: 5px 0 6px 0;
+            line-height: 1.3;
+            margin: 0 0 4px;
             color: #555;
-            font-size: 13px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            .level {
+              display: inline-block;
+              font-size: 10px;
+              padding: 1px 3px;
+              border-radius: 2px;
+              position: relative;
+              top: -4px;
+              opacity: 0.5;
+              margin-left: 6px;
+              color: #fff;
+            }
           }
           .des {
-            // .shijian {
-              // .icon-shijian {
-              //   font-size: 12px;
-              // }
-            // }
+            word-spacing: 0.6px;
             .visit {
               margin: 0 13px;
             }
-            .wordage {
-              margin-left: 10px;
-            }
           }
         }
       }
-      .tag {
-        position: absolute;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%);
-      }
-      .tag_m {
-        margin: 5px 0 0 50px;
+      .rt {
+        width: 52px;
+        height: 26px;
+        line-height: 24px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 13px;
+        border: 1px solid $brand-primary;
+        color: $brand-primary;
+        border-radius: 2px;
+        background: #fff;
+        &:hover {
+          opacity: 0.7;
+        }
+        &.rt_active {
+          border: 1px solid $brand-primary;
+          background: $brand-primary;
+          opacity: 0.7;
+          color: #fff;
+        }
       }
     }
-    .like {
-      margin: 50px 0 80px;
-      text-align: center;
-      .like-users {
-        text-align: center;
-        padding: 10px 50px;
-        .img {
-          display: inline-block;
-          width: 30px;
-          height: 30px;
-          margin-left: 2px;
-          img {
-            width: 100%;
-            height: 100%;
-            border: 1px solid #f2f2f2;
-            border-radius: 50%;
-          }
-        }
-        .total {
-          display: inline-block;
-          margin: 4px 0 0 5px;
-          vertical-align: top;
-          color: #aaa;
-        }
+    .author-info-wrap {
+      padding-top: 70px;
+      background: #fff;
+      .author-info {
+        padding: 20px;
+        background: #f4f5f5;
+
       }
     }
     .to-top {
@@ -793,7 +514,95 @@ export default {
       right: 25px;
       i {
         font-size: 35px;
+        color: #969696;
+        cursor: pointer;
+      }
+    }
+    .article-sidebar {
+      position: fixed;
+      top: 200px;
+      margin-left: -90px;
+      .like-btn, .comment-btn, .collect-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        width: 36px;
+        height: 36px;
+        background: #fff;
+        margin-bottom: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        &:hover .iconfont {
+          color: #888;
+        }
+        .iconfont {
+          position: relative;
+          left: 2px;
+          color: #b2bac2;
+          font-size: 15px;
+        }
+      }
+      .collect-btn.active .iconfont {
+        color: yellowgreen;
+      }
+      .like-btn:after, .comment-btn:after {
+        content: attr(badge);
+        position: absolute;
+        top: 0;
+        left: 70%;
+        padding: 1px 6px;
+        font-size: 1rem;
+        text-align: center;
+        line-height: 1;
+        white-space: nowrap;
+        color: #fff;
+        background: #b2bac2;
+        border-radius: 8px;
+        transform-origin: left top;
+        transform: scale(.75);
+      }
+      .active-like-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 36px;
+        height: 36px;
+        background: #fff;
+        margin-bottom: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        &:after {
+          content: attr(badge);
+          position: absolute;
+          top: 0;
+          left: 70%;
+          padding: 1px 6px;
+          font-size: 1rem;
+          text-align: center;
+          line-height: 1;
+          white-space: nowrap;
+          color: #fff;
+          background: #ec7259;
+          border-radius: 8px;
+          transform-origin: left top;
+          transform: scale(.75);
+        }
+        &:hover .iconfont {
+          color: #ec7259;
+        }
+        .iconfont {
+          position: relative;
+          left: 2px;
+          color: #ec7259;
+          font-size: 15px;
+        }
+      }
+      &.m-article-sidebar {
+        top: 45%;
+        margin-left: 0;
       }
     }
   }
+}
 </style>

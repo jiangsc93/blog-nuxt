@@ -230,3 +230,71 @@ Vue.prototype.idcardValidate = function (idcard) {
   const idcardReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
   return idcardReg.test(idcard);
 };
+
+/**
+ * 时间处理
+ * @returns {*}
+ */
+Vue.prototype.formatTime = function (time, type = 0) {
+  const d = moment(time);
+  const now = Date.now();
+
+  const diff = (now - d) / 1000;
+  if (type === 1) {
+    return (
+      d.year() +
+      '年' +
+      (parseInt(d.month()) + 1) +
+      '月' +
+      d.date() +
+      '日'
+    );
+  }
+  if (diff < 60) {
+    return '刚刚';
+  } else if (diff < 3600) {
+    return Math.ceil(diff / 60) + '分钟前';
+  } else if (diff < 3600 * 24) {
+    return Math.ceil(diff / 3600) + '小时前';
+  } else if (diff < 3600 * 24 * 30) {
+    let day = parseInt(diff / (3600 * 24));
+    return day + '天前';
+  }
+  return (
+    d.year() +
+    '年' +
+    (parseInt(d.month()) + 1) +
+    '月' +
+    d.date() +
+    '日'
+  );
+};
+
+/**
+ * @param 作者评级
+ * @returns 颜色
+ */
+Vue.prototype.levelToColor = function (level) {
+  let color = '';
+  switch(level) {
+    case 1:
+      color = '#5f9ea0';
+      break;
+    case 2:
+      color = '#00bfff';
+      break;
+    case 3:
+      color = '#007fff';
+      break;
+    case 4:
+      color = '#0000ff';
+      break;
+    case 5:
+      color = '#bf00ff';
+      break;
+    default:
+      color = '#5f9ea0';
+      break
+  }
+  return color;
+};

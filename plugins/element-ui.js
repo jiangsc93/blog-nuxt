@@ -32,6 +32,7 @@ import {
   Upload,
   Notification
 } from "element-ui";
+import '../assets/css/element-variables.scss'
 import 'element-ui/lib/theme-chalk/base.css';
 // import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 export default () => {

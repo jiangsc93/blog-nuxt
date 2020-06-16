@@ -10,14 +10,12 @@
 <script>
 import moment from 'moment'
 export default {
-
   data() {
     return {
       currentYear: moment().year()
     }
   }
 }
-
 </script>
 
 <style scoped lang="scss">

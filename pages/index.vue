@@ -1,31 +1,24 @@
 <template>
   <div>
-    <Index></Index>
   </div>
 </template>
 
 <script>
-import Index from '~/components/index/index.vue'
-
 export default {
-  layout: 'index',
   head() {
     return {
-      title: '益码凭川',
+      title: '知否 - 一个开发者分享的平台',
       meta: [
-        { hid: 'description', name: 'description', content: '蒋少川的个人博客，一名前端攻城狮' }
-      ]
+        { hid: 'description', name: 'description', content: '是一个开发者集聚地，分享技术带给我们的收获和快乐' }
+      ],
     }
   },
   data () {
     return {
     }
   },
-  components: {
-    Index
-  },
   mounted() {
-    
+    location.href = '/timeline/recommend';
   },
   methods: {
    

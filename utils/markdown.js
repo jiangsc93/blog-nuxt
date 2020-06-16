@@ -26,7 +26,7 @@ const tocObj = {
     };
     const addLI = (anchor, text) => {
       result +=
-        '<li><a class="toc-link" href="#' + anchor + '">' + text + "<a></li>\n";
+        `<li class="anchor-li"><a class="toc-link" href="#${anchor}" title="${text}">${text}<a></li>\n`;
     };
     this.toc.forEach(function (item) {
       let levelIndex = levelStack.indexOf(item.level);
@@ -66,7 +66,7 @@ class MarkUtils {
     this.rendererMD = new marked.Renderer();
     this.rendererMD.heading = function (text, level, raw) {
       var anchor = tocObj.add(text, level);
-      return `<h${level} id=${anchor}><span class="text">${text}</span><span class="icon"></span></h${level}>\n`;
+      return `<h${level} class="h-item" id=${anchor}><span class="text">${text}</span><span class="icon"></span></h${level}>\n`;
     };
     this.rendererMD.table = function (header, body) {
       return '<table class="table" border="0" cellspacing="0" cellpadding="0">' + header + body + '</table>'

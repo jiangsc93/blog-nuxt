@@ -1,18 +1,26 @@
-import Api from '~/utils/api'
-import Cookie from 'js-cookie'
-import Types from './types'
+import Api from '~/utils/api';
+import Cookie from 'js-cookie';
+import cookie from 'cookie';
+import Types from './types';
 import Checkenv from "../utils/checkenv";
 export const state = function() {
   return {
     isLogin: false,
     isMobile: false,
+    handleFlag: 'login',
+    visible: false,
+    token: '',
     tagsList: [],
     configList: [],
-    customerName: '',
-    avatorSrc: '',
+    userName: '',
+    userId: '',
+    email: '',
+    avatar: '',
+    isUserself: false,
     imgurlhttp:  Checkenv.imgurlhttp || 'http://www.jscwwd.com:3000',
-    apiHttp: Checkenv.httpUrl || 'https://www.jscwwd.com',
-    httpDomain: Checkenv.httpDomain || 'https://www.jscwwd.com',
+    apiHttpUpload: Checkenv.httpUrl || 'http://www.jscwwd.com:3000',
+    httpDomain: Checkenv.httpDomain || 'http://www.jscwwd.com',
+    showHeader: true,
   }
 }
 
@@ -23,31 +31,79 @@ export const getters = {
   getConfigList(state) {
     return state.configList;
   },
-  getCustomerInfo(state) {
-    return {customerName: state.customerName || window.localStorage.getItem('customerName'), avatorSrc: state.avatorSrc || window.localStorage.getItem('avatorSrc')};
+  getVisible(state) {
+    return state.visible;
+  },
+  getUserInfo(state) {
+    return {
+      userName: state.userName || localStorage.getItem('userName'),
+      avatar: state.avatar || localStorage.getItem('avatar')
+    };
   }
 }
 export const mutations = {
-  SET_USER (state, flag) {
+  init(state, initData) {
+    let { userName, avatar, userId, isLogin, token } = initData;
+    if (isLogin) {
+      initData.isUserself = true;
+    }
+    Object.assign(state, initData);
+    Cookie.set('isLogin', true);
+    Cookie.set('userName', userName);
+    Cookie.set('avatar', avatar);
+    Cookie.set('userId', userId);
+    Cookie.set('token', token);
+  },
+  setHeaderIsShow(state, flag) {
+    state.showHeader = flag;
+  },
+  SET_USER_STATUS (state, flag) {
     state.isLogin = flag;
   },
   setDeviceType(state, val) {
     state.isMobile = val;
   },
-  setCustomer(state, val) {
-    state.customerName = val.customerName || window.localStorage.getItem('customerName');
-    state.avatorSrc = val.avatorSrc || window.localStorage.getItem('avatorSrc');
+  setHandleFlag(state, val) {
+    state.handleFlag = val;
+  },
+  setUserName(state, val) {
+    state.userName = val;
+  },
+  setVisible(state, val) {
+    state.visible = val;
   },
   [Types.GET_CONFIGLIST](state, val) {
     state.configList = val;
   },
   [Types.GET_TAGLIST](state, val) {
     state.tagsList = val;
-  }
+  },
 }
 
 export const actions = {
+  nuxtServerInit({ commit }, { req }) {
+    let cookies = req.headers.cookie && cookie.parse(req.headers.cookie);
+    if (!cookies) {
+      return;
+    }
+    let avatar = '';
+    avatar = cookies.avatar || '';
+    let userId = cookies.userId;
+    let userName = cookies.userName;
+    let isLogin = false;
+    if (cookies.isLogin && cookies.isLogin === 'true') {
+      isLogin = true;
+    } else {
+      isLogin = false;
+    }
 
+    commit('init', {
+      isLogin,
+      userId,
+      avatar,
+      userName,
+    });
+  },
   isLoginFn(state) {
     state.isLogin = true;
   },
@@ -71,20 +127,9 @@ export const actions = {
   [Types.GET_TAGLIST]: async ({ commit }, data) => {
     await Api.getTagList(data)
       .then(res => {
-        if (res.status === 200 && res.data.data.list) {
-          let tagsList = res.data.data.list;
+        if (res.list) {
+          let tagsList = res.list;
           commit(Types.GET_TAGLIST, tagsList);
-        }
-      }, err => {
-        console.log('报错啦', err)
-      })
-  },
-  [Types.GET_CONFIGLIST]: async ({ commit }, data) => {
-    await Api.getConfigList(data)
-      .then(res => {
-        if (res.status === 200 && res.data.data.list) {
-          let configList = res.data.data.list;
-          commit(Types.GET_CONFIGLIST, configList);
         }
       }, err => {
         console.log('报错啦', err)

@@ -52,28 +52,24 @@ export default {
   },
   methods: {
     onSave() {
-      console.log(this.handbook, 'handddddddd');
       this.$emit('saveContent', this.handbook);
     },
     $imgAdd(pos, $file){
-      console.log(pos, 'data');
       // 缓存图片信息
       this.img_file[pos] = $file;
       // 将图片上传到服务器.
       var formdata = new FormData();
       formdata.append('file', $file);
       axios({
-          url: `${this.$store.state.apiHttp}/api/upload`,
+          url: `${this.$store.state.apiHttpUpload}/api/upload`,
           method: 'post',
           data: formdata,
           headers: { 'Content-Type': 'multipart/form-data' },
       }).then(res => {
-        if (res.status === 200 && res.data && res.data.data) {
-          let { name, url } = res.data.data;
-            // $vm.$img2Url  将md源码中图片文件名替换为url(如![h](./0) -> ![h](http://path/to/png/some.png))
-            let imgUrl = `${this.$store.state.imgurlhttp}${url}`
-            this.$refs.md.$img2Url(pos, imgUrl);
-        }
+        let { name, url } = res.data.data;
+          // $vm.$img2Url  将md源码中图片文件名替换为url(如![h](./0) -> ![h](http://path/to/png/some.png))
+          let imgUrl = `${this.$store.state.imgurlhttp}${url}`
+          this.$refs.md.$img2Url(pos, imgUrl);
       })
     }
   }

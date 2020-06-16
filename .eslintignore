@@ -1,0 +1,11 @@
+/static/
+/assets/
+/plugins/
+/static/
+/node_modules/
+/store/
+/utils/
+/pages/
+/layouts/
+/components/
+/middleware/

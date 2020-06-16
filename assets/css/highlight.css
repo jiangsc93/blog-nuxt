@@ -35,7 +35,7 @@
 .hljs-title,
 .css .hljs-class,
 .hljs-class .hljs-title:last-child {
-  color: #a6e22e;
+  color: brown;
 }
 
 .hljs-link_url {
@@ -79,13 +79,13 @@
 .hljs-class .hljs-keyword:first-child,
 .hljs-constant,
 .css .hljs-attribute {
-  color: #66d9ef;
+  color: #5a97a0;
 }
 
 .hljs-variable,
 .hljs-params,
 .hljs-class .hljs-title {
-  color: #f8f8f2;
+  color: teal;
 }
 
 .hljs-string,
@@ -112,7 +112,7 @@
 .hljs-prompt,
 .hljs-link_label,
 .hljs-link_url {
-  color: #e6db74;
+  color: #0086b3;
 }
 
 .hljs-comment,
