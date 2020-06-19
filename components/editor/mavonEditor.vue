@@ -1,6 +1,6 @@
 <template>
   <div>
-    <no-ssr><mavon-editor ref="md" :toolbars="markdownOption" @save="onSave" @imgAdd="$imgAdd" v-model="handbook"/></no-ssr>
+    <mavon-editor ref="md" :toolbars="markdownOption" @save="onSave" @imgAdd="$imgAdd" v-model="handbook"/>
   </div>
 </template>
 <script>

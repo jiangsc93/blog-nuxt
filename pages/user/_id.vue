@@ -7,7 +7,7 @@
         <div class="__user-info">
           <div class="_lt">
             <div class="_img">
-              <img :src="userInfo.avatar" alt="">
+              <img v-lazy="userInfo.avatar" alt="">
             </div>
           </div>
           <div class="_desc">
@@ -142,10 +142,10 @@ export default {
   middleware: 'checkMobile',
   head() {
     return {
-      title: '',
+      title: `个人中心 - ${this.userInfo.userName}`,
       meta: [
-        { id: 'keywords', hid: 'keywords', name: 'keywords', content: '' },
-        { id: 'description', hid: 'description', name: 'description', content: '' },
+        { id: 'keywords', hid: 'keywords', name: 'keywords', content: `${this.userInfo.userName}、${this.userInfo.position ? this.userInfo.position : ''}、${this.userInfo.company ? this.userInfo.company : ''}` },
+        { id: 'description', hid: 'description', name: 'description', content: `${this.userInfo.introduce ? this.userInfo.introduce : ''}` },
       ],
     }
   },

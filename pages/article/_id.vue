@@ -7,7 +7,7 @@
           <div :class="isMobile ? 'author_m author-info' : 'author_pc author-info'">
             <div class="lt">
               <a :href="`/user/${userInfo._id}`" class="avatar-img">
-                <img class="avatar" :src="userInfo.avatar" alt="">
+                <img class="avatar" v-lazy="userInfo.avatar" alt="">
               </a>
               <div class="article-info">
                 <a :href="`/user/${userInfo._id}`" class="name">{{userInfo.userName}}<span class="level" :style="{backgroundColor:levelToColor(userInfo.level)}">Lv{{userInfo.level || '1'}}</span></a>
@@ -29,7 +29,7 @@
             <div class="author_pc author-info">
             <div class="lt">
               <a :href="`/user/${userInfo._id}`"  class="avatar-img">
-                <img class="avatar" :src="userInfo.avatar" alt="不给看">
+                <img class="avatar" v-lazy="userInfo.avatar" alt="不给看">
               </a>
               <div class="article-info">
                 <a :href="`/user/${userInfo._id}`" class="name">{{userInfo.userName}}<span class="level" :style="{backgroundColor:levelToColor(userInfo.level)}">Lv{{userInfo.level || '1'}}</span></a>
@@ -61,10 +61,15 @@
         <ArticleDetailRight :toc="responseData.toc" :authorInfo="userInfo" :articleList="articleList"></ArticleDetailRight>
       </div>
       <div class="article-sidebar" :class="{'m-article-sidebar': isMobile}">
-        <div :class="isCurrentUserLiked ? 'active-like-btn': 'like-btn'" :badge="responseData.like" @click="likeArticle(responseData._id)"><i class="iconfont icon-dianzan1"></i></div>
-        <div class="comment-btn" :badge="responseData.comments_num || '0'" v-scroll-to="'#article-comment'"><i class="iconfont icon-icon_huifu-mian"></i>
+        <div :class="isCurrentUserLiked ? 'active-like-btn': 'like-btn'" :badge="responseData.like" @click="likeArticle(responseData._id)">
+          <i class="iconfont icon-dianzan1"></i>
         </div>
-        <div class="collect-btn" :class="{'active': isCurrentUserCollected}" @click="onCollect()"><i class="iconfont icon-shoucang"></i></div>
+        <div class="comment-btn" :badge="responseData.comments_num || '0'" v-scroll-to="'#article-comment'">
+          <i class="iconfont icon-icon_huifu-mian"></i>
+        </div>
+        <div class="collect-btn" :class="{'active': isCurrentUserCollected}" @click="onCollect()">
+          <i class="iconfont icon-shoucang"></i>
+        </div>
       </div>
     </div>
   </div>
@@ -84,10 +89,10 @@ export default {
   middleware: 'checkMobile',
   head() {
     return {
-      title: '文章',
+      title: this.responseData.title,
       meta: [
-        { id: 'keywords', hid: 'keywords', name: 'keywords', content: '文章' },
-        { id: 'description', hid: 'description', name: 'description', content: '蒋少川的个人博客' },
+        { id: 'keywords', hid: 'keywords', name: 'keywords', content: this.responseData.tag },
+        { id: 'description', hid: 'description', name: 'description', content: this.responseData.summary },
       ],
     }
   },
@@ -166,7 +171,6 @@ export default {
     }
   },
   mounted () {
-    this.seoHandle();
     // 监听页面滚动事件
     window.addEventListener('scroll', this.onScroll);
     this.judgeCurrentUserStatus();
@@ -308,16 +312,10 @@ export default {
               res.content = result.content;
               res.toc = result.toc;
               this.responseData = res;
-              this.seoHandle();
             });
           }
       })
     },
-    seoHandle() {
-      document.title = this.responseData.title;
-      document.querySelector("#keywords").setAttribute("content", this.responseData.tag);
-      document.querySelector("#description").setAttribute("content", this.responseData.summary);
-    }
   }
 }
 </script>
@@ -533,14 +531,14 @@ export default {
         margin-bottom: 10px;
         border-radius: 50%;
         cursor: pointer;
-        &:hover .iconfont {
-          color: #888;
-        }
         .iconfont {
           position: relative;
           left: 2px;
           color: #b2bac2;
           font-size: 15px;
+        }
+        &:hover .iconfont {
+          color: #888;
         }
       }
       .collect-btn.active .iconfont {
@@ -588,14 +586,14 @@ export default {
           transform-origin: left top;
           transform: scale(.75);
         }
-        &:hover .iconfont {
-          color: #ec7259;
-        }
         .iconfont {
           position: relative;
           left: 2px;
           color: #ec7259;
           font-size: 15px;
+        }
+        &:hover .iconfont {
+          color: #ec7259;
         }
       }
       &.m-article-sidebar {

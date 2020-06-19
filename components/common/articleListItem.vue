@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="_rt" v-if="item.imgSrc">
-        <img :src="item.imgSrc" alt="图片">
+        <img v-lazy="item.imgSrc" alt="图片">
       </div>
     </div>
   </div>

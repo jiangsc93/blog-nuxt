@@ -37,9 +37,9 @@
         </h2>
         <div class="__content" @click="toLink(item)">
           <div class="_lt" :class="{'m_lt': isMobile}" v-if="item.imgSrc">
-            <img :src="item.imgSrc" alt="封面">
+            <img v-lazy="item.imgSrc" alt="封面">
           </div>
-          <div class="_rt">
+          <div class="_rt ellipsis">
             <div class="summary ellipsis"><span class="_summary"><a :href="`/article/${item._id}`">{{item.summary}}</a></span></div>
           </div>
         </div>
@@ -188,7 +188,7 @@
         cursor: pointer;
         ._lt {
           width: 23%;
-          margin-right: 20px;
+          margin-right: 4%;
           height: 100px;
           &.m_lt {
             height: 70px;
@@ -196,6 +196,9 @@
           img {
             border-radius: 4px;
           }
+        }
+        ._rt {
+          width: 73%;
         }
       }
       .__footer {

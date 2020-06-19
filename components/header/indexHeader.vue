@@ -625,7 +625,7 @@
       }
       .show-input .el-input {
         display: inline-block;
-        width: 150px;
+        width: 145px;
         margin-right: 16px;
         transition: width 0.3s ease-in-out;
       }

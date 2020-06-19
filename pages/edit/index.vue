@@ -100,6 +100,15 @@
 
   export default {
     middleware: 'checkMobile',
+    head() {
+      return {
+        title: `编辑文章 - 知否`,
+        meta: [
+          { hid: 'keywords', name: 'keywords', content: 'Html, Css, Javascript, Nuxt, Next,Vue.js,微信小程序,React Native,敏捷开发,Bootstrap,正则表达式,WebGL,Webpack,Docker,MVVM'},
+          { hid: 'description', name: 'description', content: '是一个开发者集聚地，分享技术带给我们的收获和快乐' }
+        ],
+      }
+    },
     data(){
       return {
         isShowImg: false,

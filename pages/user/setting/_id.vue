@@ -157,7 +157,7 @@ export default {
   middleware: 'checkMobile',
   head() {
     return {
-      title: '知否',
+      title: this.$route.params.id === 'info' ? '个人资料 - 知否' : '修改密码 - 知否',
       meta: [
         { hid: 'keywords', name: 'keywords', content: 'Html, Css, Javascript, Nuxt, Next,Vue.js,微信小程序,React Native,敏捷开发,Bootstrap,正则表达式,WebGL,Webpack,Docker,MVVM'},
         { hid: 'description', name: 'description', content: '是一个开发者集聚地，分享技术带给我们的收获和快乐' }
@@ -169,26 +169,24 @@ export default {
     Nav,
   },
   asyncData(req) {
-    // if (req.params.id === 'info') {
-      return Api.getUserInfo({_id: req.query.uid})
-            .then(res => {
-              let editData = res;
-              if (res.avatar) {
-                let file = {
-                  name: 'png',
-                  url: res.avatar
-                };
-                let fileList = [];
-                fileList.push(file);
-                settingList.map((item, index) => {
-                  item.val = editData[item.eng];
-                })
-                return  { editData, fileList, settingList, passwordList };
-              }
-            }, err => {
-              console.log('报错啦', err)
-            })
-    // }
+    return Api.getUserInfo({_id: req.query.uid})
+          .then(res => {
+            let editData = res;
+            if (res.avatar) {
+              let file = {
+                name: 'png',
+                url: res.avatar
+              };
+              let fileList = [];
+              fileList.push(file);
+              settingList.map((item, index) => {
+                item.val = editData[item.eng];
+              })
+              return  { editData, fileList, settingList, passwordList };
+            }
+          }, err => {
+            console.log('报错啦', err)
+          })
   },
   data() {
     return {

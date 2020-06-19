@@ -23,27 +23,27 @@
               <span class="_head"><i class="iconfont" :class="item.itemType === 'comment' ? 'icon-icon_huifu-mian' : 'icon-dianzan1'"></i>
               {{ item.itemType === 'comment' ? '评论了:' : '赞了:' }}
               </span>
-              <a :href="`/article/${item.article_id}`">{{ '文章标题标题' }}</a>
+              <a class="article-title" :href="`/article/${item.article_info[0]._id}`">{{ item.article_info ? item.article_info[0].title : '文章标题'}}</a>
             </div>
           </div>
         </div>
         <div class="item" v-else-if="item.itemType === 'like'">
           <a :href="`/user/${item.liker_id}`" class="head" v-if="item.liker_info">
-            <!-- <div class="_avatar"><img :src="item.liker_info.avatar" alt=""></div>
+            <div class="_avatar"><img :src="item.liker_info[0].avatar" alt=""></div>
             <div class="_content">
-              <div class="username">{{ item.liker_info.userName }}</div>
+              <div class="username">{{ item.liker_info[0].userName }}</div>
               <div class="info">
-                <span class="position">{{ item.liker_info.position }}  @ {{ item.liker_info.company }}</span> - 
+                <span class="position">{{ item.liker_info[0].position }}  @ {{ item.liker_info[0].company }}</span> - 
                 <span class="create-time">{{ formatTime(item.create_time) }}</span>
               </div>
-            </div> -->
+            </div>
           </a>
           <div class="bottom">
             <div class="article">
               <span class="_head"><i class="iconfont" :class="item.itemType === 'comment' ? 'icon-icon_huifu-mian' : 'icon-dianzan1'"></i>
               {{ item.itemType === 'comment' ? '评论了:' : '赞了:' }}
               </span>
-              <a :href="`/article/${item.article_id}`">文章标题</a>
+              <a class="article-title" :href="`/article/${item.article_info[0]._id}`">{{ item.article_info ? item.article_info[0].title : '文章标题'}}</a>
             </div>
           </div>
         </div>
@@ -141,6 +141,11 @@
               .iconfont {
                 color: cadetblue;
                 opacity: 0.6;
+              }
+            }
+            .article-title {
+              &:hover {
+                color: $brand-primary;
               }
             }
             &.follow {

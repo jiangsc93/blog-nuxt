@@ -29,7 +29,7 @@ ul {
 li {
   margin: 0;
 }
-ul, li {
+ul, ul>li {
 	list-style: none;
 }
 .overflow {
@@ -86,6 +86,7 @@ ul, li {
 /*对 markdown 样式的补充*/
 pre {
 	display: block;
+	width: 100%;
 	padding: 15px;
 	margin: 0 0 10px;
 	font-size: 14px;
@@ -93,7 +94,7 @@ pre {
 	background: #f8f8f8;
 	word-break: break-all;
 	word-wrap: break-word;
-	overflow: auto;
+	overflow-x: scroll;
 	border-radius: 2px;
 }
 
@@ -172,9 +173,43 @@ img {
 	span {
 		line-height: 1.4;
 	}
+
 	li {
-		margin: 0.5em 0;
+    display: list-item!important;
+		text-align: -webkit-match-parent!important;
+		& > code:not([class]) {
+			font-size: 90%;
+			color: #d63200;
+			padding: 4px 4px;
+			margin: 0 3px;
+			background-color: #f8f8f8;
+			border-radius: 4px;
+		}
 	}
+	ul {
+		list-style-type: disc!important;
+	}
+	ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+		padding-inline-start: 30px;
+		li {
+			list-style-type: disc!important;
+		}
+	}
+	ol {
+    display: block;
+    list-style-type: decimal;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 30px;
+  }
 	h1 {
 		color: inherit;
     line-height: inherit;
@@ -206,12 +241,6 @@ img {
 		font-weight: 600;
 		margin: 1.3em 0 1em;
 		font-size: 1.4em;
-	}
-	ul {
-		list-style-type: none;
-		li {
-			list-style-type: none;
-		}
 	}
 }
 .anchor>.toc-content>.anchor-ul {
