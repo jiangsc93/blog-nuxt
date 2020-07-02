@@ -665,7 +665,7 @@
           position: relative;
           top: 13px;
           right: 15px;
-          margin-left: 60px;
+          margin-left: 55px;
           img {
             border-radius: 50%;
             width: 100%;

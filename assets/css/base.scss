@@ -76,6 +76,13 @@ ul, ul>li {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3; 
 }
+.ellipsis-line2 {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box; 
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; 
+}
 
 .ellipsis {
 	overflow: hidden;
@@ -150,6 +157,9 @@ img {
 	color: rgb(62, 62, 62)!important;
 	font-size: 16px;
 	line-height: 1.87;
+	li p {
+		white-space: wrap;
+	}
 	table td, table th {
 		border: 1px solid #dfe2e5;
 	}
@@ -177,6 +187,7 @@ img {
 	li {
     display: list-item!important;
 		text-align: -webkit-match-parent!important;
+		white-space: wrap;
 		& > code:not([class]) {
 			font-size: 90%;
 			color: #d63200;
@@ -266,7 +277,7 @@ img {
 				position: absolute;
 				top: 50%;
 				left: 3px;
-				margin-top: -2px;
+				transform: translateY(-55%);
 				width: 6px;
 				height: 6px;
 				background-color: #000;
@@ -295,7 +306,7 @@ img {
 				position: absolute;
 				top: 50%;
 				left: 20px;
-				margin-top: -2px;
+				transform: translateY(-55%);
 				width: 4px;
 				height: 4px;
 				background-color: #000;

@@ -18,7 +18,7 @@
               </span>
               <span class="delete" v-if="$store.state.userName === 'jiangsc93'" @click.stop="deletArticle(item._id)"> 删除</span>
             </div>
-            <div class="_content ellipsis">
+            <div class="_content ellipsis-line2">
               <span class="_title">
                 <a :href="`/article/${item._id}`">
                   {{item.title}}
@@ -122,7 +122,8 @@ import Api from '~/utils/api';
         font-size: 16px;
         color: #333;
         font-weight: bold;
-        line-height: 2;
+        line-height: 1.5;
+        margin: 5px 0;
         max-width: 100%;
         ._title {
           &:hover {

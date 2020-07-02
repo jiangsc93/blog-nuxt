@@ -10,13 +10,13 @@
 .css .hljs-value,
 .css .hljs-function .hljs-preprocessor,
 .hljs-pragma {
-  color: #f8f8f2;
+  color: #555;
 }
 
 .hljs-strongemphasis,
 .hljs-strong,
 .hljs-emphasis {
-  color: #a8a8a2;
+  color: #75715e;
 }
 
 .hljs-bullet,
