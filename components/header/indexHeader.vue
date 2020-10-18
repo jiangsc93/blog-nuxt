@@ -87,7 +87,7 @@
           </div>
         </div>
       </div>
-      <div :class="isShowSide ? 'side side-in' : 'side side-out' ">
+      <div :class="isShowSide ? 'side side-in' : 'side side-out' "  v-clickoutside="clickOutSide">
         <el-menu :default-active="activeIndex"
           active-text-color="#46bd87"
           class="el-menu-demo m-el-menu" mode="vertical">
@@ -135,11 +135,11 @@
             link: '/timeline/recommend',
             activeIndex: '0'
           },
-          // {
-          //   title: '发牢骚',
-          //   link: '/complain',
-          //   activeIndex: '1'
-          // },
+          {
+            title: '发牢骚',
+            link: '/complain',
+            activeIndex: '1'
+          },
           // {
           //   title: '时事',
           //   link: '/archive',
@@ -260,6 +260,9 @@
       })
     },
     methods: {
+      clickOutSide() {
+        console.log('指令生效');
+      },
       toLink(item) {
         if (item.val === '登出') {
           Util.UI.confirm('确定登出吗？知否等你回来哦！😊', '提示').then(() => {

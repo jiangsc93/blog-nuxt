@@ -100,21 +100,21 @@ module.exports = {
     '@nuxtjs/proxy',
   ],
   proxy: [ // 设置代理
-    ['/api', {
-      target: 'http://39.96.10.130:3000',
-      changeOrigin: true,
-      secure: false,
-      pathRewrite: {
-        '^/api': ''
-      }
-    }]
     // ['/api', {
-    //   target: 'http://localhost:3000',
+    //   target: 'http://39.96.10.130:3000',
     //   changeOrigin: true,
+    //   secure: false,
     //   pathRewrite: {
     //     '^/api': ''
     //   }
     // }]
+    ['/api', {
+      target: 'http://localhost:3000',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api': ''
+      }
+    }]
     // ['/api', { -+
     //   target: 'https://www.jscwwd.com:3000',
     //   changeOrigin: true,
@@ -125,6 +125,7 @@ module.exports = {
   ],
   plugins: [
     { src: '~plugins/nuxt-mavon-plugin.js', ssr: false},
+    { src: '~plugins/directive.js', ssr: false},
     { src: '~plugins/element-ui' },
     { src: '~plugins/Util.js', ssr: false },
     // { src: '~plugins/components.js', ssr: true },

@@ -34,6 +34,7 @@ import {
 } from "element-ui";
 import '../assets/css/element-variables.scss'
 import 'element-ui/lib/theme-chalk/base.css';
+import jscPlugin from 'jsc-plugin';
 // import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 export default () => {
   Vue.use(Dialog);
@@ -67,5 +68,6 @@ export default () => {
   Vue.use(CheckboxGroup);
   Vue.use(Pagination);
   Vue.use(Upload);
+  Vue.use(jscPlugin);
   Vue.prototype.$notify = Notification;
 }

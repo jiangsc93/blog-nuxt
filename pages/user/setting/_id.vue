@@ -377,7 +377,7 @@ export default {
 </script>
 
 <style lang="scss">
-.page-user-setting .upload .el-upload-list--picture-card .el-upload-list__item {
+.page-user-setting .el-upload-list--picture-card .el-upload-list__item {
   width: 100px;
   height: 100px;
 }

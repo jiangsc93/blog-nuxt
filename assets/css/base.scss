@@ -314,6 +314,42 @@ img {
 			}
 		}
 	}
+	&>.anchor-ul>.anchor-ul>li {
+		position: relative;
+		&:hover {
+			background: #ebedef;
+		}
+		&>a.toc-link {
+			padding: 2px 3px 2px 46px;
+			display: inline-block;
+			font-size: 14px;
+			width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			&:hover {
+				color: currentColor;
+			}
+		}
+	}
+	&>.anchor-ul>.anchor-ul>.anchor-ul>li {
+		position: relative;
+		&:hover {
+			background: #ebedef;
+		}
+		&>a.toc-link {
+			padding: 2px 3px 2px 60px;
+			display: inline-block;
+			font-size: 14px;
+			width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			&:hover {
+				color: currentColor;
+			}
+		}
+	}
 }
 
 .article-detail blockquote {

@@ -331,6 +331,10 @@
               label: 'Kubernetes'
             },
             {
+              value: '服务器',
+              label: '服务器'
+            },
+            {
               value: '其他',
               label: '其他'
             },
