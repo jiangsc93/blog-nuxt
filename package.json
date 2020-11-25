@@ -32,7 +32,7 @@
     "express": "^4.15.5",
     "express-session": "^1.15.6",
     "gt3-sdk": "^2.0.0",
-    "highlight.js": "^9.18.1",
+    "highlight.js": "^10.1.2",
     "js-cookie": "^2.2.0",
     "jsc-npm": "^1.0.0",
     "marked": "^0.8.0",
