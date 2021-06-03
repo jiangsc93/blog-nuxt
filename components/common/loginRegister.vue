@@ -165,7 +165,8 @@ import { mapState, mapGetters } from 'vuex';
               this.$store.commit('init', { userName, email, avatar, userId: _id, token });
               this.$store.commit('setVisible', false);
               this.resetData();
-              location.reload();
+              // debugger;
+              // location.reload();
             }
           }, err => {
             Util.UI.toast('账号或密码错误!', 'error');
