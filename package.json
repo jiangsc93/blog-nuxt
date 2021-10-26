@@ -22,7 +22,7 @@
     "@babel/core": "^7.10.2",
     "@babel/preset-env": "^7.10.2",
     "@nuxtjs/style-resources": "^1.0.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "consola": "^2.11.3",
     "cookie": "^0.4.1",
     "cookie-parser": "^1.4.3",
