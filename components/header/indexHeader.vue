@@ -146,6 +146,7 @@
           //   activeIndex: '2'
           // },
         ],
+        
         activeIndex: '',
         loginTitle: '登录 | 注册',
         avatar: '',
