@@ -36,7 +36,7 @@
     "js-cookie": "^2.2.0",
     "jsc-npm": "^1.0.0",
     "marked": "^0.8.0",
-    "mavon-editor": "^2.7.7",
+    "mavon-editor": "^2.8.2",
     "mint-ui": "^2.2.13",
     "mongoose": "^4.11.13",
     "mongoose-auto-increment": "^5.0.1",
